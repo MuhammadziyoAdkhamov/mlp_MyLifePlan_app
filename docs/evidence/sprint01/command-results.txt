@@ -1,0 +1,5 @@
+flutter doctor -v exit=0
+flutter pub get exit=0
+flutter build apk --debug --no-pub exit=1
+flutter analyze --no-pub exit=0
+flutter test --no-pub exit=0

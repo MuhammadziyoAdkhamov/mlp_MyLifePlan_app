@@ -1,0 +1,40 @@
+[√] Flutter (Channel stable, 3.47.0, on Microsoft Windows [Version 10.0.26300.9711], locale uz-Latn-UZ) [425ms]
+    • Flutter version 3.47.0 on channel stable at C:\Users\TheMillionaire\src\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 4cf2416426 (3 months ago), 2026-08-11 11:53:49 -0700
+    • Engine revision 5f77625673
+    • Dart version 3.13.0
+    • DevTools version 2.60.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, enable-record-use, enable-swift-package-manager, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+
+[√] Windows Version (Windows 11 or higher, 26H2, 2009) [2,5s]
+
+[!] Android toolchain - develop for Android devices (Android SDK version 36.0.0) [1 239ms]
+    • Android SDK at C:\Users\TheMillionaire\AppData\Local\Android\sdk
+    • Emulator version 37.1.11.0 (build_id 15917651) (CL:N/A)
+    • Platform android-37.0, build-tools 36.0.0
+    • Java binary at: C:\Users\TheMillionaire\AppData\Local\Programs\EclipseAdoptium\jdk-21\jdk-21.0.12.1+1\bin\java
+      This JDK is specified in your Flutter configuration.
+      To change the current JDK, run: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+    X Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/windows-android-setup for more details.
+
+[√] Chrome - develop for the web [28ms]
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[X] Visual Studio - develop Windows apps [26ms]
+    X Visual Studio not installed; this is necessary to develop Windows apps.
+      Download at https://visualstudio.microsoft.com/downloads/.
+      Please install the "Desktop development with C++" workload, including all of its default components
+
+[√] Connected device (3 available) [1 030ms]
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.26300.9711]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 155.0.8059.86
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 156.0.4314.42
+
+[√] Network resources [1 355ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.

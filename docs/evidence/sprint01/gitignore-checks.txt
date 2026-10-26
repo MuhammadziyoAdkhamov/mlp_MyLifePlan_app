@@ -1,0 +1,8 @@
+PASS ignored: lib/firebase_options.dart
+PASS ignored: android/app/google-services.json
+PASS ignored: android/key.properties
+PASS ignored: signing-test.jks
+PASS visible: lib/main.dart
+PASS visible: lib/demo/demo_store.dart
+PASS visible: README.md
+PASS visible: pubspec.yaml

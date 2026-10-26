@@ -75,3 +75,5 @@ key.properties
 # Logs
 *.log
 android/app/google-services.json
+lib/firebase_options.dart
+android/app/google-services.json
