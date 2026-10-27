@@ -58,3 +58,15 @@ abstract final class MLPNavigation {
     MLPRouteArgs? args,
   }) => Navigator.of(context).pushNamed<T>(screen.path, arguments: args);
 }
+
+/// A previous page's success toast must not cover a new form's primary action.
+class MLPRouteFeedbackObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    final context = navigator?.context;
+    if (context != null && context.mounted) {
+      ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
+    }
+  }
+}

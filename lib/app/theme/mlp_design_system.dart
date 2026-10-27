@@ -58,40 +58,42 @@ abstract final class MLPTheme {
         onSurfaceVariant: MLPColors.secondaryText,
         error: MLPColors.error,
       ),
-      textTheme: text.copyWith(
-        displaySmall: const TextStyle(
-          fontSize: 32,
-          height: 1.2,
-          fontWeight: FontWeight.w700,
-        ),
-        headlineMedium: const TextStyle(
-          fontSize: 28,
-          height: 1.25,
-          fontWeight: FontWeight.w700,
-        ),
-        headlineSmall: const TextStyle(
-          fontSize: 24,
-          height: 1.3,
-          fontWeight: FontWeight.w700,
-        ),
-        titleLarge: const TextStyle(
-          fontSize: 20,
-          height: 1.35,
-          fontWeight: FontWeight.w600,
-        ),
-        titleMedium: const TextStyle(
-          fontSize: 16,
-          height: 1.4,
-          fontWeight: FontWeight.w600,
-        ),
-        bodyLarge: const TextStyle(fontSize: 16, height: 1.5),
-        bodyMedium: const TextStyle(fontSize: 14, height: 1.5),
-        bodySmall: const TextStyle(
-          fontSize: 12,
-          height: 1.5,
-          color: MLPColors.secondaryText,
-        ),
-      ),
+      textTheme: text
+          .copyWith(
+            displaySmall: const TextStyle(
+              fontSize: 32,
+              height: 1.2,
+              fontWeight: FontWeight.w700,
+            ),
+            headlineMedium: const TextStyle(
+              fontSize: 28,
+              height: 1.25,
+              fontWeight: FontWeight.w700,
+            ),
+            headlineSmall: const TextStyle(
+              fontSize: 24,
+              height: 1.3,
+              fontWeight: FontWeight.w700,
+            ),
+            titleLarge: const TextStyle(
+              fontSize: 20,
+              height: 1.35,
+              fontWeight: FontWeight.w600,
+            ),
+            titleMedium: const TextStyle(
+              fontSize: 16,
+              height: 1.4,
+              fontWeight: FontWeight.w600,
+            ),
+            bodyLarge: const TextStyle(fontSize: 16, height: 1.5),
+            bodyMedium: const TextStyle(fontSize: 14, height: 1.5),
+            bodySmall: const TextStyle(
+              fontSize: 12,
+              height: 1.5,
+              color: MLPColors.secondaryText,
+            ),
+          )
+          .apply(fontFamily: 'Segoe UI'),
       dividerColor: MLPColors.border,
       appBarTheme: const AppBarTheme(
         backgroundColor: MLPColors.background,

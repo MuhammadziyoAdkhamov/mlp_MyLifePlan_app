@@ -1,0 +1,8 @@
+Analyzing mylife_plan_guest_mode_fixed_1...                     
+
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\data\repositories\mlp_ui_repository.dart:305:9 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\demo\demo_app.dart:1516:19 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\demo\demo_app.dart:1544:21 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\demo\demo_app.dart:1548:19 - curly_braces_in_flow_control_structures
+
+4 issues found. (ran in 423.7s)

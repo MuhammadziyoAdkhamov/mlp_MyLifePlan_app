@@ -1,19 +1,19 @@
 # MLP UI ekran inventari
 
-Bu jadval yakunlanganlik da’vosi emas. Route deklaratsiyasi ekran ishlashini isbotlamaydi. `QISMAN` eski foydali oqimni, `KOD` yangi yozilgan lekin hali to‘liq tekshirilmagan ekranni bildiradi. Yangilanish: 2026-10-26, Phase A/B ishlanmoqda.
+Yangilanish: 2026-10-27. 10 ekran yozilgan, 18 ekran yangi scope bo‘yicha hali tugallanmagan. Route deklaratsiyasi ekran ishlashini isbotlamaydi. `WIDGET` — ko‘rsatilgan widget tekshiruvi bor, to‘liq Phase F QA yoki Android runtime degani emas. `4V`: 320×640, 390×844, 844×390, 1440×900, matn 1.4× va klaviatura inset 160.
 
 | # | Ekran / route | Amalga oshirish | Navigatsiya / amal | Responsive / QA |
 |---|---|---|---|---|
-| 1 | Splash /splash | KOD: mlp_account_flow.dart | Asinxron UI saqlov yuklanishi | Kutilmoqda |
-| 2 | Welcome /welcome | KOD | Boshlash, kirish, mehmon | Kutilmoqda |
-| 3 | Registration /registration | KOD | Ism/telefon/jins validatsiyasi, demo profil | Kutilmoqda |
-| 4 | Login /login | KOD | SMS/Google ulanmagan holati; mehmon | Kutilmoqda |
-| 5 | Preferences /preferences | KOD | Vaqt/soat/eslatma xohishi/ustoz nomi | Kutilmoqda |
-| 6 | Goal discovery /goals/new | QISMAN: eski goal form | Erkin matn bor, yangi oqim yo‘q | Eski test bor; yangi QA yo‘q |
-| 7 | Goal clarification /goals/clarify | YO‘Q | Rejalashtirilgan | Yo‘q |
-| 8 | Diagnostics /goals/diagnosis | YO‘Q | Rejalashtirilgan | Yo‘q |
-| 9 | Roadmap /goals/roadmap | QISMAN: DemoHub | 7 kunlik starter bor, yangi editor yo‘q | Yangi QA yo‘q |
-| 10 | Goal detail /goals/detail | QISMAN: demo_app.dart | CRUD va bog‘langan vazifalar bor | Eski test; yangi detail yo‘q |
+| 1 | Splash /splash | WIDGET: mlp_account_flow.dart | Entry gate avtomatik ochadi, restore bilan home/welcome | 4V; landscape overflow tuzatildi |
+| 2 | Welcome /welcome | WIDGET | Root entry gate; boshlash, login va guest yo‘llari | 4V; guest/restart va screenshot |
+| 3 | Registration /registration | WIDGET | Ism/telefon/jins; demo→preferences | 4V; invalid input va production oqim testi |
+| 4 | Login /login | WIDGET | SMS/Google unavailable; demo/guest tanlovi | 4V; screenshot; barcha action holatlari Phase Fda |
+| 5 | Preferences /preferences | WIDGET | Kunlik vaqt/soat/eslatma xohishi/ustoz nomi; settingsdan qayta ochish | 4V; save/edit/restart va screenshot |
+| 6 | Goal discovery /goals/new | WIDGET: mlp_goal_flow.dart | Erkin matn, 8 toifa, clarificationga o‘tish | 4V; custom goal navigatsiyasi |
+| 7 | Goal clarification /goals/clarify | WIDGET | Outcome/date/time/starting level/why; editable summary | 4V; form oqimi va screenshot |
+| 8 | Diagnostics /goals/diagnosis | WIDGET | Deterministik 2 savol yoki self-report; Bilmayman | 4V; wrong/unknown 0 ball, XP yo‘q |
+| 9 | Roadmap /goals/roadmap | WIDGET | Tahrirlangan task/time/date; goal+tasks bir yozuvda | 4V; persist/rollback/retry; screenshot |
+| 10 | Goal detail /goals/detail | WIDGET: mlp_goal_detail.dart | Timeline, next step, linked task, edit/archive/delete confirm | 4V; CRUD/archive testi, screenshot |
 | 11 | Today /today | QISMAN: demo_app.dart | Haqiqiy mahalliy vazifa/odat/fokus | Baseline widget testlar |
 | 12 | Planner /calendar | YO‘Q | ICS eksport haqiqiy planner emas | Yo‘q |
 | 13 | Schedule editor /calendar/edit | YO‘Q | Rejalashtirilgan | Yo‘q |

@@ -67,6 +67,6 @@
 
 ## Eng yaqin bitta chipta
 
-**A02 — `.gitignore`ni tiklash.** Xavfi past, app UI/domainni o‘zgartirmaydi. Hozirgi kuzatilgan NUL/combined patternni yo‘qotadi; Firebase config va signing fayllari ignored, normal kod ignored emasligi command orqali tekshiriladi. Bu tuzatishdan keyin yangi master prompt bo‘yicha A03ga o‘tiladi; oldingi Day-1 doirasida esa shu yerda to‘xtash kerak edi.
+**C02/C03 — mahalliy taqvim va schedule CRUD.** Sana/start/end/repeat/goal/task/reminder intent, overlap/capacity warning va persist/restart testi; keyin C01 shellga ulash. A02 bajarilgan, A03 foundation 578d552, B bosqichida 10 ekran va 78/78 test bor. A04 route registry bor, to‘liq named route dispatch yangi shellda yakunlanadi.
 
 Android yopiq beta uchun birinchi release-blocking chipta **AND01** bo‘lib qoladi. License noma’lum yoki loopback xatosi UI mock qo‘shish bilan hal bo‘lgan deb ko‘rsatilmaydi.

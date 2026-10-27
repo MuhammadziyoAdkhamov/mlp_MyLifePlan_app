@@ -259,6 +259,7 @@ class MLPTextField extends StatelessWidget {
     this.maxLines = 1,
     this.maxLength,
     this.autofocus = false,
+    this.enabled = true,
     this.onChanged,
   });
   final TextEditingController controller;
@@ -269,10 +270,13 @@ class MLPTextField extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final bool autofocus;
+  final bool enabled;
   final ValueChanged<String>? onChanged;
   @override
   Widget build(BuildContext context) => TextFormField(
     controller: controller,
+    enabled: enabled,
+    onTapOutside: (_) => FocusScope.of(context).unfocus(),
     decoration: InputDecoration(labelText: label, hintText: hint),
     keyboardType: keyboardType,
     validator: validator,

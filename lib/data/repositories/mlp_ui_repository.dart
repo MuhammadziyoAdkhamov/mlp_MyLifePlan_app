@@ -115,6 +115,7 @@ class MLPLocalUiRepository extends ChangeNotifier
           Map<String, dynamic>.from(_state['profile'] as Map),
         );
   bool get onboarded => _state['onboarded'] as bool;
+  bool get requiresRecovery => _corrupt;
   @override
   MLPUserPreferences get preferences => MLPUserPreferences.fromJson(
     Map<String, dynamic>.from(_state['preferences'] as Map),
@@ -128,6 +129,9 @@ class MLPLocalUiRepository extends ChangeNotifier
         if (raw is! String) {
           throw const FormatException('Noto‘g‘ri saqlov turi.');
         }
+        if (raw.length > 2 * 1024 * 1024) {
+          throw const FormatException('UI saqlov hajmi katta.');
+        }
         final decoded = jsonDecode(raw);
         if (decoded is! Map<String, dynamic> ||
             decoded['version'] != 1 ||
@@ -138,10 +142,31 @@ class MLPLocalUiRepository extends ChangeNotifier
         final merged = {..._defaults(), ...decoded};
         final savedProfile = merged['profile'];
         if (savedProfile != null) {
-          MLPProfile.fromJson(Map<String, dynamic>.from(savedProfile as Map));
+          final profile = MLPProfile.fromJson(
+            Map<String, dynamic>.from(savedProfile as Map),
+          );
+          _name(profile.name, 'Ism');
+          if (!profile.guest &&
+              !RegExp(r'^\+998\d{9}$').hasMatch(profile.phone)) {
+            throw const FormatException('Telefon formati noto‘g‘ri.');
+          }
         }
-        MLPUserPreferences.fromJson(
-          Map<String, dynamic>.from(merged['preferences'] as Map),
+        if (merged['onboarded'] == true && savedProfile == null) {
+          throw const FormatException('Profil yo‘q.');
+        }
+        for (final key in ['chat', 'schedules', 'assessments', 'favorites']) {
+          if (merged[key] is! List) {
+            throw const FormatException('UI ro‘yxati noto‘g‘ri.');
+          }
+        }
+        if (merged['goalPlans'] is! Map ||
+            (merged['goalPlans'] as Map).values.any((value) => value is! Map)) {
+          throw const FormatException('Rejalar formati noto‘g‘ri.');
+        }
+        _checkPreferences(
+          MLPUserPreferences.fromJson(
+            Map<String, dynamic>.from(merged['preferences'] as Map),
+          ),
         );
         _state = merged;
       } catch (_) {
@@ -168,6 +193,12 @@ class MLPLocalUiRepository extends ChangeNotifier
         }
       } catch (_) {
         error = 'Tanlovlarni saqlab bo‘lmadi. Qayta urinib ko‘ring.';
+        try {
+          await _prefs.reload();
+        } catch (_) {
+          error =
+              'Saqlov va uning keshini tiklab bo‘lmadi. Ilovani qayta oching.';
+        }
         notifyListeners();
         rethrow;
       }
@@ -228,11 +259,18 @@ class MLPLocalUiRepository extends ChangeNotifier
 
   @override
   Future<void> savePreferences(MLPUserPreferences value) {
+    _checkPreferences(value);
+    return _update((draft) {
+      draft['preferences'] = value.toJson();
+    });
+  }
+
+  static void _checkPreferences(MLPUserPreferences value) {
     if (value.minutes < 5 || value.minutes > 720) {
       throw ArgumentError('Kunlik vaqt 5–720 daqiqa orasida bo‘lsin.');
     }
     if (value.startMinute < 0 ||
-        value.endMinute > 1440 ||
+        value.endMinute >= 1440 ||
         value.startMinute >= value.endMinute) {
       throw ArgumentError('Boshlanish va tugash soatlari mos emas.');
     }
@@ -244,9 +282,6 @@ class MLPLocalUiRepository extends ChangeNotifier
     ].contains(value.tone)) {
       throw ArgumentError('Suhbat uslubi noto‘g‘ri.');
     }
-    return _update((draft) {
-      draft['preferences'] = value.toJson();
-    });
   }
 
   Future<void> finishOnboarding() => _update((draft) {
@@ -258,20 +293,71 @@ class MLPLocalUiRepository extends ChangeNotifier
     draft['onboarded'] = true;
   });
 
+  Future<void> saveWorkspaceIdentity(String name, int minutes) {
+    final clean = _name(name, 'Ism');
+    final settings = MLPUserPreferences.fromJson({
+      ...preferences.toJson(),
+      'minutes': minutes,
+    });
+    _checkPreferences(settings);
+    return _update((draft) {
+      if (draft['profile'] == null) {
+        throw StateError('Mahalliy profil topilmadi.');
+      }
+      (draft['profile'] as Map)['name'] = clean;
+      draft['preferences'] = settings.toJson();
+    });
+  }
+
+  Map<String, dynamic>? goalPlan(String id) {
+    final value = (_state['goalPlans'] as Map)[id];
+    return value == null
+        ? null
+        : Map<String, dynamic>.from(jsonDecode(jsonEncode(value)) as Map);
+  }
+
+  Future<void> saveGoalPlan(String id, Map<String, dynamic> plan) {
+    if (id.isEmpty) throw ArgumentError('Maqsad tanlanmagan.');
+    final copy = jsonDecode(jsonEncode(plan));
+    return _update((draft) => (draft['goalPlans'] as Map)[id] = copy);
+  }
+
+  Future<void> archiveGoal(String id, bool value) => _update((draft) {
+    final plans = draft['goalPlans'] as Map;
+    final plan = Map<String, dynamic>.from(plans[id] as Map? ?? {});
+    plan['archived'] = value;
+    plans[id] = plan;
+  });
+
   @override
   Future<void> exitSession() => _update((draft) {
     draft['onboarded'] = false;
   });
 
   /// Called only after explicit destructive confirmation. DemoStore is separate.
-  Future<void> resetUiData() async {
-    final next = _defaults();
-    if (!await _prefs.setString(storageKey, jsonEncode(next))) {
-      throw StateError('UI ma’lumotini tozalab bo‘lmadi.');
-    }
-    _state = next;
-    _corrupt = false;
-    error = null;
-    notifyListeners();
+  Future<void> resetUiData() {
+    final operation = _queue.then((_) async {
+      final next = _defaults();
+      try {
+        if (!await _prefs.setString(storageKey, jsonEncode(next))) {
+          throw StateError('UI ma’lumotini tozalab bo‘lmadi.');
+        }
+      } catch (_) {
+        try {
+          await _prefs.reload();
+        } catch (_) {
+          /* Explicit UI error remains until recovery. */
+        }
+        error = 'UI tanlovlari tozalanmadi. Qayta urinib ko‘ring.';
+        notifyListeners();
+        rethrow;
+      }
+      _state = next;
+      _corrupt = false;
+      error = null;
+      notifyListeners();
+    });
+    _queue = operation.catchError((Object _) {});
+    return operation;
   }
 }

@@ -6,7 +6,13 @@ Tekshiruv: 2026-10-26. Bu diagrammada faqat topilgan real bog‘lanishlar bor; d
 flowchart TD
   mainEntry["lib/main.dart"] --> preferences["SharedPreferences.getInstance"]
   mainEntry --> demoStore["DemoStore.init"]
-  mainEntry --> demoApp["MplDemoApp / Workspace"]
+  mainEntry --> entryGate["MLPEntryGate: local demo profile restore"]
+  entryGate --> uiRepo["MLPLocalUiRepository / mlp_ui_prototype_v1"]
+  entryGate --> accounts["Welcome / Demo registration / Login unavailable / Preferences"]
+  entryGate --> demoApp["MplDemoApp / Workspace"]
+  demoApp --> goalFlow["Custom goal / Clarification / Diagnostic / Roadmap / Detail"]
+  goalFlow --> demoStore
+  goalFlow --> uiRepo
   demoApp --> demoForms["DemoForms: task / habit / goal / proof / check-in"]
   demoApp --> review["DemoReview: local progress and evidence"]
   demoApp --> hub["DemoHub: JSON / CSV / ICS"]
@@ -91,6 +97,8 @@ flowchart LR
 - Naviyatsiya/UI migratsiyasi bosqichma-bosqich; phase checkpointlarda faqat xavfsiz allowlist commit. Kalit/config/secrets commitga kiritilmaydi.
 
 ## Sinov strategiyasi
+
+Phase B checkpoint: active main onboarding default yoqilgan. Eski widget harness explicit `enableOnboarding: false` bilan saqlanadi. UI repo profile/preferences/goal metadata uchun commit-before-notify qiladi; eski kalitlarni o‘zgartirmaydi. `DemoStore.addGoalPlan` bir goal va uning tasklarini bitta JSON yozuvda saqlaydi, xatoda yangi yozuvlarni qaytaradi va parallel mutation/resetni vaqtincha to‘sadi. Oddiy legacy mutation rollback muammosi alohida ochiq qoladi. 78 test va analyzer dalili QA hisobotida.
 
 1. Har phase’da mos store/unit invariantlar; real disk rad etishi, JSON version/restore va xato holatlari uchun test.
 2. Named route/back, form keyboard/validation/loading/error va end-to-end demo oqimi widget testlari.
