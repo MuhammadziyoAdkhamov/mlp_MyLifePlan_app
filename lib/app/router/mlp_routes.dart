@@ -65,8 +65,11 @@ class MLPRouteFeedbackObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
     final context = navigator?.context;
-    if (context != null && context.mounted) {
-      ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
-    }
+    // Nested Navigator restoration may notify observers during build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context != null && context.mounted) {
+        ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
+      }
+    });
   }
 }

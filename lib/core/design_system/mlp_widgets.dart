@@ -73,6 +73,7 @@ class MLPFloatingTabBar extends StatelessWidget {
               button: true,
               label: labels[i],
               excludeSemantics: true,
+              onTap: () => onChanged(i),
               child: InkWell(
                 onTap: () => onChanged(i),
                 borderRadius: BorderRadius.circular(22),
@@ -86,7 +87,7 @@ class MLPFloatingTabBar extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: i == index
-                        ? MLPColors.primary.withValues(alpha: .18)
+                        ? MLPColors.turquoise.withValues(alpha: .12)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(19),
                   ),
@@ -96,7 +97,7 @@ class MLPFloatingTabBar extends StatelessWidget {
                       Icon(
                         icons[i],
                         color: i == index
-                            ? MLPColors.primaryLight
+                            ? MLPColors.turquoise
                             : MLPColors.secondaryText,
                         size: 23,
                       ),
@@ -111,7 +112,7 @@ class MLPFloatingTabBar extends StatelessWidget {
                               ? FontWeight.w700
                               : FontWeight.w500,
                           color: i == index
-                              ? MLPColors.primaryLight
+                              ? MLPColors.turquoise
                               : MLPColors.secondaryText,
                         ),
                       ),
@@ -384,19 +385,33 @@ class MLPStatCard extends StatelessWidget {
     required this.label,
     required this.icon,
     this.caption,
+    this.compact = false,
   });
   final String value, label;
   final IconData icon;
   final String? caption;
+  final bool compact;
   @override
   Widget build(BuildContext context) => MLPGlassCard(
+    padding: compact ? 12 : 20,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: MLPColors.turquoise),
-        const SizedBox(height: 12),
-        Text(value, style: Theme.of(context).textTheme.headlineSmall),
-        Text(label),
+        Icon(icon, color: MLPColors.turquoise, size: compact ? 18 : 24),
+        SizedBox(height: compact ? 8 : 12),
+        Text(
+          value,
+          style: compact
+              ? const TextStyle(fontSize: 19, fontWeight: FontWeight.w700)
+              : Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: compact
+              ? const TextStyle(fontSize: 11, color: MLPColors.secondaryText)
+              : null,
+        ),
         if (caption != null)
           Text(caption!, style: Theme.of(context).textTheme.bodySmall),
       ],
@@ -539,6 +554,120 @@ abstract final class MLPToast {
 
 enum MLPOrbState { idle, listening, thinking, speaking, muted }
 
+class MLPWelcomeHero extends StatelessWidget {
+  const MLPWelcomeHero({super.key});
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'MLP — fokusli hayot uchun',
+    excludeSemantics: true,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: SizedBox(
+        height: 230,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            const CustomPaint(painter: _MLPHorizonPainter()),
+            Padding(
+              padding: const EdgeInsets.only(top: 22),
+              child: Column(
+                children: [
+                  ShaderMask(
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [MLPColors.turquoise, MLPColors.primaryLight],
+                    ).createShader(bounds),
+                    child: const Text(
+                      'MLP',
+                      textScaler: TextScaler.noScaling,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 70,
+                        height: 1.1,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -3,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'FOKUSLI HAYOT UCHUN',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 3,
+                      color: MLPColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _MLPHorizonPainter extends CustomPainter {
+  const _MLPHorizonPainter();
+  @override
+  void paint(Canvas canvas, Size size) {
+    final planet = Offset(size.width * .5, size.height * .98);
+    canvas.drawCircle(
+      planet,
+      size.height * .5,
+      Paint()
+        ..shader =
+            const RadialGradient(
+              colors: [Color(0xFFADDEFF), Color(0xFF1B87C9), Color(0x0000D1EF)],
+              stops: [0, .48, 1],
+            ).createShader(
+              Rect.fromCircle(center: planet, radius: size.height * .5),
+            ),
+    );
+    for (var i = 0; i < 19; i++) {
+      canvas.drawCircle(
+        Offset(
+          ((i * 71 + 17) % 311) / 311 * size.width,
+          ((i * 37 + 11) % 113) / 113 * size.height * .65,
+        ),
+        i % 3 == 0 ? 1 : .6,
+        Paint()..color = MLPColors.secondaryText.withValues(alpha: .25),
+      );
+    }
+    final layers = [
+      (
+        const Color(0xFF173257),
+        [.64, .76, .59, .8, .69, .88, .72, .83, .6, .76, .67],
+      ),
+      (
+        const Color(0xFF10233C),
+        [.86, .72, .85, .69, .84, .73, .91, .76, .84, .72, .87],
+      ),
+      (
+        const Color(0xFF0B1728),
+        [.94, .9, .96, .85, .7, .61, .79, .87, .85, .97, .89],
+      ),
+    ];
+    for (final layer in layers) {
+      final path = Path()..moveTo(0, size.height);
+      for (var i = 0; i < layer.$2.length; i++) {
+        path.lineTo(
+          i / (layer.$2.length - 1) * size.width,
+          layer.$2[i] * size.height,
+        );
+      }
+      path.lineTo(size.width, size.height);
+      path.close();
+      canvas.drawPath(path, Paint()..color = layer.$1);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _MLPHorizonPainter oldDelegate) => false;
+}
+
 class MLPAvatarOrb extends StatelessWidget {
   const MLPAvatarOrb({
     super.key,
@@ -567,18 +696,59 @@ class MLPAvatarOrb extends StatelessWidget {
               : MLPColors.turquoise,
           width: state == MLPOrbState.listening ? 4 : 1.5,
         ),
+        gradient: const RadialGradient(
+          colors: [Color(0xFF16274B), Color(0xFF050A19)],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: MLPColors.turquoise.withValues(alpha: .28),
+            blurRadius: size * .24,
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: MLPColors.primary.withValues(alpha: .18),
+            blurRadius: size * .42,
+            spreadRadius: 5,
+          ),
+        ],
       ),
-      child: Icon(
-        switch (state) {
-          MLPOrbState.listening => Icons.graphic_eq_rounded,
-          MLPOrbState.thinking => Icons.more_horiz_rounded,
-          MLPOrbState.speaking => Icons.volume_up_outlined,
-          MLPOrbState.muted => Icons.mic_off_outlined,
-          _ => Icons.auto_awesome_rounded,
-        },
-        color: MLPColors.turquoise,
-        size: size * .35,
-      ),
+      child: state == MLPOrbState.idle
+          ? Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var i = 0; i < 2; i++)
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: size * .065),
+                      width: size * .075,
+                      height: size * .22,
+                      decoration: BoxDecoration(
+                        color: i == 0
+                            ? MLPColors.primaryLight
+                            : MLPColors.turquoise,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: MLPColors.turquoise.withValues(alpha: .7),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            )
+          : Icon(
+              switch (state) {
+                MLPOrbState.listening => Icons.graphic_eq_rounded,
+                MLPOrbState.thinking => Icons.more_horiz_rounded,
+                MLPOrbState.speaking => Icons.volume_up_outlined,
+                MLPOrbState.muted => Icons.mic_off_outlined,
+                _ => Icons.auto_awesome_rounded,
+              },
+              color: MLPColors.turquoise,
+              size: size * .35,
+            ),
     ),
   );
 }

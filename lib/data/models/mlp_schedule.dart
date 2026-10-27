@@ -91,6 +91,13 @@ class MLPSchedule {
     };
   }
 
+  DateTime startOn(DateTime day) => DateTime(
+    day.year,
+    day.month,
+    day.day,
+    startMinute ~/ 60,
+    startMinute % 60,
+  );
   DateTime endOn(DateTime day) =>
       DateTime(day.year, day.month, day.day, endMinute ~/ 60, endMinute % 60);
   Map<String, dynamic> toJson() => {

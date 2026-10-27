@@ -177,17 +177,18 @@ class _WeekStats {
             .scheduledHabits(day)
             .where(
               (habit) =>
-                  (habit.logs[DemoStore.dayKey(day)] ?? 0) >= habit.target,
+                  (habit.logs[DemoStore.dayKey(day)] ?? 0) >=
+                  habit.targetForDate(day),
             )
             .length,
   );
-  int plannedFor(DemoHabit habit) =>
-      days.where((day) => habit.weekdays.contains(day.weekday)).length;
+  int plannedFor(DemoHabit habit) => days.where(habit.scheduledOn).length;
   int doneFor(DemoHabit habit) => days
       .where(
         (day) =>
-            habit.weekdays.contains(day.weekday) &&
-            (habit.logs[DemoStore.dayKey(day)] ?? 0) >= habit.target,
+            habit.scheduledOn(day) &&
+            (habit.logs[DemoStore.dayKey(day)] ?? 0) >=
+                habit.targetForDate(day),
       )
       .length;
 }

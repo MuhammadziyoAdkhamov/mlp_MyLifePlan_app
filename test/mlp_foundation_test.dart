@@ -11,6 +11,24 @@ import 'package:mylife_plan/demo/demo_store.dart';
 import 'package:mylife_plan/features/onboarding/mlp_account_flow.dart';
 
 void main() {
+  test(
+    'dark theme custom typography retains readable explicit text colors',
+    () {
+      final text = MLPTheme.dark.textTheme;
+      for (final style in [
+        text.displaySmall,
+        text.headlineMedium,
+        text.headlineSmall,
+        text.titleLarge,
+        text.titleMedium,
+        text.bodyLarge,
+        text.bodyMedium,
+      ]) {
+        expect(style!.color, MLPColors.text);
+      }
+      expect(text.bodySmall!.color, MLPColors.secondaryText);
+    },
+  );
   Future<(SharedPreferences, MLPLocalUiRepository)> setup() async {
     SharedPreferences.setMockInitialValues({'legacy': 'preserve'});
     final prefs = await SharedPreferences.getInstance();
@@ -217,6 +235,12 @@ void main() {
       expect(fresh.preferences.minutes, 60);
       expect(fresh.preferences.nickname, 'Hamroh');
       fresh.dispose();
+      if (find.text('BUGUNGI ASOSIY QADAM').evaluate().isEmpty) {
+        await tester
+            .state<NavigatorState>(find.byType(Navigator).last)
+            .maybePop();
+        await tester.pumpAndSettle();
+      }
       expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());

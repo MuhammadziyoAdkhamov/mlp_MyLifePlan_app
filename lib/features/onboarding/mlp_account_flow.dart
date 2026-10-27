@@ -158,7 +158,7 @@ class _MLPWelcomeScreenState extends State<MLPWelcomeScreen> {
     title: null,
     children: [
       const SizedBox(height: 16),
-      const Center(child: MLPAvatarOrb(size: 144)),
+      const MLPWelcomeHero(),
       const SizedBox(height: 28),
       Text(
         'Maqsadlaringni natijaga aylantir.',

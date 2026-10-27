@@ -143,4 +143,53 @@ void main() {
       store.dispose();
     },
   );
+  test(
+    'rejected detailed focus and chat writes roll back; retry is idempotent',
+    () async {
+      final store = DemoStore(prefs);
+      await store.init();
+      final ui = MLPLocalUiRepository(prefs);
+      await ui.init();
+      final count = store.focusSessions.length;
+      platform.fail = true;
+      await expectLater(
+        store.saveDetailedFocus(
+          id: 'session-unique',
+          seconds: 42,
+          note: 'Birinchi vazifani bajardim.',
+        ),
+        throwsStateError,
+      );
+      expect(store.focusSessions.length, count);
+      await expectLater(
+        ui.saveConversationTurn(
+          'Savolim bor.',
+          'Demo javob.',
+          DateTime(2026, 10, 27),
+        ),
+        throwsStateError,
+      );
+      expect(ui.messages, isEmpty);
+      platform.fail = false;
+      await store.saveDetailedFocus(
+        id: 'session-unique',
+        seconds: 42,
+        note: 'Birinchi vazifani bajardim.',
+      );
+      await store.saveDetailedFocus(
+        id: 'session-unique',
+        seconds: 42,
+        note: 'Birinchi vazifani bajardim.',
+      );
+      expect(store.focusSessions.length, count + 1);
+      await ui.saveConversationTurn(
+        'Savolim bor.',
+        'Demo javob.',
+        DateTime(2026, 10, 27),
+      );
+      expect(ui.messages.length, 2);
+      ui.dispose();
+      store.dispose();
+    },
+  );
 }

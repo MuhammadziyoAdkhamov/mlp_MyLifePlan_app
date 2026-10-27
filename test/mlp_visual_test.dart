@@ -15,6 +15,14 @@ import 'package:mylife_plan/features/goals/mlp_goal_detail.dart';
 import 'package:mylife_plan/features/planner/mlp_calendar.dart';
 import 'package:mylife_plan/features/planner/mlp_schedule_editor.dart';
 import 'package:mylife_plan/data/models/mlp_schedule.dart';
+import 'package:mylife_plan/app/mlp_environment.dart';
+import 'package:mylife_plan/app/mlp_product_shell.dart';
+import 'package:mylife_plan/core/design_system/mlp_widgets.dart';
+import 'package:mylife_plan/features/focus/mlp_focus_controller.dart';
+import 'package:mylife_plan/features/focus/mlp_focus_pages.dart';
+import 'package:mylife_plan/features/ai_companion/mlp_companion_pages.dart';
+import 'package:mylife_plan/features/progress/mlp_progress_pages.dart';
+import 'package:mylife_plan/features/lifestyle/mlp_lifestyle_pages.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +62,22 @@ void main() {
       await store.clearAll();
       final repo = MLPLocalUiRepository(prefs);
       await repo.init();
+      await repo.enterGuest(name: 'Azizbek');
+      final focus = MLPFocusController(
+        store,
+        repo,
+        clock: () => DateTime(2026, 10, 26, 18),
+      );
+      final env = MLPEnvironment(
+        store: store,
+        ui: repo,
+        prefs: prefs,
+        focus: focus,
+        clock: () => DateTime(2026, 10, 26, 18),
+        go: (_, {args}) async {},
+        tab: (_) {},
+        legacy: () => const SizedBox(),
+      );
       final draft = MLPGoalDraft(today: store.today, minutes: 30)
         ..title = 'Uch oyda Flutter ilova yaratish'
         ..category = 'Dasturlash'
@@ -94,6 +118,63 @@ void main() {
       );
       await repo.saveSchedule(schedule);
       final screens = <({String name, Size size, Widget screen})>[
+        (
+          name: 'today-390',
+          size: const Size(390, 844),
+          screen: MLPProductShell(
+            store: store,
+            ui: repo,
+            prefs: prefs,
+            clock: env.clock,
+            legacyBuilder: env.legacy,
+          ),
+        ),
+        (
+          name: 'focus-390',
+          size: const Size(390, 844),
+          screen: MLPScaffold(
+            title: 'Fokus',
+            body: MLPFocusHub(e: env),
+            bottomNavigationBar: MLPFloatingTabBar(index: 2, onChanged: (_) {}),
+          ),
+        ),
+        (
+          name: 'chat-390',
+          size: const Size(390, 844),
+          screen: MLPScaffold(
+            title: 'Ustoz AI',
+            body: MLPChatPage(e: env),
+            bottomNavigationBar: MLPFloatingTabBar(index: 3, onChanged: (_) {}),
+          ),
+        ),
+        (
+          name: 'profile-390',
+          size: const Size(390, 844),
+          screen: MLPScaffold(
+            body: MLPProfilePage(e: env),
+            bottomNavigationBar: MLPFloatingTabBar(index: 4, onChanged: (_) {}),
+          ),
+        ),
+        (
+          name: 'growth-390',
+          size: const Size(390, 844),
+          screen: MLPGrowthPage(e: env),
+        ),
+        (
+          name: 'rewards-390',
+          size: const Size(390, 844),
+          screen: MLPRewardsPage(e: env),
+        ),
+        (
+          name: 'weather-390',
+          size: const Size(390, 844),
+          screen: MLPWeatherPage(e: env),
+        ),
+        (
+          name: 'soundspace-390',
+          size: const Size(390, 844),
+          screen: MLPSoundspacePage(e: env),
+        ),
         (
           name: 'calendar-390',
           size: const Size(390, 844),
@@ -180,6 +261,7 @@ void main() {
       }
       await tester.pumpWidget(const SizedBox());
       store.dispose();
+      focus.dispose();
       repo.dispose();
     },
   );

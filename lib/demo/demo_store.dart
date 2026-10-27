@@ -177,11 +177,19 @@ class FocusRecord {
     required this.taskId,
     required this.seconds,
     required this.date,
+    this.id,
+    this.note = '',
+    this.evidenceUrl = '',
   });
   final String? taskId;
   final int seconds;
   final DateTime date;
+  final String? id;
+  final String note, evidenceUrl;
   Map<String, dynamic> toJson() => {
+    if (id != null) 'id': id,
+    if (note.isNotEmpty) 'note': note,
+    if (evidenceUrl.isNotEmpty) 'evidenceUrl': evidenceUrl,
     'taskId': taskId,
     'seconds': seconds,
     'date': date.toIso8601String(),
@@ -367,7 +375,7 @@ class DemoStore extends ChangeNotifier {
   void _ensureWritable() {
     if (_planWriting) {
       throw StateError(
-        'Reja saqlanmoqda. Bir ozdan keyin qayta urinib ko‘ring.',
+        'O‘zgarish saqlanmoqda. Bir ozdan keyin qayta urinib ko‘ring.',
       );
     }
     if (_corrupt) {
@@ -892,6 +900,48 @@ class DemoStore extends ChangeNotifier {
     return _changed();
   }
 
+  Future<void> saveDetailedFocus({
+    required String id,
+    String? taskId,
+    required int seconds,
+    required String note,
+    String evidenceUrl = '',
+  }) async {
+    _ensureWritable();
+    if (_focus.any((f) => f.id == id)) {
+      await _persist();
+      return;
+    }
+    _text(id, 'Sessiya', min: 1, max: 100);
+    _range(seconds, 'Fokus', 1, 86400);
+    _text(note.trim(), 'Qayd', min: 10, max: 2000);
+    _validUrl(evidenceUrl);
+    if (taskId != null) _taskIndex(taskId);
+    _planWriting = true;
+    final record = FocusRecord(
+      id: id,
+      taskId: taskId,
+      seconds: seconds,
+      date: _now(),
+      note: note.trim(),
+      evidenceUrl: evidenceUrl,
+    );
+    try {
+      await _writeQueue;
+      _focus.add(record);
+      try {
+        await _persist();
+        notifyListeners();
+      } catch (_) {
+        _focus.remove(record);
+        notifyListeners();
+        rethrow;
+      }
+    } finally {
+      _planWriting = false;
+    }
+  }
+
   int focusMinutesForDay(DateTime date) =>
       _focus
           .where((f) => dayKey(f.date) == dayKey(date))
@@ -1316,12 +1366,18 @@ class DemoStore extends ChangeNotifier {
           throw const FormatException('Bog‘langan maqsad topilmadi.');
         }
       }
+      final focusIds = <String>{};
       for (final row in _list(root, 'focusSessions')) {
         final f = _object(row);
         if (f['taskId'] != null && f['taskId'] is! String) {
           throw const FormatException('Fokus vazifasi noto‘g‘ri.');
         }
         _integer(f, 'seconds', 1, 86400);
+        if (f['id'] != null) _unique(_string(f, 'id', 1, 100), focusIds);
+        if (f['note'] != null) _string(f, 'note', 0, 2000);
+        if (f['evidenceUrl'] != null) {
+          _validUrl(_string(f, 'evidenceUrl', 0, 1000));
+        }
         _timestamp(f['date']);
       }
       final checkinDates = <String>{};
@@ -1459,6 +1515,9 @@ class DemoStore extends ChangeNotifier {
     _focus = (root['focusSessions'] as List).map((row) {
       final f = row as Map<String, dynamic>;
       return FocusRecord(
+        id: f['id'] as String?,
+        note: f['note'] as String? ?? '',
+        evidenceUrl: f['evidenceUrl'] as String? ?? '',
         taskId: f['taskId'],
         seconds: f['seconds'],
         date: _timestamp(f['date']),

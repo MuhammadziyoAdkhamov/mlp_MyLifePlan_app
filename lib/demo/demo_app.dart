@@ -12,6 +12,7 @@ import '../features/goals/mlp_goal_flow.dart';
 import '../features/goals/mlp_goal_detail.dart';
 import '../app/router/mlp_routes.dart';
 import '../features/planner/mlp_calendar.dart';
+import '../app/mlp_product_shell.dart';
 
 const _bg = MLPColors.background,
     _panel = MLPColors.secondary,
@@ -63,11 +64,17 @@ class MplDemoApp extends StatelessWidget {
     home: enableOnboarding
         ? MLPEntryGate(
             prefs: prefs,
-            homeBuilder: (ui) => _Workspace(
+            homeBuilder: (ui) => MLPProductShell(
               store: store,
               prefs: prefs,
               clock: clock ?? DateTime.now,
               ui: ui,
+              legacyBuilder: () => _Workspace(
+                store: store,
+                prefs: prefs,
+                clock: clock ?? DateTime.now,
+                ui: ui,
+              ),
             ),
           )
         : _Workspace(store: store, prefs: prefs, clock: clock ?? DateTime.now),

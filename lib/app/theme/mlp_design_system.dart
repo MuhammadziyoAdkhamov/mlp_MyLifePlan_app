@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 /// Shared product tokens. Preview capability labels do not use success color.
 abstract final class MLPColors {
-  static const background = Color(0xFF090F22);
-  static const secondary = Color(0xFF101A34);
-  static const elevated = Color(0xFF172342);
+  static const background = Color(0xFF070E1B);
+  static const secondary = Color(0xFF111C2B);
+  static const elevated = Color(0xFF192739);
   static const border = Color(0xFF2B3859);
   static const primary = Color(0xFF8C6BFF);
   static const primaryLight = Color(0xFFB6A3FF);
-  static const turquoise = Color(0xFF44D8CD);
+  static const turquoise = Color(0xFF00D1EF);
   static const success = Color(0xFF51D3A1);
   static const warning = Color(0xFFF4BC68);
   static const error = Color(0xFFFF8D9E);
@@ -93,7 +93,19 @@ abstract final class MLPTheme {
               color: MLPColors.secondaryText,
             ),
           )
-          .apply(fontFamily: 'Segoe UI'),
+          .apply(
+            fontFamily: 'Segoe UI',
+            bodyColor: MLPColors.text,
+            displayColor: MLPColors.text,
+          )
+          .copyWith(
+            bodySmall: const TextStyle(
+              fontFamily: 'Segoe UI',
+              fontSize: 12,
+              height: 1.5,
+              color: MLPColors.secondaryText,
+            ),
+          ),
       dividerColor: MLPColors.border,
       appBarTheme: const AppBarTheme(
         backgroundColor: MLPColors.background,
@@ -118,7 +130,7 @@ abstract final class MLPTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: MLPColors.primaryLight,
+          backgroundColor: MLPColors.turquoise,
           foregroundColor: MLPColors.background,
           minimumSize: const Size(48, 48),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

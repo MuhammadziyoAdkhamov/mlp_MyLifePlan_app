@@ -111,6 +111,11 @@ class MLPLocalUiRepository extends ChangeNotifier
     'assessments': <dynamic>[],
     'favorites': <String>[],
     'cosmetic': 'default',
+    'focusDraft': null,
+    'claimedRewards': <String>[],
+    'city': 'Toshkent',
+    'soundIntent': <String, dynamic>{'category': 'Fokus', 'sleep': 0},
+    'assistantHidden': false,
   };
 
   @override
@@ -191,6 +196,7 @@ class MLPLocalUiRepository extends ChangeNotifier
             Map<String, dynamic>.from(merged['preferences'] as Map),
           ),
         );
+        _checkFeatureState(merged);
         _state = merged;
       } catch (_) {
         _corrupt = true;
@@ -210,6 +216,7 @@ class MLPLocalUiRepository extends ChangeNotifier
       }
       final draft = jsonDecode(jsonEncode(_state)) as Map<String, dynamic>;
       change(draft);
+      _checkFeatureState(draft);
       final encoded = jsonEncode(draft);
       if (encoded.length > 2 * 1024 * 1024) {
         throw StateError(
@@ -245,6 +252,84 @@ class MLPLocalUiRepository extends ChangeNotifier
       throw ArgumentError('$label $min–$max belgidan iborat bo‘lsin.');
     }
     return clean;
+  }
+
+  static void _checkFeatureState(Map<String, dynamic> state) {
+    for (final key in ['favorites', 'claimedRewards']) {
+      final list = state[key] as List;
+      if (list.any((v) => v is! String || v.length > 100) ||
+          list.toSet().length != list.length) {
+        throw const FormatException('Tanlovlar noto‘g‘ri.');
+      }
+    }
+    if (!(state['claimedRewards'] as List).every(
+          (v) => ['cyan', 'violet', 'amber'].contains(v),
+        ) ||
+        !['default', 'cyan', 'violet', 'amber'].contains(state['cosmetic'])) {
+      throw const FormatException('Virtual bezak noto‘g‘ri.');
+    }
+    if (![
+          'Toshkent',
+          'Samarqand',
+          'Buxoro',
+          'Andijon',
+        ].contains(state['city']) ||
+        state['assistantHidden'] is! bool) {
+      throw const FormatException('Shahar yoki yordamchi tanlovi noto‘g‘ri.');
+    }
+    final sound = state['soundIntent'] as Map;
+    if (!['Fokus', 'Tabiat', 'Dam olish'].contains(sound['category']) ||
+        ![0, 15, 30, 60].contains(sound['sleep'])) {
+      throw const FormatException('Audio tanlovi noto‘g‘ri.');
+    }
+    final chat = state['chat'] as List;
+    if (chat.length > 100) {
+      throw const FormatException('Chat chegarasi oshgan.');
+    }
+    for (final value in chat) {
+      final message = value as Map;
+      if (!['user', 'assistant'].contains(message['role'])) {
+        throw const FormatException('Chat roli noto‘g‘ri.');
+      }
+      _name(
+        message['text'] as String,
+        'Xabar',
+        min: 1,
+        max: message['role'] == 'user' ? 1000 : 4000,
+      );
+      DateTime.parse(message['at'] as String);
+    }
+    for (final value in state['assessments'] as List) {
+      final a = value as Map;
+      if (!['Flutter asoslari', 'Ingliz tili asoslari'].contains(a['quiz']) ||
+          a['kind'] != 'predefined-test' ||
+          a['total'] != 3 ||
+          a['correct'] is! int ||
+          (a['correct'] as int) < 0 ||
+          (a['correct'] as int) > 3 ||
+          (a['taskId'] != null && a['taskId'] is! String)) {
+        throw const FormatException('Baholash noto‘g‘ri.');
+      }
+      DateTime.parse(a['at'] as String);
+    }
+    final focus = state['focusDraft'];
+    if (focus != null) {
+      final f = focus as Map;
+      _name(f['id'] as String, 'Sessiya', min: 1, max: 100);
+      if (f['duration'] is! int ||
+          (f['duration'] as int) < 60 ||
+          (f['duration'] as int) > 10800 ||
+          f['elapsed'] is! int ||
+          (f['elapsed'] as int) < 0 ||
+          (f['elapsed'] as int) > f['duration'] ||
+          f['breakSeconds'] is! int ||
+          (f['breakSeconds'] as int) < 60 ||
+          (f['breakSeconds'] as int) > 1800 ||
+          f['break'] is! bool ||
+          (f['taskId'] != null && f['taskId'] is! String)) {
+        throw const FormatException('Fokus holati noto‘g‘ri.');
+      }
+    }
   }
 
   @override
@@ -304,6 +389,9 @@ class MLPLocalUiRepository extends ChangeNotifier
       throw ArgumentError('Boshlanish va tugash soatlari mos emas.');
     }
     _name(value.nickname, 'Ustoz nomi', min: 1, max: 30);
+    if (!['Standart (demo)', 'Sokin (demo)', 'Ravon (demo)'].contains(value.voice)) {
+      throw ArgumentError('Ovoz tanlovi noto‘g‘ri.');
+    }
     if (![
       'Sodda va aniq',
       'Qo‘llab-quvvatlovchi',
@@ -357,6 +445,94 @@ class MLPLocalUiRepository extends ChangeNotifier
     plan['archived'] = value;
     plans[id] = plan;
   });
+
+  Map<String, dynamic>? get focusDraft => _state['focusDraft'] == null
+      ? null
+      : Map<String, dynamic>.from(
+          jsonDecode(jsonEncode(_state['focusDraft'])) as Map,
+        );
+  Future<void> saveFocusDraft(Map<String, dynamic>? value) =>
+      _update((draft) => draft['focusDraft'] = value);
+  List<Map<String, dynamic>> get messages => (_state['chat'] as List)
+      .map((m) => Map<String, dynamic>.from(m as Map))
+      .toList(growable: false);
+  Future<void> saveConversationTurn(
+    String question,
+    String answer,
+    DateTime at,
+  ) {
+    _name(question, 'Savol', min: 1, max: 1000);
+    _name(answer, 'Javob', min: 1, max: 4000);
+    return _update((draft) {
+      final chat = draft['chat'] as List;
+      chat.addAll([
+        {'role': 'user', 'text': question, 'at': at.toIso8601String()},
+        {'role': 'assistant', 'text': answer, 'at': at.toIso8601String()},
+      ]);
+      if (chat.length > 100) chat.removeRange(0, chat.length - 100);
+    });
+  }
+
+  Future<void> clearConversation() =>
+      _update((draft) => draft['chat'] = <dynamic>[]);
+  List<Map<String, dynamic>> get assessments => (_state['assessments'] as List)
+      .map((m) => Map<String, dynamic>.from(m as Map))
+      .toList(growable: false);
+  Future<void> saveAssessment({
+    required String quiz,
+    required int correct,
+    required int total,
+    required DateTime at,
+    String? taskId,
+  }) {
+    if (total < 1 || correct < 0 || correct > total) {
+      throw ArgumentError('Baholash natijasi noto‘g‘ri.');
+    }
+    return _update((draft) {
+      final list = draft['assessments'] as List;
+      list.removeWhere(
+        (a) => (a as Map)['quiz'] == quiz && a['taskId'] == taskId,
+      );
+      list.add({
+        'quiz': quiz,
+        'taskId': taskId,
+        'correct': correct,
+        'total': total,
+        'at': at.toIso8601String(),
+        'kind': 'predefined-test',
+      });
+    });
+  }
+
+  List<String> get favorites => List<String>.from(_state['favorites'] as List);
+  Future<void> toggleFavorite(String id) => _update((draft) {
+    final list = draft['favorites'] as List;
+    if (list.contains(id)) {
+      list.remove(id);
+    } else {
+      list.add(id);
+    }
+  });
+  String get cosmetic => _state['cosmetic'] as String;
+  List<String> get claimedRewards =>
+      List<String>.from(_state['claimedRewards'] as List);
+  Future<void> useCosmetic(String id) => _update((draft) {
+    draft['cosmetic'] = id;
+    final list = draft['claimedRewards'] as List;
+    if (!list.contains(id)) list.add(id);
+  });
+  String get city => _state['city'] as String;
+  Future<void> selectCity(String value) =>
+      _update((draft) => draft['city'] = value);
+  Map<String, dynamic> get soundIntent =>
+      Map<String, dynamic>.from(_state['soundIntent'] as Map);
+  Future<void> saveSoundIntent(String category, int sleep) => _update(
+    (draft) => draft['soundIntent'] = {'category': category, 'sleep': sleep},
+  );
+  bool get assistantHidden => _state['assistantHidden'] == true;
+  Future<void> hideAssistant(bool value) =>
+      _update((draft) => draft['assistantHidden'] = value);
+  String exportUiState() => jsonEncode(_state);
 
   @override
   List<MLPSchedule> get schedules => List.unmodifiable(
