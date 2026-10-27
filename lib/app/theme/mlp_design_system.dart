@@ -155,7 +155,11 @@ abstract final class MLPTheme {
       chipTheme: ChipThemeData(
         selectedColor: MLPColors.primary.withValues(alpha: .18),
         side: const BorderSide(color: MLPColors.border),
-        labelStyle: const TextStyle(fontSize: 12, color: MLPColors.text),
+        labelStyle: const TextStyle(
+          fontSize: 12,
+          color: MLPColors.text,
+          fontFamily: 'Segoe UI',
+        ),
       ),
       snackBarTheme: const SnackBarThemeData(
         backgroundColor: MLPColors.elevated,

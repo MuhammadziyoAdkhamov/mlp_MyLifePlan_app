@@ -17,3 +17,15 @@ Yangi tekshiruv: production default onboarding → demo registration → prefere
 `flutter pub get` muvaffaqiyatli: mavjud `shared_preferences_platform_interface` 2.4.2 fault-injection testlari uchun bevosita dev dependency bo‘ldi; paket versiyasi yangilanmadi. Avvalgi worktreedagi dependency o‘zgarishlari saqlandi.
 
 Hali talab qilinadi: barcha yangi ekranlar va ko‘ndalang oqimlar, kichik/standart/katta/landscape, klaviatura/textScale/semantics, screenshotlarni ko‘rib chiqish, yakuniy analyzer/test/web build, mavjud bo‘lsa Android runtime.
+
+## C02/C03 — taqvim checkpoint, 2026-10-27
+
+`MLPSchedule` va `MLPScheduleResult` domain modellari, `MLPScheduleRepository` interfeysi va mavjud UI saqloviga adapter qo‘shildi. Eski UI JSONga `scheduleResults: []` default qo‘shiladi; eski kalitlar migratsiyasiz saqlanadi. Kunlik/ish kuni/haftalik/bir martalik takror, inclusive until, canonical sana, xavfsiz http(s) havola, vaqt chegaralari va per-day self-report bor. UI saqlov hajmi chegarasidan oshgan yozuv avval rad etiladi; restartda yaroqsiz zaxira hosil qilinmaydi.
+
+Calendar main headerdan ochiladi; kun/hafta/kompakt oy ko‘rinishi va lazy ro‘yxat bor. Editor CRUD, goal/task bog‘lash, sanalar, soatlar, reminder intent, overlap va sig‘im tasdig‘i bilan ishlaydi. Kunlik yukda vazifa taxmini takror sanalmaydi va qisqa calendar bloki qolgan vazifa mehnatini yashirmaydi. Eski recurring series tahririda kelayotgan hafta tekshiriladi. Tashqi ilova ochish aniq unavailable; havolani nusxalash mumkin. Natija faqat sessiya tugagach o‘z hisoboti sifatida yoziladi, task completion/XP/malaka tasdig‘iga avtomatik aylantirilmaydi.
+
+`test/mlp_planner_test.dart`: **12/12 passed** — recurrence/leap/boundaries, uzoq kelajakda boshlanadigan series conflict, adjacent slot, capacity de-dup, persist/edit/delete, per-occurrence update, future report rejection, corrupt recovery, Duolingo create→calendar→unavailable→report, warning cancel/confirm, old-series workload, 4V layout. Fault-injection testida rejected schedule save/delete eski data va qayta urinishni saqlaydi.
+
+Yakuniy full regression: **91/91 passed** (24s), `flutter-test-planner-regression.txt`. Full analyzer no issues (123.8s); undan keyingi chip-font va eski-series edge-case uchun yakuniy scoped analyze ham **No issues found**. Dalillar: `dart-analyze-planner-final.txt`, `flutter-analyze-planner.txt`, `flutter-test-planner.txt`.
+
+Calendar-390 va schedule-editor-390 PNGlar `build/mlp_ui_phase_b/`da yaratildi va ko‘rildi. Chip shriftining fixture fallback muammosi theme’da tuzatildi; fresh calendar tasvirida barcha chip matnlari o‘qiladi. 320/390px dropdown overflowlari tuzatildi. Populated calendar cards, result sheet va date/time pickerlarning barcha viewport, textScale 2.0 va screen-reader holatlari hali Phase Fga qolgan. Main shell hali eski 5 bo‘limli navigatsiyani saqlaydi; yangi floating tab componentining o‘zi mavjudligi C01 bajarilgan degani emas.

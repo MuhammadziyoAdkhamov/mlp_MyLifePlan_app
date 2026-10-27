@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:mylife_plan/demo/demo_store.dart';
 import 'package:mylife_plan/data/repositories/mlp_ui_repository.dart';
+import 'package:mylife_plan/data/models/mlp_schedule.dart';
 
 class _Storage extends InMemorySharedPreferencesStore {
   _Storage() : super.empty();
@@ -29,6 +30,40 @@ void main() {
     SharedPreferencesStorePlatform.instance = platform;
     prefs = await SharedPreferences.getInstance();
   });
+
+  test(
+    'schedule rejection leaves persisted state unchanged and retry works',
+    () async {
+      final ui = MLPLocalUiRepository(prefs);
+      await ui.init();
+      final item = MLPSchedule(
+        id: 'test-schedule',
+        title: 'Til mashg‘uloti',
+        date: DateTime(2026, 10, 27),
+        startMinute: 1200,
+        endMinute: 1215,
+        repeat: MLPRepeat.daily,
+        reminderMinutes: 5,
+      );
+      platform.fail = true;
+      await expectLater(ui.saveSchedule(item), throwsStateError);
+      expect(ui.schedules, isEmpty);
+      final fresh = MLPLocalUiRepository(prefs);
+      await fresh.init();
+      expect(fresh.schedules, isEmpty);
+      fresh.dispose();
+      platform.fail = false;
+      await ui.saveSchedule(item);
+      expect(ui.schedules.single.id, item.id);
+      platform.fail = true;
+      await expectLater(ui.deleteSchedule(item.id), throwsStateError);
+      expect(ui.schedules.single.id, item.id);
+      platform.fail = false;
+      await ui.deleteSchedule(item.id);
+      expect(ui.schedules, isEmpty);
+      ui.dispose();
+    },
+  );
 
   test(
     'UI write failure does not publish a guest; retry survives rejected platform write',

@@ -1,0 +1,94 @@
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart
+00:00 +0: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart: missing catalogs do not replace restored account data
+00:00 +1: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart: onboarding creates and persists the chosen starter plan
+00:00 +2: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: CSV quotes content, keeps UTF-8 text, and neutralizes spreadsheet formulas
+00:00 +3: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: CSV quotes content, keeps UTF-8 text, and neutralizes spreadsheet formulas
+00:00 +4: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: CSV quotes content, keeps UTF-8 text, and neutralizes spreadsheet formulas
+00:00 +5: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: ICS escapes injection and text, uses exclusive end date, folds UTF-8 octets
+00:00 +6: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: editing submitted work preserves its evidence, time and XP
+00:00 +7: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: editing submitted work preserves its evidence, time and XP
+00:00 +8: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +9: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +10: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +11: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +12: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +13: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +14: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +15: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +16: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +17: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +18: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +19: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +20: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +21: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +22: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +23: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +24: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +25: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +26: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:00 +27: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:01 +28: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: starter requires confirmation and cannot be duplicated
+00:02 +29: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: JSON import validates before replacement and invokes reset only on success
+00:03 +30: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: (setUpAll)
+00:03 +30: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +31: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +32: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +33: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +34: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +35: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +36: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +37: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +38: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +39: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +40: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:04 +41: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:05 +42: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:05 +43: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:05 +44: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:05 +45: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:05 +46: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:06 +47: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:06 +48: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:06 +49: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:06 +50: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +51: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +52: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +53: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +54: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +55: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +56: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:07 +57: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:08 +58: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:08 +59: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:08 +60: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:08 +61: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:09 +62: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:09 +63: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:10 +64: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:11 +65: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:12 +66: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: create daily Duolingo schedule, view it, show unavailable launch and persist report
+00:13 +67: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: create daily Duolingo schedule, view it, show unavailable launch and persist report
+00:14 +68: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: create daily Duolingo schedule, view it, show unavailable launch and persist report
+00:16 +69: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: create daily Duolingo schedule, view it, show unavailable launch and persist report
+00:16 +70: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: goal detail adds linked tasks and confirms archive, edit and delete
+00:16 +71: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: goal detail adds linked tasks and confirms archive, edit and delete
+00:17 +72: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: overlap and overload require confirmation; cancel keeps form; delete is confirmed
+00:17 +73: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: overlap and overload require confirmation; cancel keeps form; delete is confirmed
+00:18 +74: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: overlap and overload require confirmation; cancel keeps form; delete is confirmed
+00:18 +75: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: overlap and overload require confirmation; cancel keeps form; delete is confirmed
+00:19 +76: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_visual_test.dart: capture Phase B widget renders with actual text and icon fonts
+00:20 +77: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: edit forms preload values and update each entity without duplication
+00:20 +78: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(390.0, 844.0) with large text and keyboard
+00:20 +79: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(390.0, 844.0) with large text and keyboard
+00:20 +80: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: focus saves only active seconds and pauses while hidden
+00:21 +81: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: focus saves only active seconds and pauses while hidden
+00:21 +82: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: focus saves only active seconds and pauses while hidden
+00:21 +83: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: focus saves only active seconds and pauses while hidden
+00:22 +84: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(320.0, 640.0), large text and keyboard
+00:22 +85: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(844.0, 390.0) with large text and keyboard
+00:22 +86: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(390.0, 844.0), large text and keyboard
+00:22 +87: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(390.0, 844.0), large text and keyboard
+00:22 +88: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(1440.0, 900.0) with large text and keyboard
+00:22 +89: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(844.0, 390.0), large text and keyboard
+00:23 +90: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(1440.0, 900.0), large text and keyboard
+00:24 +91: All tests passed!

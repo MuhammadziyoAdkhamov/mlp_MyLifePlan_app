@@ -1,6 +1,6 @@
 # MLP UI ekran inventari
 
-Yangilanish: 2026-10-27. 10 ekran yozilgan, 18 ekran yangi scope bo‘yicha hali tugallanmagan. Route deklaratsiyasi ekran ishlashini isbotlamaydi. `WIDGET` — ko‘rsatilgan widget tekshiruvi bor, to‘liq Phase F QA yoki Android runtime degani emas. `4V`: 320×640, 390×844, 844×390, 1440×900, matn 1.4× va klaviatura inset 160.
+Yangilanish: 2026-10-27. 12 ekran yozilgan, 16 ekran yangi scope bo‘yicha hali tugallanmagan. Route deklaratsiyasi ekran ishlashini isbotlamaydi. `WIDGET` — ko‘rsatilgan widget tekshiruvi bor, to‘liq Phase F QA yoki Android runtime degani emas. `4V`: 320×640, 390×844, 844×390, 1440×900, matn 1.4× va klaviatura inset 160.
 
 | # | Ekran / route | Amalga oshirish | Navigatsiya / amal | Responsive / QA |
 |---|---|---|---|---|
@@ -15,8 +15,8 @@ Yangilanish: 2026-10-27. 10 ekran yozilgan, 18 ekran yangi scope bo‘yicha hali
 | 9 | Roadmap /goals/roadmap | WIDGET | Tahrirlangan task/time/date; goal+tasks bir yozuvda | 4V; persist/rollback/retry; screenshot |
 | 10 | Goal detail /goals/detail | WIDGET: mlp_goal_detail.dart | Timeline, next step, linked task, edit/archive/delete confirm | 4V; CRUD/archive testi, screenshot |
 | 11 | Today /today | QISMAN: demo_app.dart | Haqiqiy mahalliy vazifa/odat/fokus | Baseline widget testlar |
-| 12 | Planner /calendar | YO‘Q | ICS eksport haqiqiy planner emas | Yo‘q |
-| 13 | Schedule editor /calendar/edit | YO‘Q | Rejalashtirilgan | Yo‘q |
+| 12 | Planner /calendar | WIDGET: mlp_calendar.dart | Headerdagi Taqvim; kun/hafta/oy, lazy schedule list, external unavailable, per-day self-report | Controls/empty 4V; 390px populated screenshot; Duolingo oqimi |
+| 13 | Schedule editor /calendar/edit | WIDGET: mlp_schedule_editor.dart | CRUD, goal/task, date/time/repeat/until/reminder, overlap/capacity confirm, task reschedule | 4V; 12 planner test, save/delete cancel/confirm, screenshot |
 | 14 | Focus hub /focus | QISMAN: demo_app.dart | Preset, tarix | Baseline testlar |
 | 15 | Active focus /focus/active | QISMAN: demo_app.dart | Haqiqiy faol soniya, pause/resume | Baseline testlar; alohida route yo‘q |
 | 16 | Focus summary /focus/summary | QISMAN | Soniyalar saqlanadi, yangi yakun UI yo‘q | Yangi QA yo‘q |

@@ -11,6 +11,7 @@ import '../data/repositories/mlp_ui_repository.dart';
 import '../features/goals/mlp_goal_flow.dart';
 import '../features/goals/mlp_goal_detail.dart';
 import '../app/router/mlp_routes.dart';
+import '../features/planner/mlp_calendar.dart';
 
 const _bg = MLPColors.background,
     _panel = MLPColors.secondary,
@@ -483,11 +484,24 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
           Text(titles[page], style: const TextStyle(fontSize: 12)),
         ],
         const Spacer(),
-        _tag(
-          s.isSampleData ? 'NAMUNA MA’LUMOTLAR' : 'QURILMADA SAQLANADI',
-          _muted,
+        Flexible(
+          child: _tag(
+            s.isSampleData ? 'NAMUNA MA’LUMOTLAR' : 'QURILMADA SAQLANADI',
+            _muted,
+          ),
         ),
         const SizedBox(width: 12),
+        if (widget.ui != null)
+          IconButton(
+            tooltip: 'Taqvimni ochish',
+            onPressed: () =>
+                openMLPCalendar(context, s, widget.ui!, clock: widget.clock),
+            icon: const Icon(
+              Icons.calendar_month_outlined,
+              size: 20,
+              color: _muted,
+            ),
+          ),
         IconButton(
           tooltip: 'Sozlamalar',
           onPressed: _settings,

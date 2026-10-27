@@ -13,6 +13,9 @@ flowchart TD
   demoApp --> goalFlow["Custom goal / Clarification / Diagnostic / Roadmap / Detail"]
   goalFlow --> demoStore
   goalFlow --> uiRepo
+  demoApp --> calendar["Calendar / Schedule editor / occurrence self-report"]
+  calendar --> uiRepo
+  calendar --> demoStore
   demoApp --> demoForms["DemoForms: task / habit / goal / proof / check-in"]
   demoApp --> review["DemoReview: local progress and evidence"]
   demoApp --> hub["DemoHub: JSON / CSV / ICS"]

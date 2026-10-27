@@ -1,0 +1,20 @@
+
+┌─────────────────────────────────────────────────────────┐
+│ A new version of Flutter is available!                  │
+│                                                         │
+│ To update to the latest version, run "flutter upgrade". │
+└─────────────────────────────────────────────────────────┘
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart
+00:00 +0: once/daily/weekdays/weekly respect start, end, leap day and inclusive boundary
+00:00 +1: conflicts find late-start recurring series, ignore adjacent slots and own ID
+00:00 +2: capacity counts linked work once and does not hide remaining task estimate
+00:00 +3: schedule CRUD and per-occurrence reports persist; future result blocked; no task completion
+00:00 +4: malformed stored schedule is preserved and routes to recovery
+00:00 +5: create daily Duolingo schedule, view it, show unavailable launch and persist report
+00:02 +6: overlap and overload require confirmation; cancel keeps form; delete is confirmed
+00:04 +7: editing an old daily series checks current workload, not only its first week
+00:05 +8: calendar modes and editor fit Size(320.0, 640.0), large text and keyboard
+00:05 +9: calendar modes and editor fit Size(390.0, 844.0), large text and keyboard
+00:06 +10: calendar modes and editor fit Size(844.0, 390.0), large text and keyboard
+00:06 +11: calendar modes and editor fit Size(1440.0, 900.0), large text and keyboard
+00:07 +12: All tests passed!

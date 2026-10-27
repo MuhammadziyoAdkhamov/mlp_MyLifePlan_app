@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/mlp_schedule.dart';
 
 class MLPProfile {
   const MLPProfile({
@@ -85,7 +86,10 @@ abstract interface class MLPPreferencesRepository {
 /// Explicit local authentication adapter: no OTP, no Firebase user/token.
 /// Supplementary UI state uses a new key; legacy and DemoStore keys are untouched.
 class MLPLocalUiRepository extends ChangeNotifier
-    implements MLPAuthRepository, MLPPreferencesRepository {
+    implements
+        MLPAuthRepository,
+        MLPPreferencesRepository,
+        MLPScheduleRepository {
   MLPLocalUiRepository(this._prefs);
   static const storageKey = 'mlp_ui_prototype_v1';
   final SharedPreferences _prefs;
@@ -103,6 +107,7 @@ class MLPLocalUiRepository extends ChangeNotifier
     'chat': <dynamic>[],
     'goalPlans': <String, dynamic>{},
     'schedules': <dynamic>[],
+    'scheduleResults': <dynamic>[],
     'assessments': <dynamic>[],
     'favorites': <String>[],
     'cosmetic': 'default',
@@ -154,10 +159,28 @@ class MLPLocalUiRepository extends ChangeNotifier
         if (merged['onboarded'] == true && savedProfile == null) {
           throw const FormatException('Profil yo‘q.');
         }
-        for (final key in ['chat', 'schedules', 'assessments', 'favorites']) {
+        for (final key in [
+          'chat',
+          'schedules',
+          'scheduleResults',
+          'assessments',
+          'favorites',
+        ]) {
           if (merged[key] is! List) {
             throw const FormatException('UI ro‘yxati noto‘g‘ri.');
           }
+        }
+        final savedSchedules = (merged['schedules'] as List)
+            .map(
+              (s) => MLPSchedule.fromJson(Map<String, dynamic>.from(s as Map)),
+            )
+            .toList();
+        if (savedSchedules.map((s) => s.id).toSet().length !=
+            savedSchedules.length) {
+          throw const FormatException('Takroriy jadval ID.');
+        }
+        for (final entry in merged['scheduleResults'] as List) {
+          MLPScheduleResult.fromJson(Map<String, dynamic>.from(entry as Map));
         }
         if (merged['goalPlans'] is! Map ||
             (merged['goalPlans'] as Map).values.any((value) => value is! Map)) {
@@ -187,8 +210,14 @@ class MLPLocalUiRepository extends ChangeNotifier
       }
       final draft = jsonDecode(jsonEncode(_state)) as Map<String, dynamic>;
       change(draft);
+      final encoded = jsonEncode(draft);
+      if (encoded.length > 2 * 1024 * 1024) {
+        throw StateError(
+          'Demo saqlovi to‘ldi. Eski jadval yoki qaydlarni kamaytiring. Mavjud ma’lumotlar saqlanadi.',
+        );
+      }
       try {
-        if (!await _prefs.setString(storageKey, jsonEncode(draft))) {
+        if (!await _prefs.setString(storageKey, encoded)) {
           throw StateError('Saqlov yozuvni qabul qilmadi.');
         }
       } catch (_) {
@@ -327,6 +356,74 @@ class MLPLocalUiRepository extends ChangeNotifier
     final plan = Map<String, dynamic>.from(plans[id] as Map? ?? {});
     plan['archived'] = value;
     plans[id] = plan;
+  });
+
+  @override
+  List<MLPSchedule> get schedules => List.unmodifiable(
+    (_state['schedules'] as List).map(
+      (s) => MLPSchedule.fromJson(Map<String, dynamic>.from(s as Map)),
+    ),
+  );
+  @override
+  List<MLPScheduleResult> get scheduleResults => List.unmodifiable(
+    (_state['scheduleResults'] as List).map(
+      (s) => MLPScheduleResult.fromJson(Map<String, dynamic>.from(s as Map)),
+    ),
+  );
+  int _scheduleSerial = 0;
+  String newScheduleId() =>
+      'schedule-${DateTime.now().microsecondsSinceEpoch}-${_scheduleSerial++}';
+
+  @override
+  Future<void> saveSchedule(MLPSchedule value) => _update((draft) {
+    final list = draft['schedules'] as List;
+    final index = list.indexWhere((s) => (s as Map)['id'] == value.id);
+    if (index < 0) {
+      if (list.length >= 500) {
+        throw StateError(
+          'Demo chegarasi: 500 ta jadval. Eski jadvalni o‘chiring.',
+        );
+      }
+      list.add(value.toJson());
+    } else {
+      list[index] = value.toJson();
+    }
+  });
+
+  @override
+  Future<void> deleteSchedule(String id) => _update((draft) {
+    final list = draft['schedules'] as List;
+    if (!list.any((s) => (s as Map)['id'] == id)) {
+      throw StateError('Jadval topilmadi.');
+    }
+    list.removeWhere((s) => (s as Map)['id'] == id);
+    (draft['scheduleResults'] as List).removeWhere(
+      (r) => (r as Map)['scheduleId'] == id,
+    );
+  });
+
+  @override
+  Future<void> saveScheduleResult(MLPScheduleResult value) => _update((draft) {
+    final data = (draft['schedules'] as List)
+        .where((s) => (s as Map)['id'] == value.scheduleId)
+        .firstOrNull;
+    if (data == null ||
+        !MLPSchedule.fromJson(
+          Map<String, dynamic>.from(data as Map),
+        ).occursOn(value.day)) {
+      throw StateError('Ushbu sana uchun mashg‘ulot topilmadi.');
+    }
+    final schedule = MLPSchedule.fromJson(Map<String, dynamic>.from(data));
+    if (value.reportedAt.isBefore(schedule.endOn(value.day))) {
+      throw ArgumentError('Mashg‘ulot tugagach natijani qayd eting.');
+    }
+    final list = draft['scheduleResults'] as List;
+    list.removeWhere(
+      (r) =>
+          (r as Map)['scheduleId'] == value.scheduleId &&
+          r['day'] == mlpDayKey(value.day),
+    );
+    list.add(value.toJson());
   });
 
   @override

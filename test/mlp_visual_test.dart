@@ -12,6 +12,9 @@ import 'package:mylife_plan/demo/demo_store.dart';
 import 'package:mylife_plan/features/onboarding/mlp_account_flow.dart';
 import 'package:mylife_plan/features/goals/mlp_goal_flow.dart';
 import 'package:mylife_plan/features/goals/mlp_goal_detail.dart';
+import 'package:mylife_plan/features/planner/mlp_calendar.dart';
+import 'package:mylife_plan/features/planner/mlp_schedule_editor.dart';
+import 'package:mylife_plan/data/models/mlp_schedule.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -79,7 +82,32 @@ void main() {
         'startingLevel': draft.level,
         'prototype': true,
       });
+      final schedule = MLPSchedule(
+        id: 'preview-schedule',
+        title: 'Duolingo mashg‘uloti',
+        date: store.today,
+        startMinute: 1200,
+        endMinute: 1215,
+        repeat: MLPRepeat.daily,
+        reminderMinutes: 5,
+        appLink: 'https://www.duolingo.com',
+      );
+      await repo.saveSchedule(schedule);
       final screens = <({String name, Size size, Widget screen})>[
+        (
+          name: 'calendar-390',
+          size: const Size(390, 844),
+          screen: MLPCalendarScreen(
+            store: store,
+            ui: repo,
+            clock: () => DateTime(2026, 10, 26, 21),
+          ),
+        ),
+        (
+          name: 'schedule-editor-390',
+          size: const Size(390, 844),
+          screen: MLPScheduleEditor(store: store, ui: repo, existing: schedule),
+        ),
         (
           name: 'welcome-390',
           size: const Size(390, 844),
