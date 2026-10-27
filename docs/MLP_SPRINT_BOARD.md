@@ -70,3 +70,15 @@
 **C01 — floating shell va flagship Bugun.** Calendar/editor main headerga ulandi; C02/C03 funksional checkpoint 12 test bilan tekshirildi. Hozir jami 12 ekran yozilgan. Bugun/Maqsadlar/Fokus/Ustoz/Profil tartibini to‘g‘ri bo‘limlar bilan ulang; eski Review/Hub/CRUD yo‘llari saqlansin. A04 route registry bor, to‘liq named route dispatch shu shellda yakunlanadi.
 
 Android yopiq beta uchun birinchi release-blocking chipta **AND01** bo‘lib qoladi. License noma’lum yoki loopback xatosi UI mock qo‘shish bilan hal bo‘lgan deb ko‘rsatilmaydi.
+
+## 2026-10-27 — C/D/E UI checkpoint
+
+- C01: yangi beshta tab, nested routes/back, Bugun source-state kartalari va 5 daqiqalik qadam — yozildi.
+- C04: focus hub/active/summary, actual seconds, tanaffus, restart paused, idempotent save — yozildi; production 53 soniyali oqim testi bor.
+- D01–D06: persistent mock chat, retry, voice-state UI, personalization, predefined task assessment, passport, source analytics — yozildi. Haqiqiy AI/STT/TTS ulanmagan.
+- E01–E06: virtual rewards/details, preview weather/schedule link, honest Soundspace/favorites, profile/settings/backup, source notifications va dismissible launcher — yozildi.
+- F: route va responsive regressiya testlari, screenshot ko‘rigi va yakuniy analyzer/test/build dalillari QA hisobotida. Parallel full testda disk-full host blokeri topildi; serial run alohida qayd etiladi.
+
+Keyingi bitta chipta **F-ANDROID-01**. Bog‘liqlik: yetarli disk, ishlaydigan Android SDK/Java loopback va ulangan qurilma. Qabul mezonlari va smoke ketma-ketligi `MLP_UI_REMAINING_ISSUES.md`da. Buyruqlar: `flutter doctor -v`, `flutter analyze --no-pub`, `flutter test --no-pub --concurrency=1`, `flutter build apk --debug --no-pub`, `flutter run -d <device-id>`. Avtomatik SDK license tasdiqlash yoki Firebase qoidalarini yumshatish qo‘llanmaydi.
+
+F widget/web checkpoint: source `9520df6`, 106/106 full tests, analyzer clean, web build va real browser focus/chat/reload passed. Android gate ochiq. Dalil fayllari yakuniy QA hisobotiga bog‘langan.

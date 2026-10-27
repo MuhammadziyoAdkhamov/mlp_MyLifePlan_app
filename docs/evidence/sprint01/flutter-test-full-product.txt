@@ -1,0 +1,13 @@
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart
+00:00 +0 -1: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart [E]
+  Error: Flutter failed to copy file from "C:\Users\THEMIL~1\AppData\Local\Temp\flutter_tools.3ad1815c\flutter_test_compiler.6703896b\output.dill" to "C:\Users\THEMIL~1\AppData\Local\Temp\flutter_tools.3ad1815c\flutter_test_listener.230f2f0a\listener.dart.dill". The target device is full.
+  FileSystemException: Cannot copy file to 'C:\Users\THEMIL~1\AppData\Local\Temp\flutter_tools.3ad1815c\flutter_test_listener.230f2f0a\listener.dart.dill', path = 'C:\Users\THEMIL~1\AppData\Local\Temp\flutter_tools.3ad1815c\flutter_test_compiler.6703896b\output.dill' (OS Error: There is not enough space on the disk, errno = 112)
+  Free up space and try again.
+  package:flutter_tools/src/base/common.dart 34:3               throwToolExit
+  package:flutter_tools/src/base/error_handling_io.dart 1492:3  _throwFileSystemException
+  package:flutter_tools/src/base/error_handling_io.dart 1482:3  _handleWindowsException
+  package:flutter_tools/src/base/error_handling_io.dart 1334:5  _onFileSystemException
+  package:flutter_tools/src/base/error_handling_io.dart 1074:7  _run
+  ===== asynchronous gap ===========================
+  package:flutter_tools/src/test/test_compiler.dart 280:41      TestCompiler._onCompilationRequest
+  

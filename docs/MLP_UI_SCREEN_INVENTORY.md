@@ -1,36 +1,40 @@
 # MLP UI ekran inventari
 
-Yangilanish: 2026-10-27. 12 ekran yozilgan, 16 ekran yangi scope bo‘yicha hali tugallanmagan. Route deklaratsiyasi ekran ishlashini isbotlamaydi. `WIDGET` — ko‘rsatilgan widget tekshiruvi bor, to‘liq Phase F QA yoki Android runtime degani emas. `4V`: 320×640, 390×844, 844×390, 1440×900, matn 1.4× va klaviatura inset 160.
+Yangilanish: 2026-10-27. 28 ekran mahalliy UI prototipda yozilgan va asosiy entrypointga ulangan. Bu ishlab chiqarish backend yoki Android qurilmadagi yakuniy tasdiq degani emas. Barcha eski maqsad/vazifa/odat boshqaruvlari Sozlamalar va Maqsadlar orqali ochiladi.
 
-| # | Ekran / route | Amalga oshirish | Navigatsiya / amal | Responsive / QA |
+Navigatsiya: `main.dart` → xavfsiz bootstrap → entry gate → `MLPProductShell`. Asosiy tablar: Bugun / Maqsadlar / Fokus / Ustoz / Profil. Boshqa ekranlar ichki Navigator orqali ochiladi. Noma’lum route va yo‘qolgan ID xato holatiga ega. Maqsadning 7–9 ekranlari oldingi bosqichdan draft oladi; to‘g‘ridan-to‘g‘ri draftsiz manzil tiklanadigan holatni ko‘rsatadi.
+
+| # | Ekran / route | Haqiqiy fayl | Asosiy amal / holat | Tekshiruv |
 |---|---|---|---|---|
-| 1 | Splash /splash | WIDGET: mlp_account_flow.dart | Entry gate avtomatik ochadi, restore bilan home/welcome | 4V; landscape overflow tuzatildi |
-| 2 | Welcome /welcome | WIDGET | Root entry gate; boshlash, login va guest yo‘llari | 4V; guest/restart va screenshot |
-| 3 | Registration /registration | WIDGET | Ism/telefon/jins; demo→preferences | 4V; invalid input va production oqim testi |
-| 4 | Login /login | WIDGET | SMS/Google unavailable; demo/guest tanlovi | 4V; screenshot; barcha action holatlari Phase Fda |
-| 5 | Preferences /preferences | WIDGET | Kunlik vaqt/soat/eslatma xohishi/ustoz nomi; settingsdan qayta ochish | 4V; save/edit/restart va screenshot |
-| 6 | Goal discovery /goals/new | WIDGET: mlp_goal_flow.dart | Erkin matn, 8 toifa, clarificationga o‘tish | 4V; custom goal navigatsiyasi |
-| 7 | Goal clarification /goals/clarify | WIDGET | Outcome/date/time/starting level/why; editable summary | 4V; form oqimi va screenshot |
-| 8 | Diagnostics /goals/diagnosis | WIDGET | Deterministik 2 savol yoki self-report; Bilmayman | 4V; wrong/unknown 0 ball, XP yo‘q |
-| 9 | Roadmap /goals/roadmap | WIDGET | Tahrirlangan task/time/date; goal+tasks bir yozuvda | 4V; persist/rollback/retry; screenshot |
-| 10 | Goal detail /goals/detail | WIDGET: mlp_goal_detail.dart | Timeline, next step, linked task, edit/archive/delete confirm | 4V; CRUD/archive testi, screenshot |
-| 11 | Today /today | QISMAN: demo_app.dart | Haqiqiy mahalliy vazifa/odat/fokus | Baseline widget testlar |
-| 12 | Planner /calendar | WIDGET: mlp_calendar.dart | Headerdagi Taqvim; kun/hafta/oy, lazy schedule list, external unavailable, per-day self-report | Controls/empty 4V; 390px populated screenshot; Duolingo oqimi |
-| 13 | Schedule editor /calendar/edit | WIDGET: mlp_schedule_editor.dart | CRUD, goal/task, date/time/repeat/until/reminder, overlap/capacity confirm, task reschedule | 4V; 12 planner test, save/delete cancel/confirm, screenshot |
-| 14 | Focus hub /focus | QISMAN: demo_app.dart | Preset, tarix | Baseline testlar |
-| 15 | Active focus /focus/active | QISMAN: demo_app.dart | Haqiqiy faol soniya, pause/resume | Baseline testlar; alohida route yo‘q |
-| 16 | Focus summary /focus/summary | QISMAN | Soniyalar saqlanadi, yangi yakun UI yo‘q | Yangi QA yo‘q |
-| 17 | Chat /ustoz | YO‘Q yangi oqim | Eski mock aktiv rootga ulanmagan | Yo‘q |
-| 18 | Voice /ustoz/voice | YO‘Q | Faqat demo UI rejalangan | Yo‘q |
-| 19 | AI personalization /ustoz/preferences | YO‘Q | Preference modeli bor | Yo‘q |
-| 20 | Verification /verification | QISMAN: demo_forms.dart | O‘z hisobotini topshirish bor | Deterministik baholash yo‘q |
-| 21 | Skill passport /passport | YO‘Q | Rejalashtirilgan | Yo‘q |
-| 22 | Growth /progress | QISMAN: demo_review.dart | Manba holatidan statistika | Tarixiy odat nuqsoni ochiq |
-| 23 | Rewards /rewards | YO‘Q | Virtual / demo rejalangan | Yo‘q |
-| 24 | Weather /weather | YO‘Q | Belgilangan preview rejalangan | Yo‘q |
-| 25 | Soundspace /soundspace | YO‘Q | Litsenziyali asset yo‘q → unavailable UI | Yo‘q |
-| 26 | Profile /profile | QISMAN | Eski ism/kunlik limit sozlamalari | Yangi profil yo‘q |
-| 27 | Settings /settings | QISMAN | Import/eksport/reset eski Markazda | Yangi sozlamalar yo‘q |
-| 28 | Notifications /notifications | YO‘Q | Real yetkazish ulanmagan | Yo‘q |
+| 1 | Splash /splash | features/onboarding/mlp_account_flow.dart | Saqlov yuklanishi, home/welcome tanlovi | Entry gate va responsive fixture |
+| 2 | Welcome /welcome | shu fayl | MLP gradient belgisi, mahalliy chizilgan ufq, boshlash/login/guest | Guest/restart, 4 viewport, PNG |
+| 3 | Registration /registration | shu fayl | Ism, +998 format, jins; tasdiqlanmagan demo profil | Validatsiya, preferences oqimi |
+| 4 | Login /login | shu fayl | Telefon/Google uchun unavailable izoh; demo va guest | Render, mavjud action, 320px PNG |
+| 5 | Preferences /preferences | shu fayl | Vaqt, vaqt oralig‘i, eslatma niyati, ustoz nomi | Save/edit/restart; vaqt xatosi |
+| 6 | Goal discovery /goals/new | features/goals/mlp_goal_flow.dart | 8 yo‘nalish va erkin matnli maqsad | Maxsus maqsad oqimi |
+| 7 | Goal clarification /goals/clarify | shu fayl | Natija, muddat, vaqt, daraja, sabab | Form, date, draft/back, 4 viewport |
+| 8 | Diagnosis /goals/diagnosis | shu fayl | Namuna savollar yoki o‘z bahosi, Bilmayman | Wrong/unknown, XPga ta’sir yo‘q |
+| 9 | Roadmap /goals/roadmap | shu fayl | Tahrirlanadigan bosqichlar, vaqt va sana | Goal+tasks bitta yozuv, rollback/retry |
+| 10 | Goal detail /goals/detail | features/goals/mlp_goal_detail.dart | Keyingi vazifa, timeline, edit/archive/delete | CRUD/confirm/cancel, PNG |
+| 11 | Today /today | features/workspace/mlp_workspace_pages.dart | Hafta tanlash, capacity, keyingi vazifa, 5 daqiqa, goal va schedule | Haqiqiy production root, 4 viewport, PNG |
+| 12 | Calendar /calendar | features/planner/mlp_calendar.dart | Kun/hafta/kompakt oy, natija, havola nusxasi | Recurrence va Duolingo oqimi, 4 viewport |
+| 13 | Schedule editor /calendar/edit | features/planner/mlp_schedule_editor.dart | CRUD/link/repeat/until/reminder, conflict va capacity tasdig‘i | 12 planner test, persistence failure |
+| 14 | Focus hub /focus | features/focus/mlp_focus_pages.dart | 25/5, 50/10, custom, task link, tarix, tanaffus | 4 viewport, PNG, preset va history |
+| 15 | Active focus /focus/active | shu fayl + mlp_focus_controller.dart | Haqiqiy sekundlar, pause/resume, lifecycle pause, rest | Clock injection; system back, restart paused |
+| 16 | Focus summary /focus/summary | shu fayl | Haqiqiy vaqt, qayd, xavfsiz URL, save/discard confirm | Today→focus→53 sec→summary; idempotency |
+| 17 | Chat /ustoz | features/ai_companion/mlp_companion_pages.dart | Deterministik javob, loading/retry, 100 xabar, kontekst tanlovi | Persist/restart/rejected write, send workflow |
+| 18 | Voice /ustoz/voice | shu fayl | Vizual holatlar, mute tanlovi, end, matnli tarix | Route, 4 viewport; mikrofon/STT/TTS yo‘q |
+| 19 | AI personalization /ustoz/preferences | shu fayl | Nom/uslub/ovoz niyati/kontekst, chat clear confirm | Persist/validatsiya; 4 viewport |
+| 20 | Verification /verification | features/progress/mlp_progress_pages.dart | Hisobot va fokusdan alohida 3 savolli namuna test | 0/3 unknown, deterministic scoring, XP o‘zgarmaydi |
+| 21 | Passport /passport | shu fayl | Namuna baholash va self-report dalillari | Source-state, empty, 4 viewport |
+| 22 | Growth /progress | shu fayl | Haqiqiy 7 kunlik fokus, tasks, goal self-report, testlar | Source-state, zero bars, 4 viewport, PNG |
+| 23 | Rewards /rewards | features/lifestyle/mlp_lifestyle_pages.dart | Locked/available/claimed/selected virtual profil bezagi, unavailable hamkor | Lock/claim/persist, detail sheet, PNG |
+| 24 | Weather /weather | shu fayl | Preview, city, bugun/ertaga, haqiqiy schedule edit | City persist, route/4 viewport/PNG; jonli prognoz yo‘q |
+| 25 | Soundspace /soundspace | shu fayl | Katalog/sevimli/mini-player ko‘rinishi/sleep intent | Favorite persistence, unavailable playback dialog, PNG |
+| 26 | Profile /profile | shu fayl | Avatar bezagi, haqiqiy activity, pasport/yutuq/progress, logout confirm | Tab, 4 viewport, PNG; mahalliy hisob |
+| 27 | Settings /settings | shu fayl | Ism/preferences/AI/notification, til/mavzu izohi, backup, eski data tools, privacy/help/reset | Saqlash, legacy access, recovery; 4 viewport |
+| 28 | Notifications /notifications | shu fayl | Bugun/ertaga haqiqiy reminder-intent va topshirilgan ishlar | Source-state, empty, settings; yetkazish ulanmagan |
 
-Har bir ekranga yakuniy QA: initial rendering, route/back, asosiy amal, loading/empty/error, keyboard, 320/390/katta/landscape, dark theme, Uzbek Latin, persistence. Dalil yo‘q kataklar yakunlangan deb belgilanmaydi.
+16 yangi asosiy/support ekran 320×740, 390×844 (1.4× matn), 430×932 (2.0× matn), 844×390 bilan tekshirildi. Avvalgi onboarding/goal/planner testlari 320×640, 390×844, 844×390, 1440×900, 1.4× matn va keyboard insetni qamraydi. Bu barcha native date/time picker, TalkBack/VoiceOver va fizik qurilma holatlari qo‘lda tekshirildi degani emas.
+
+PNGlar: `build/mlp_ui_phase_b/` (nom tarixiy; endi yangi UI ham shu yerda). Haqiqiy qurilma screenshotlari emas, font yuklangan Flutter widget renderlari. Yakuniy buyruq natijalari `MLP_UI_QA_REPORT.md`da.

@@ -110,3 +110,34 @@ Phase B checkpoint: active main onboarding default yoqilgan. Eski widget harness
 5. Auth/cloud yoqilishidan oldin Firebase emulator’da signed-out/owner/other-uid isolation va delete tests; hozir production Firebase’ga mutation yo‘q.
 6. Android smoke gate: yangi APK o‘rnatish, cold/relaunch, guest → goal → task → reminder preference → focus → proof → progress, denied notification permission va process death. Qurilma yo‘q bo‘lsa gate **NOMA'LUM**, green deb belgilanmaydi.
 7. Test logs va command exitlar `docs/evidence/`da; `flutter analyze` faqat static sifat isboti.
+
+## 2026-10-27 — birlashtirilgan UI arxitekturasi
+
+```mermaid
+flowchart TD
+  Boot[MLPBootstrap: load / retry] --> Entry[MLPEntryGate]
+  Entry --> Account[Welcome / demo account / preferences]
+  Entry --> Shell[MLPProductShell: nested Navigator]
+  Shell --> Tabs[Bugun / Maqsadlar / Fokus / Ustoz / Profil]
+  Shell --> Routes[Planner / assessment / passport / lifestyle / settings]
+  Tabs --> Env[MLPEnvironment]
+  Routes --> Env
+  Env --> Focus[MLPFocusController: actual clock / lifecycle pause]
+  Focus --> Core[DemoStore: goals / tasks / habits / focus / checkin]
+  Env --> UI[MLPLocalUiRepository: profile / plans / schedules / chat / tests / choices]
+  Env --> Mock[MLPDemoAssistant: deterministic local response]
+  Core --> K1[SharedPreferences mpl_lifeos_demo_v1]
+  UI --> K2[SharedPreferences mlp_ui_prototype_v1]
+  Shell --> Legacy[Preserved Workspace: full CRUD / JSON / CSV / ICS]
+  Legacy --> Core
+```
+
+`app/mlp_environment.dart` ekranlarga bir xil store, UI repository, focus controller, injected clock va navigation beradi. `app/mlp_product_shell.dart` yagona focus controller yaratadi; tab almashishi taymerni qayta yaratmaydi. Nested route/back handling, missing ID va draft recovery bor. Eski Workspace olib tashlanmagan; Settings/Maqsadlar orqali ochiladi. `main.dart` startup write failure uchun retry UI ko‘rsatadi.
+
+`features/focus`: active seconds uchun wall-clock anchor, monotonic elapsed, lifecycle pause, periodic draft, restartda paused; haqiqiy record idempotent ID bilan, qayd va xavfsiz evidence URL bilan yoziladi. Tanaffus ish soatlariga qo‘shilmaydi. `features/ai_companion`: replaceable assistant interface, deterministic local adapter; context opt-in, tone transforms, persisted atomic conversation pair; voice faqat vizual holatlar. `features/progress`: predefined answer key namuna sinovlari; self-report va faoliyatdan mustaqil. `features/lifestyle`: virtual cosmetics, preview weather, unavailable audio, profile/settings/source notifications.
+
+Yangi domain qo‘shimchalari: FocusRecord optional id/note/evidenceUrl (eski JSON mos), UI focusDraft, chat roles/text/timestamp, predefined-test assessments, favorite IDs, cosmetic selection, city va sound intent. Qo‘shimcha JSONlar init va yozishdan oldin tekshiriladi; yaroqsiz raw saqlov ustidan yozilmaydi. Fokus va maqsad rejasini yangi saqlash rollbackga ega. Eski oddiy core CRUD memory-first cheklovi alohida qayd etilgan.
+
+Full backup export core + UI ni bitta belgilangan bundle ichida beradi. Eski core import alohida saqlanadi; UI bundle import bo‘lmagani aniq ko‘rsatiladi. Maqsad o‘chgan jadval bog‘lanishi editor orqali tuzatiladi. Real notification delivery, network AI/weather/audio/auth adapterlari hozir ulanmagan.
+
+Sinov strategiyasi: core model va export regressiyasi; rejected storage writes/retry; injected clock va idempotency; haqiqiy default entry/goal/focus/report oqimi; route/back, 4 viewport, katta matn/keyboard; real-font widget PNGlari; alohida web compile/runtime va Android device gate. Analyzer natijasi runtime isboti sifatida ishlatilmaydi.

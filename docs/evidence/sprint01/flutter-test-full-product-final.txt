@@ -1,0 +1,128 @@
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart
+00:00 +0: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart: missing catalogs do not replace restored account data
+00:00 +1: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart: onboarding creates and persists the chosen starter plan
+00:00 +2: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart: onboarding without a focus does not add starter habits
+00:00 +3: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/app_state_restore_test.dart: delete my data clears guest storage without saving demo data
+00:00 +4: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart
+00:01 +4: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: CSV quotes content, keeps UTF-8 text, and neutralizes spreadsheet formulas
+00:01 +5: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: ICS escapes injection and text, uses exclusive end date, folds UTF-8 octets
+00:01 +6: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: mentor report counts only this week, distinguishes sample data, includes proof
+00:01 +7: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: review and hub render at a narrow mobile width
+00:02 +8: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: starter requires confirmation and cannot be duplicated
+00:03 +9: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_export_test.dart: JSON import validates before replacement and invokes reset only on success
+00:03 +10: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart
+00:04 +10: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: editing submitted work preserves its evidence, time and XP
+00:04 +11: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: invalid task edits leave memory and saved data unchanged
+00:04 +12: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: task links are optional, editable and backwards compatible
+00:04 +13: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: manual metric and linked action progress remain separate
+00:05 +14: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: invalid goal edits do not erase already reported units
+00:05 +15: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: deleting goal detaches work and habits without losing history
+00:05 +16: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: habit edits preserve daily quantities, units, reasons and XP
+00:05 +17: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: habit edit validation is atomic and supports clearing goal links
+00:05 +18: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: undo prunes empty history snapshots and deleted habit stays deleted
+00:05 +19: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_edit_test.dart: orphaned or invalid history rules cannot bypass import validation
+00:05 +20: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart
+00:06 +20: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: first launch seeds labelled data in its own key; clear stays empty
+00:06 +21: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: task needs proof; submissions are idempotent and reopen reverses XP
+00:06 +22: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: overdue work stays visible and deferral moves to tomorrow
+00:06 +23: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: habit streak skips rest days but breaks at missed scheduled days
+00:06 +24: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: target habit awards only at target and undo reverses that award
+00:06 +25: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: goal progress is absolute, clamped, persisted and cannot farm XP
+00:06 +26: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: focus and one check-in per day survive restart
+00:06 +27: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: JSON round-trip works and invalid imports do not mutate live or saved data
+00:06 +28: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: invalid import rejects duplicated IDs, unscheduled logs and oversized input
+00:06 +29: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_store_test.dart: corrupt saved data is preserved and requires an explicit reset
+00:06 +30: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart
+00:09 +30: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: (setUpAll)
+00:09 +30: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 1440x900
+00:11 +31: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: render demo 390x844
+00:11 +32: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_visual_test.dart: (tearDownAll)
+00:11 +32: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart
+00:13 +32: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 1440px desktop shell opens every section without overflow
+00:16 +33: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: 390px mobile shell opens every section without overflow
+00:18 +34: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: task form validates, persists proof and reveals the next action without repeat XP
+00:20 +35: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: habit plus and undo update the displayed progress and persisted value
+00:22 +36: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: clear settings requires confirmation and keeps legacy accounts intact
+00:25 +37: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: task save failure keeps input and shows an actionable error
+00:26 +38: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: edit forms preload values and update each entity without duplication
+00:27 +39: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/demo_widget_test.dart: focus saves only active seconds and pauses while hidden
+00:28 +40: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/growth_focus_test.dart
+00:29 +40: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/growth_focus_test.dart: focus produces three distinct starter habits
+00:29 +41: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/growth_focus_test.dart: energy produces three distinct starter habits
+00:29 +42: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/growth_focus_test.dart: calm produces three distinct starter habits
+00:29 +43: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/growth_focus_test.dart: consistency produces three distinct starter habits
+00:29 +44: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/growth_focus_test.dart: unknown focus IDs fall back to consistency
+00:29 +45: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart
+00:30 +45: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart: weekday schedule only expects Monday through Friday
+00:30 +46: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart: custom schedule preserves and applies selected weekdays
+00:30 +47: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart: weekday streak skips unscheduled weekend days
+00:30 +48: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart: recovery is offered after a missed scheduled day
+00:30 +49: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart: recovery is not offered after completing the previous due day
+00:30 +50: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/habit_schedule_test.dart: recovery is not offered when today is already complete or unscheduled
+00:30 +51: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/local_storage_service_test.dart
+00:31 +51: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/local_storage_service_test.dart: guest and cloud accounts use separate storage scopes
+00:31 +52: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/local_storage_service_test.dart: legacy data is not implicitly assigned to a storage scope
+00:31 +53: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/local_storage_service_test.dart: legacy migration does not overwrite an existing scoped profile
+00:31 +54: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/local_storage_service_test.dart: legacy account data only migrates to its matching user
+00:32 +55: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart
+00:33 +55: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: dark theme custom typography retains readable explicit text colors
+00:33 +56: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: all 28 routes are unique and unknown routes parse safely
+00:33 +57: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: local registration never verifies identity and preserves legacy data
+00:33 +58: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: corrupt UI data is preserved until explicit reset
+00:33 +59: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: reduced motion and floating tab semantics work at 320px and large text
+00:34 +60: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: production entry supports guest and leaves existing goals intact
+00:35 +61: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: registration validates and proceeds to preferences without OTP
+00:36 +62: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: production registration saves preferences and allows editing them later
+00:39 +63: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart
+00:40 +63: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: roadmap creates a single persisted goal with linked tasks and no mastery
+00:40 +64: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: custom goal goes through clarification, honest self-assessment and editable roadmap
+00:44 +65: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: sample diagnosis counts wrong and unknown answers as incorrect
+00:44 +66: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: goal detail adds linked tasks and confirms archive, edit and delete
+00:47 +67: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(320.0, 640.0) with large text and keyboard
+00:49 +68: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(390.0, 844.0) with large text and keyboard
+00:51 +69: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(844.0, 390.0) with large text and keyboard
+00:52 +70: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_goal_flow_test.dart: onboarding and goal pages render at Size(1440.0, 900.0) with large text and keyboard
+00:54 +71: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_persistence_failure_test.dart
+00:55 +71: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_persistence_failure_test.dart: schedule rejection leaves persisted state unchanged and retry works
+00:55 +72: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_persistence_failure_test.dart: UI write failure does not publish a guest; retry survives rejected platform write
+00:55 +73: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_persistence_failure_test.dart: failed roadmap write rolls back only new goal/tasks; retry creates one plan
+00:55 +74: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_persistence_failure_test.dart: pending roadmap blocks competing writes and reset until atomic save finishes
+00:55 +75: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_persistence_failure_test.dart: rejected detailed focus and chat writes roll back; retry is idempotent
+00:55 +76: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart
+00:57 +76: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: once/daily/weekdays/weekly respect start, end, leap day and inclusive boundary
+00:57 +77: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: conflicts find late-start recurring series, ignore adjacent slots and own ID
+00:57 +78: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: capacity counts linked work once and does not hide remaining task estimate
+00:57 +79: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: schedule CRUD and per-occurrence reports persist; future result blocked; no task completion
+00:57 +80: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: malformed stored schedule is preserved and routes to recovery
+00:57 +81: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: create daily Duolingo schedule, view it, show unavailable launch and persist report
+01:01 +82: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: overlap and overload require confirmation; cancel keeps form; delete is confirmed
+01:04 +83: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: editing an old daily series checks current workload, not only its first week
+01:05 +84: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(320.0, 640.0), large text and keyboard
+01:06 +85: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(390.0, 844.0), large text and keyboard
+01:07 +86: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(844.0, 390.0), large text and keyboard
+01:07 +87: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_planner_test.dart: calendar modes and editor fit Size(1440.0, 900.0), large text and keyboard
+01:08 +88: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart
+01:10 +88: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: focus records actual seconds once and restores paused without background credit
+01:10 +89: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: breaks never add work; session ids remain unique with a fixed clock
+01:10 +90: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: supplemental state survives restart and malformed data preserves raw storage
+01:10 +91: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: predefined assessment scoring is independent of activity and self report
+01:10 +92: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+01:16 +93: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: chat sends one persisted deterministic turn and has no live AI claim
+01:16 +94: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: focus ring remains a separate semantic node from its controls
+01:16 +95: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: responsive pages support 320, standard, large text and landscape
+01:22 +96: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: production Today to focus to summary saves actual activity and keeps task open
+01:23 +97: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: unknown sample answers persist zero score without XP or mastery claims
+01:24 +98: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: rewards lock unavailable cosmetics and selecting a virtual reward persists
+01:24 +99: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: sound catalog favorites persist without pretending audio playback
+01:24 +100: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: system back pauses focus, returns from nested pages and launcher can be hidden
+01:25 +101: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_visual_test.dart
+01:26 +101: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_visual_test.dart: (setUpAll)
+01:26 +101: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_visual_test.dart: capture Phase B widget renders with actual text and icon fonts
+01:30 +102: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_visual_test.dart: (tearDownAll)
+01:30 +102: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/notification_service_test.dart
+01:31 +102: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/notification_service_test.dart: NotificationService.parseTime parses 12-hour times
+01:31 +103: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/notification_service_test.dart: NotificationService.parseTime parses 24-hour times
+01:31 +104: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/notification_service_test.dart: NotificationService.parseTime rejects out-of-range and malformed times
+01:32 +105: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/widget_test.dart
+01:33 +105: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/widget_test.dart: project smoke test
+01:33 +106: All tests passed!

@@ -1,0 +1,77 @@
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart
+00:00 +0: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: focus records actual seconds once and restores paused without background credit
+00:00 +1: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: breaks never add work; session ids remain unique with a fixed clock
+00:00 +2: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: supplemental state survives restart and malformed data preserves raw storage
+00:00 +3: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: predefined assessment scoring is independent of activity and self report
+00:00 +4: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: all 28 routes are unique and unknown routes parse safely
+00:00 +5: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+00:00 +6: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+00:00 +7: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+00:01 +8: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+00:02 +9: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+00:04 +10: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: all production tabs and every secondary route build; missing arguments recover
+00:09 +11: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: production registration saves preferences and allows editing them later
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type "CupertinoNavigationBarBackButton": []>
+   Which: means none were found but one was expected
+One back button expected on screen
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:187:31)
+#1      _expect (package:matcher/src/expect/expect.dart:182:3)
+#2      expect (package:matcher/src/expect/expect.dart:65:3)
+#3      expectSync (package:flutter_test/src/widget_tester.dart:486:18)
+#4      WidgetTester.pageBack.<anonymous closure> (package:flutter_test/src/widget_tester.dart:1177:7)
+#7      TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#8      WidgetTester.pageBack (package:flutter_test/src/widget_tester.dart:1171:27)
+#9      main.<anonymous closure> (file:///C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart:220:20)
+<asynchronous suspension>
+#10     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#11     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The test description was:
+  production registration saves preferences and allows editing them later
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:09 +11 -1: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: chat sends one persisted deterministic turn and has no live AI claim
+00:09 +11 -1: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: production registration saves preferences and allows editing them later [E]
+  Test failed. See exception logs above.
+  The test description was: production registration saves preferences and allows editing them later
+  
+00:20 +11 -1: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: chat sends one persisted deterministic turn and has no live AI claim
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+pumpAndSettle timed out
+
+When the exception was thrown, this was the stack:
+#0      WidgetTester.pumpAndSettle.<anonymous closure> (package:flutter_test/src/widget_tester.dart:717:11)
+<asynchronous suspension>
+#1      TestAsyncUtils.guard.<anonymous closure> (package:flutter_test/src/test_async_utils.dart:130:27)
+<asynchronous suspension>
+#2      main.<anonymous closure> (file:///C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart:224:7)
+<asynchronous suspension>
+#3      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  chat sends one persisted deterministic turn and has no live AI claim
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:20 +11 -2: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: chat sends one persisted deterministic turn and has no live AI claim [E]
+  Test failed. See exception logs above.
+  The test description was: chat sends one persisted deterministic turn and has no live AI claim
+  
+00:20 +11 -2: C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: responsive pages support 320, standard, large text and landscape
+00:27 +12 -2: Some tests failed.
+
+Failing tests:
+  C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_foundation_test.dart: production registration saves preferences and allows editing them later
+  C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart: chat sends one persisted deterministic turn and has no live AI claim

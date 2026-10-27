@@ -1,19 +1,17 @@
-# MLP UI qolgan ishlar
+# MLP UI qolgan ishlar va beta chegaralari
 
-To‘liq master maqsad hali bajarilmagan. Route ro‘yxati tayyor ekran hisoblanmaydi.
+2026-10-27: 28 ekran mahalliy UI prototip sifatida yozildi; yangi besh tabli shell faol. Ekranlar ro‘yxati va tekshirilgan holatlar `MLP_UI_SCREEN_INVENTORY.md`da. UI prototip va Android yopiq beta tayyorligi alohida baholanadi.
 
-1. P0: Android Gradle loopback xatosi va qurilma yo‘qligi. Ishlaydigan Android build/runtime dalili olish.
-2. Phase A checkpoint: 578d552. Phase B: 10 ekran va asosiy oqimlar yozildi; umumiy analyzer clean, 78/78 test passed. To‘liq QA Phase Fda qoladi.
-3. B — yangi oqim ishlaydi. Qolgan nozik tekshiruvlar: barcha date/time controls/back/error variantlari, 2.0× text scale va barcha screen-reader actionlari; katta task ro‘yxati uchun detail lazy rendering.
-4. P1: C — yangi 5 tab shell, flagship today, focus hub/active/summary. Calendar/editor va goal detail yozildi; planner 12 test o‘tdi. Haqiqiy eslatma yetkazish alohida platform gate bo‘lib qoladi.
-5. P1: D — persistent demo chat/retry, voice UI, AI personalization, task verification/deterministik test, passport, analytics va tarixiy odat hisobini tuzatish.
-6. P1: E — virtual rewards, preview weather/reschedule, honest Soundspace, profile/settings/notifications, dismissible in-app launcher.
-7. P1: F — 28 ekran route/back/interaction/responsive/error/persistence QA, screenshotlar, test/analyze va faza commitlari.
-8. P1: eski DemoStore oddiy mutation yozishda rollback yo‘q va startup saqlov xatosi uncaught; yangi UI repository yozish oldidan commit qiladi, lekin bu eski store tuzatildi degani emas.
-9. P2: README/legacy nomlar va ko‘rinadigan UI matnlarini yakuniy tekshirish; storage kalitlari migratsiyasiz o‘zgartirilmaydi.
+1. **P0 — Android qurilmada yakuniy tekshiruv.** Qurilma/emulator yo‘q. Oldingi Gradle urinishida Java loopback xatosi bo‘lgan. Yangi APK isbotlanmaguncha eski APKni yangi deb tarqatmang. iOS native build bu Windows hostda tekshirilmagan.
+2. **P0 — host disk sig‘imi.** Umumiy parallel test C: diskida nusxa yozish uchun joy yetmasligi bilan to‘xtadi. Kam resursli ketma-ket run alohida bajariladi. Task generated cache cleanup avtomatik siyosat tomonidan bloklandi; foydalanuvchi fayllari o‘chirilmagan.
+3. **P1 — oddiy eski core CRUD saqlov semantikasi.** DemoStore oddiy task/habit/goal o‘zgarishlarini avval xotirada ko‘rsatadi; disk xatosida xato va Retry bor. Goal+roadmap va yangi batafsil fokus yozuvi rollbackga ega, UI repository commit-before-publish. Qolgan core operatsiyalarni xavfsiz transactionga o‘tkazish keyingi backend/data ishidir.
+4. **P1 — to‘liq UI bundle import.** Sozlamalardan ikkala kalitni qamragan JSON nusxa olinadi. Eski JSON import faqat core store uchun. UI bundle import hali mavjud emas va ekranda aniq aytilgan. Turli formatni noto‘g‘ri importerga bermang.
+5. **P1 — native accessibility va platform pickers.** Widget semantics/large text/back tekshiruvlari mavjud; fizik Android TalkBack/iOS VoiceOver, barcha native date/time picker holatlari, 24 soatlik lifecycle va haqiqiy klaviatura uchun qurilma testi kerak.
+6. **P2 — yirik tarix va jadval.** Prototip cheklovlari bor: 500 schedule, 100 chat xabari, cheklangan dashboard preview; eski to‘liq data oynasi ochiladi. Katta production tarix uchun paging/backend kerak.
+7. **P2 — umumiy qurilma hisoblari.** Demo logout ma’lumotni saqlaydi; yangi demo ism alohida xavfsiz account yaratmaydi. Mahalliy JSON shifrlanmagan. Bu chegaralar profil va maxfiylik oynasida aytilgan.
 
-Checkpoint: 12/28 ekran yozilgan. Keyingi bitta chipta: **C01 — Bugun/Maqsadlar/Fokus/Ustoz/Profil floating shell va mavjud bo‘limlarga xavfsiz route dispatch**. C04, D, E va F undan keyin davom etadi.
+Quyidagilar UI scope ichida aniq preview/unavailable sifatida tugatilgan, ishlayotgandek ko‘rsatilmaydi: haqiqiy SMS/Google login, live AI, STT/TTS/mikrofon, joylashuv/jonli ob-havo, audio fayllar/real sleep playback, Android/iOS xabarnoma yetkazish, pullik obuna, hamkor sovg‘alari. Wakeword, tizim overlay va yangi production backend qo‘shilmagan. Firebase egalik qoidalari o‘zgartirilmagan.
 
-E04 backup/reset qayta ishlanishi kerak: eski DemoStore JSON eksporti yangi UI profil/preference/goal metadata/calendar keyini hali qamramaydi. Eski maqsad o‘chsa, jadvalning yetishmayotgan bog‘lanishi UI’da tahrirlash kerakligi bilan belgilanadi. Calendar report self-report, haqiqiy bildirishnoma yetkazilganligi dalili emas. Populated calendar/result sheet uchun barcha viewport va 2.0× text-scale tekshiruvlari qolgan.
+**Keyingi bitta chipta: F-ANDROID-01 — joriy commitdan Android build va fizik qurilmada smoke test.** Qabul mezoni: guest → custom goal → task → schedule reminder intent → 1 daqiqa real fokus → qayd saqlash → self-report → namuna test → restartda ma’lumot saqlanishi. Back, keyboard, background pause, 320px va katta matn tekshiriladi. Build log, qurilma modeli/Android versiyasi va real screenshot dalili yoziladi. Yetkazish ulanmaguncha eslatma keladi deb va’da qilinmaydi.
 
-Haqiqiy SMS/Google active-root auth, live AI/STT/TTS, background wakeword/overlay, live weather, audio asset va partner fulfillment bu UI prototipiga ulanmagan. Ular ishlayotgandek ko‘rsatilmaydi. Firebase qoidalari chetlab o‘tilmagan. Maxfiy config commit qilinmaydi.
+Yakuniy dalil: 106/106 test passed; analyzer no issues; web release built va brauzerda focus/chat/reload tekshirildi. Source checkpoint `9520df6`. Batafsil yakuniy holat `MLP_UI_QA_REPORT.md` va `MLP_UI_FINAL_HANDOFF_UZ.md`da. Android build yangi urinishda ham Java loopback exit1 berdi; yangi APK olinmadi. ADB ro‘yxati bo‘sh.

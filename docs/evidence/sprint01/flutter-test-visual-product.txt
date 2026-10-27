@@ -1,0 +1,5 @@
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_visual_test.dart
+00:00 +0: (setUpAll)
+00:12 +0: capture Phase B widget renders with actual text and icon fonts
+03:11 +1: (tearDownAll)
+03:13 +1: All tests passed!

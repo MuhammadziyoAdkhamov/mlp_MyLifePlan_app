@@ -1,31 +1,56 @@
-# MLP UI QA — jarayonda
+# MLP UI yakuniy QA hisoboti
 
-Baseline: `docs/evidence/sprint01/` — pub get 0; analyze 0/no issues; test 59/59. Bu natijalar yangi UI o‘zgarishlaridan OLDIN olingan. Yangi test natijalari tekshirilgach alohida qo‘shiladi.
+2026-10-27. UI source checkpoint: `9520df6`, branch `feat/mlp-beta-sprint01`. Barcha 28 ekran mahalliy prototip oqimida yozilgan. Android yopiq beta uchun native build/runtime gate hali ochiq. To‘liq inventar: `MLP_UI_SCREEN_INVENTORY.md`.
 
-Android debug build: exit 1, Gradle `Unable to establish loopback connection`; adb qurilma yo‘q. Android runtime va bildirishnoma yetkazish tekshirilmagan. Mavjud APK eski; yangi build sifatida tarqatilmaydi.
+## Buyruqlar va aniq natijalar
 
-Phase A: markaziy ranglar va reusable komponentlar, 28 unique route registry. Phase B: mahalliy demo profil/kirish/tanlov oqimi yozildi va aktiv `main.dart`ga entry gate ulandi. Eski widget harness uchun `enableOnboarding: false` varianti mavjud; ishlab chiqarish entrypoint `true` ishlatadi. Unga alohida test qo‘shildi.
+| Buyruq | Natija | Dalil |
+|---|---|---|
+| flutter analyze --no-pub | exit 0, No issues found, 46.6s | evidence/sprint01/flutter-analyze-product-final.txt |
+| flutter test --no-pub --concurrency=1 --reporter expanded | exit 0, **106/106 passed**, 93s | evidence/sprint01/flutter-test-full-product-final.txt |
+| flutter build web --release --no-pub --no-wasm-dry-run --optimization-level=1 | exit 0, Built build/web, 101.7s | evidence/sprint01/flutter-build-web-product-final.txt |
+| flutter build apk --debug --no-pub --target-platform android-arm64 | exit 1, Java Unable to establish loopback connection, 49.1s | evidence/sprint01/flutter-build-android-product.txt |
+| flutter doctor -v / flutter pub get | Oldingi baseline dalillari saqlangan; bu UI checkpointda dependency versiyasi o‘zgarmagan | evidence/sprint01/flutter-doctor.txt; flutter-pub-get.txt |
 
-2026-10-27 checkpoint: `flutter analyze --no-pub` — No issues found; `flutter test --no-pub` — **78/78 passed**. Natijalar `docs/evidence/sprint01/flutter-analyze-ui-b.txt` va `flutter-test-ui-b.txt`da. Jarayon kompyuter uyqusi oralig‘ini ham hisoblagan juda katta elapsed vaqt ko‘rsatgan; uni faol bajarish tezligi sifatida talqin qilmang. Oldingi muvaffaqiyatsiz runlar `*-first.txt`da saqlangan.
+Web O1 optimizatsiyasi va WASM dry-runni o‘chirish faqat ushbu hostdagi kam joy/compile yukini kamaytirish uchun. Build `lib/main.dart`dan olingan. Build muvaffaqiyati alohida, brauzer runtime tekshiruvi alohida qayd etilgan. Eski APK yangilanmagan.
 
-Yangi tekshiruv: production default onboarding → demo registration → preferences save → Bugun → preferences qayta edit; guest/restart; custom goal → clarification → self-assessment → editable roadmap → persisted linked tasks; sample-test wrong/unknown 0 ball; detail edit/archive/delete/cancel; rejected platform writes, cache reload, retry va concurrent reset guard. Eski demo regressiya testlari ham o‘tdi.
+## Tekshirilgan ish oqimlari
 
-10 ekran 320×640, 390×844, 844×390, 1440×900 viewportlarda, 1.4× matn va 160 keyboard inset bilan render qilindi. Bu barcha ekranlar uchun barcha interaksiya/states/semantics to‘liq qo‘lda tekshirildi degani emas. Floating tab komponenti uchun 320px/1.5× va reduced motion testi bor; asosiy shell hali ushbu tablarga o‘tmagan.
+- Production entry → demo registration/preferences → Bugun, guest/restart va keyingi preferences edit.
+- Erkin maqsad → clarification → diagnosis/self-report → tahrirlangan roadmap → bitta persisted goal va linked tasks; rollback/retry va competing-write guard.
+- Calendar kun/hafta/oy, recurrence/leap/boundary, conflict/adjacency, capacity de-dup, warning cancel/confirm, save/edit/delete, Duolingo external-unavailable va self-report.
+- Today → linked focus → injected clock bilan 53 haqiqiy soniya → summary qaydi → saqlash. Task avtomatik bajarilmaydi. Background pause, restart paused, fixed-clock unique IDs, idempotent retry va break exclusion.
+- Deterministik chat send/persist/restart, rejected write uchun pair rollback, context opt-in va tone adapter; ovoz holatlari faqat UI sifatida belgilangan.
+- Uch savolli test: unknown/wrong 0 ball, score qayta hisoblanadi, self-report va focusdan alohida; XP oshmaydi. Passport va growth manba holatidan olinadi.
+- Virtual reward lock/claim/selection, Soundspace favorite persistence va audio-unavailable dialog, dismissible launcher, source notifications.
+- Barcha tablar va secondary route dispatch, missing ID/draft/unknown route recovery, system back va focus pause. Focus ring semantikasi uning tugmalaridan ajratilgan. Floating tablarda selected va tap semantics bor.
 
-`test/mlp_visual_test.dart` 6 PNG yaratadi: `build/mlp_ui_phase_b/` ichida welcome-390, login-320, preferences-390, clarification-390, roadmap-390, goal-detail-1440. Welcome/roadmap tasvirlari font tuzatilgach ko‘rildi; qolgan tasvirlar va yakuniy UI matritsasi Phase Fda yana tekshiriladi. Bular widget renderlari, Android screenshotlari emas. Birinchi renderdagi Ahem bloklari markaziy TextTheme fonti bilan tuzatildi. Landscape Splash overflow va keyingi formani yopgan eski snackbar tuzatildi.
+## Responsive va vizual tekshiruv
 
-`flutter pub get` muvaffaqiyatli: mavjud `shared_preferences_platform_interface` 2.4.2 fault-injection testlari uchun bevosita dev dependency bo‘ldi; paket versiyasi yangilanmadi. Avvalgi worktreedagi dependency o‘zgarishlari saqlandi.
+Oldingi 10 onboarding/goal + calendar/editor ekranlari: 320×640, 390×844, 844×390, 1440×900; 1.4× matn, 160 keyboard inset, reduced motion. Yangi 16 ekran: 320×740, 390×844 1.4×, 430×932 2.0×, 844×390. Bular widget tekshiruvlari; barcha platform date/time picker va fizik screen-reader holatlari degani emas.
 
-Hali talab qilinadi: barcha yangi ekranlar va ko‘ndalang oqimlar, kichik/standart/katta/landscape, klaviatura/textScale/semantics, screenshotlarni ko‘rib chiqish, yakuniy analyzer/test/web build, mavjud bo‘lsa Android runtime.
+16 real-font widget PNG qayta yaratildi va `evidence/sprint01/ui-latest/`ga nusxalandi: welcome, login, preferences, clarification, roadmap, goal detail, calendar/editor, today, focus, chat, profile, growth, rewards, weather, Soundspace. Asosiy mobil tasvirlar ko‘rib chiqildi. Logotip dekorativ bo‘lib, fixed text scale va alohida semantik yorliqqa ega; qolgan matn tizim scale’iga moslashadi.
 
-## C02/C03 — taqvim checkpoint, 2026-10-27
+Brauzerda topilgan va tuzatilgan xatolar:
 
-`MLPSchedule` va `MLPScheduleResult` domain modellari, `MLPScheduleRepository` interfeysi va mavjud UI saqloviga adapter qo‘shildi. Eski UI JSONga `scheduleResults: []` default qo‘shiladi; eski kalitlar migratsiyasiz saqlanadi. Kunlik/ish kuni/haftalik/bir martalik takror, inclusive until, canonical sana, xavfsiz http(s) havola, vaqt chegaralari va per-day self-report bor. UI saqlov hajmi chegarasidan oshgan yozuv avval rad etiladi; restartda yaroqsiz zaxira hosil qilinmaydi.
+1. Dark theme custom TextStyle ranglari ayrim web sarlavhalarida qora bo‘lib qolgan — body/display ranglari aniq berildi va regressiya testi qo‘shildi.
+2. Ustoz overlay tugmasi fokusning asosiy tugmasiga chiqib qolgan — launcher pastki navigatsiya ustidagi o‘z joyiga ko‘chirildi.
+3. Progress semantics card controls bilan qo‘shilgan — timer halqasi alohida semantik chegaraga ega qilindi.
+4. 320px katta matnda dekorativ logo o‘ralib overflow bergan — dekorativ logo fixed scale, label alohida.
+5. Nested Navigator dastlabki pushda snackbar tozalashi build paytida setState qilgan — observer post-framega o‘tkazildi.
 
-Calendar main headerdan ochiladi; kun/hafta/kompakt oy ko‘rinishi va lazy ro‘yxat bor. Editor CRUD, goal/task bog‘lash, sanalar, soatlar, reminder intent, overlap va sig‘im tasdig‘i bilan ishlaydi. Kunlik yukda vazifa taxmini takror sanalmaydi va qisqa calendar bloki qolgan vazifa mehnatini yashirmaydi. Eski recurring series tahririda kelayotgan hafta tekshiriladi. Tashqi ilova ochish aniq unavailable; havolani nusxalash mumkin. Natija faqat sessiya tugagach o‘z hisoboti sifatida yoziladi, task completion/XP/malaka tasdig‘iga avtomatik aylantirilmaydi.
+## Haqiqiy web runtime
 
-`test/mlp_planner_test.dart`: **12/12 passed** — recurrence/leap/boundaries, uzoq kelajakda boshlanadigan series conflict, adjacent slot, capacity de-dup, persist/edit/delete, per-occurrence update, future report rejection, corrupt recovery, Duolingo create→calendar→unavailable→report, warning cancel/confirm, old-series workload, 4V layout. Fault-injection testida rejected schedule save/delete eski data va qayta urinishni saqlaydi.
+Codex in-app brauzerida `http://127.0.0.1:8765/` orqali joriy release web build ochildi. Guest profil yaratildi va reload bilan tiklandi. Bugundan vazifali fokus boshlandi; **15 soniya** ishladi; “UI sinovi: fokus oynasi va saqlash oqimi tekshirildi.” qaydi bilan saqlandi. Tarix 7 tadan 8 sessiyaga o‘tdi. Sahifa qayta yuklanganda 15 soniyali sessiya va qayd ochildi. Vazifa o‘z-o‘zidan topshirilmadi.
 
-Yakuniy full regression: **91/91 passed** (24s), `flutter-test-planner-regression.txt`. Full analyzer no issues (123.8s); undan keyingi chip-font va eski-series edge-case uchun yakuniy scoped analyze ham **No issues found**. Dalillar: `dart-analyze-planner-final.txt`, `flutter-analyze-planner.txt`, `flutter-test-planner.txt`.
+Ustozga “Flutter nima?” savoli berildi. Belgilangan demo javob paydo bo‘ldi va reload → Ustozdan keyin qayta ko‘rildi. Javobda jonli model emasligi aniq aytilgan. Brauzer tab Bugun ekranida ochiq qoldirildi; local server ishlayotganida namoyish qilish mumkin.
 
-Calendar-390 va schedule-editor-390 PNGlar `build/mlp_ui_phase_b/`da yaratildi va ko‘rildi. Chip shriftining fixture fallback muammosi theme’da tuzatildi; fresh calendar tasvirida barcha chip matnlari o‘qiladi. 320/390px dropdown overflowlari tuzatildi. Populated calendar cards, result sheet va date/time pickerlarning barcha viewport, textScale 2.0 va screen-reader holatlari hali Phase Fga qolgan. Main shell hali eski 5 bo‘limli navigatsiyani saqlaydi; yangi floating tab componentining o‘zi mavjudligi C01 bajarilgan degani emas.
+Runtime PNG: `web-today.png`, `web-active-focus.png`, `web-chat.png`, `web-chat-restored.png`, `web-focus-restored.png`. `web-welcome-before-contrast.png` tuzatishdan oldingi diagnostik dalil; yakuniy welcome tasviri `ui-latest/welcome-390.png`.
+
+## Host cheklovlari va dastlabki runlar
+
+Parallel full test target device full / OS error112 bilan test dill faylini nusxalay olmadi. C: diskida taxminan 250MB joy qolgan. Generated cache cleanup avtomatik siyosat tomonidan rad etildi; hech qanday foydalanuvchi fayli o‘chirilmadi. O‘chirishsiz `--concurrency=1` bilan yakuniy 106 test o‘tdi. Dastlabki failed/cancelled runlar diagnostika uchun saqlangan; yakuniy dalillar `*-final.txt` fayllari.
+
+Birinchi product fixture runlarida setup future zonasi, scroll layoutdan oldin tap va SemanticsHandle teardown xatolari tuzatildi. UI boshqaruvlarini qayta bosishdan oldin layout tekshirildi; assertlar olib tashlanmadi. Yakuniy natija yuqoridagi to‘liq regressiyada.
+
+Android emulator/fizik qurilma runtime, TalkBack/VoiceOver, real push delivery, live auth/AI/weather/audio va release signing tasdiqlanmagan. Ular ishlaydi deb ko‘rsatilmaydi. Keyingi bitta chipta: **F-ANDROID-01** (`MLP_UI_REMAINING_ISSUES.md`).

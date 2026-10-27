@@ -1,0 +1,5 @@
+Analyzing mylife_plan_guest_mode_fixed_1...                     
+
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\main.dart:57:9 - curly_braces_in_flow_control_structures
+
+1 issue found. (ran in 378.3s)

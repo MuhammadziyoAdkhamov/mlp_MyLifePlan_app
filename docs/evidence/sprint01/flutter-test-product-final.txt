@@ -1,0 +1,14 @@
+00:00 +0: loading C:/Users/TheMillionaire/Downloads/MY_QUESTs/habit_tracker_GOAL/mylife_plan_guest_mode_fixed_1/test/mlp_product_test.dart
+00:00 +0: focus records actual seconds once and restores paused without background credit
+00:00 +1: breaks never add work; session ids remain unique with a fixed clock
+00:00 +2: supplemental state survives restart and malformed data preserves raw storage
+00:00 +3: predefined assessment scoring is independent of activity and self report
+00:00 +4: all production tabs and every secondary route build; missing arguments recover
+00:05 +5: chat sends one persisted deterministic turn and has no live AI claim
+00:06 +6: responsive pages support 320, standard, large text and landscape
+00:10 +7: production Today to focus to summary saves actual activity and keeps task open
+00:11 +8: unknown sample answers persist zero score without XP or mastery claims
+00:12 +9: rewards lock unavailable cosmetics and selecting a virtual reward persists
+00:12 +10: sound catalog favorites persist without pretending audio playback
+00:13 +11: system back pauses focus, returns from nested pages and launcher can be hidden
+00:14 +12: All tests passed!
