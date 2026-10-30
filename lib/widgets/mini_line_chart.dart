@@ -30,7 +30,7 @@ class _MiniLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = AppColors.borderSoft.withOpacity(0.55)
+      ..color = AppColors.borderSoft.withValues(alpha: 0.55)
       ..strokeWidth = 1;
 
     for (var i = 0; i < 4; i++) {
@@ -62,7 +62,7 @@ class _MiniLinePainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [AppColors.primary.withOpacity(0.28), AppColors.primary.withOpacity(0.0)],
+        colors: [AppColors.primary.withValues(alpha: 0.28), AppColors.primary.withValues(alpha: 0.0)],
       ).createShader(Offset.zero & size);
     canvas.drawPath(fillPath, fillPaint);
 

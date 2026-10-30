@@ -93,6 +93,7 @@ class MLPLocalUiRepository extends ChangeNotifier
   MLPLocalUiRepository(this._prefs);
   static const storageKey = 'mlp_ui_prototype_v1';
   final SharedPreferences _prefs;
+  SharedPreferences get prefs => _prefs;
   Map<String, dynamic> _state = _defaults();
   Future<void> _queue = Future.value();
   bool initialized = false;
@@ -389,7 +390,11 @@ class MLPLocalUiRepository extends ChangeNotifier
       throw ArgumentError('Boshlanish va tugash soatlari mos emas.');
     }
     _name(value.nickname, 'Ustoz nomi', min: 1, max: 30);
-    if (!['Standart (demo)', 'Sokin (demo)', 'Ravon (demo)'].contains(value.voice)) {
+    if (![
+      'Standart (demo)',
+      'Sokin (demo)',
+      'Ravon (demo)',
+    ].contains(value.voice)) {
       throw ArgumentError('Ovoz tanlovi noto‘g‘ri.');
     }
     if (![

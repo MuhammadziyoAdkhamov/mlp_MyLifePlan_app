@@ -37,11 +37,13 @@ void main() {
     return (prefs, repo);
   }
 
-  test('all 28 routes are unique and unknown routes parse safely', () {
-    expect(MLPScreen.values.length, 28);
-    expect(MLPScreen.values.map((s) => s.path).toSet().length, 28);
+  test('all 30 routes are unique and unknown routes parse safely', () {
+    expect(MLPScreen.values.length, 30);
+    expect(MLPScreen.values.map((s) => s.path).toSet().length, 30);
     expect(MLPScreen.parse('/missing'), isNull);
     expect(MLPScreen.parse('/goals/detail?id=abc'), MLPScreen.goalDetail);
+    expect(MLPScreen.parse('/projects'), MLPScreen.projects);
+    expect(MLPScreen.parse('/tasks'), MLPScreen.tasks);
   });
 
   test(
@@ -132,8 +134,8 @@ void main() {
         ),
       );
       expect(duration, Duration.zero);
-      await tester.tap(find.text('Profil'));
-      expect(selected, 4);
+      await tester.tap(find.text('Fokus'));
+      expect(selected, 2);
       expect(tester.takeException(), isNull);
     },
   );
@@ -151,14 +153,14 @@ void main() {
       await tester.ensureVisible(find.text('Mehmon sifatida kirish'));
       await tester.tap(find.text('Mehmon sifatida kirish'));
       await tester.pumpAndSettle();
-      expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
+      expect(find.text('Hozirgi vazifa'), findsOneWidget);
       expect(store.goals.length, count);
       expect(prefs.getString('legacy'), 'preserve');
       await tester.pumpWidget(const SizedBox());
       await tester.pumpWidget(MplDemoApp(store: store, prefs: prefs));
       await tester.pumpAndSettle();
       expect(find.byType(MLPWelcomeScreen), findsNothing);
-      expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
+      expect(find.text('Hozirgi vazifa'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
       store.dispose();
@@ -195,56 +197,68 @@ void main() {
   testWidgets(
     'production registration saves preferences and allows editing them later',
     (tester) async {
-      final (prefs, _) = await setup();
-      final store = DemoStore(prefs);
-      await store.init();
-      await tester.pumpWidget(MplDemoApp(store: store, prefs: prefs));
-      await tester.pumpAndSettle();
-      Future<void> tap(String text) async {
-        FocusManager.instance.primaryFocus?.unfocus();
+      final semantics = tester.ensureSemantics();
+      try {
+        final (prefs, _) = await setup();
+        final store = DemoStore(prefs);
+        await store.init();
+        await tester.pumpWidget(MplDemoApp(store: store, prefs: prefs));
         await tester.pumpAndSettle();
-        await tester.ensureVisible(find.text(text));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text(text));
-        await tester.pumpAndSettle();
-      }
+        Future<void> tap(String text) async {
+          FocusManager.instance.primaryFocus?.unfocus();
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.text(text));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(text));
+          await tester.pumpAndSettle();
+        }
 
-      await tap('Boshlash');
-      await tester.enterText(find.byType(TextFormField).at(0), 'Aziza');
-      await tester.enterText(find.byType(TextFormField).at(1), '+998900000000');
-      await tap('Davom etish');
-      await tester.enterText(find.byType(TextFormField).at(0), '45');
-      await tester.enterText(find.byType(TextFormField).at(1), 'Hamroh');
-      await tap('MLPni boshlash');
-      expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
-      var fresh = MLPLocalUiRepository(prefs);
-      await fresh.init();
-      expect(fresh.profile!.name, 'Aziza');
-      expect(fresh.profile!.verified, false);
-      expect(fresh.preferences.minutes, 45);
-      expect(fresh.preferences.nickname, 'Hamroh');
-      fresh.dispose();
-      await tester.tap(find.byTooltip('Sozlamalar'));
-      await tester.pumpAndSettle();
-      await tap('Shaxsiy tanlovlar');
-      expect(find.byType(MLPPreferencesScreen), findsOneWidget);
-      await tester.enterText(find.byType(TextFormField).first, '60');
-      await tap('Saqlash');
-      fresh = MLPLocalUiRepository(prefs);
-      await fresh.init();
-      expect(fresh.preferences.minutes, 60);
-      expect(fresh.preferences.nickname, 'Hamroh');
-      fresh.dispose();
-      if (find.text('BUGUNGI ASOSIY QADAM').evaluate().isEmpty) {
-        await tester
-            .state<NavigatorState>(find.byType(Navigator).last)
-            .maybePop();
+        await tap('Boshlash');
+        await tester.enterText(find.byType(TextFormField).at(0), 'Aziza');
+        await tester.enterText(
+          find.byType(TextFormField).at(1),
+          '+998900000000',
+        );
+        await tap('Davom etish');
+        await tester.enterText(find.byType(TextFormField).at(0), '45');
+        await tester.enterText(find.byType(TextFormField).at(1), 'Hamroh');
+        await tap('MLPni boshlash');
+        expect(find.text('Hozirgi vazifa'), findsOneWidget);
+        var fresh = MLPLocalUiRepository(prefs);
+        await fresh.init();
+        expect(fresh.profile!.name, 'Aziza');
+        expect(fresh.profile!.verified, false);
+        expect(fresh.preferences.minutes, 45);
+        expect(fresh.preferences.nickname, 'Hamroh');
+        fresh.dispose();
+        await tester.tap(find.bySemanticsLabel(RegExp('Mening profilim')));
         await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Sozlamalar'));
+        await tester.pumpAndSettle();
+        await tap('Shaxsiy tanlovlar');
+        expect(find.byType(MLPPreferencesScreen), findsOneWidget);
+        await tester.enterText(find.byType(TextFormField).first, '60');
+        await tap('Saqlash');
+        fresh = MLPLocalUiRepository(prefs);
+        await fresh.init();
+        expect(fresh.preferences.minutes, 60);
+        expect(fresh.preferences.nickname, 'Hamroh');
+        fresh.dispose();
+        for (
+          var i = 0;
+          i < 3 && find.text('Hozirgi vazifa').evaluate().isEmpty;
+          i++
+        ) {
+          await tester.binding.handlePopRoute();
+          await tester.pumpAndSettle();
+        }
+        expect(find.text('Hozirgi vazifa'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        store.dispose();
+      } finally {
+        semantics.dispose();
       }
-      expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-      await tester.pumpWidget(const SizedBox());
-      store.dispose();
     },
   );
 }

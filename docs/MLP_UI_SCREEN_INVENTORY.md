@@ -1,3 +1,5 @@
+> 2026-10-28 audit yangilanishi: quyidagi eski yakuniy/100% da’volar joriy native tayyorlik dalili emas. Joriy holat uchun [MLP_UI_FIXES_COMPLETED.md](MLP_UI_FIXES_COMPLETED.md) va [MLP_UI_REMAINING_ISSUES.md](MLP_UI_REMAINING_ISSUES.md)ni o‘qing.
+
 # MLP UI ekran inventari
 
 Yangilanish: 2026-10-27. 28 ekran mahalliy UI prototipda yozilgan va asosiy entrypointga ulangan. Bu ishlab chiqarish backend yoki Android qurilmadagi yakuniy tasdiq degani emas. Barcha eski maqsad/vazifa/odat boshqaruvlari Sozlamalar va Maqsadlar orqali ochiladi.
@@ -38,3 +40,4 @@ Navigatsiya: `main.dart` → xavfsiz bootstrap → entry gate → `MLPProductShe
 16 yangi asosiy/support ekran 320×740, 390×844 (1.4× matn), 430×932 (2.0× matn), 844×390 bilan tekshirildi. Avvalgi onboarding/goal/planner testlari 320×640, 390×844, 844×390, 1440×900, 1.4× matn va keyboard insetni qamraydi. Bu barcha native date/time picker, TalkBack/VoiceOver va fizik qurilma holatlari qo‘lda tekshirildi degani emas.
 
 PNGlar: `build/mlp_ui_phase_b/` (nom tarixiy; endi yangi UI ham shu yerda). Haqiqiy qurilma screenshotlari emas, font yuklangan Flutter widget renderlari. Yakuniy buyruq natijalari `MLP_UI_QA_REPORT.md`da.
+

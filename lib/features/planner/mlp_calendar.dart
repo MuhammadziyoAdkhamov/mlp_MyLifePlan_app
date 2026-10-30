@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/models/mlp_schedule.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../../demo/demo_store.dart';
@@ -56,7 +57,7 @@ class _CalendarState extends State<MLPCalendarScreen>
     if (state == AppLifecycleState.resumed && mounted) setState(() {});
   }
 
-  Future<void> _external(MLPSchedule item) => showDialog<void>(
+  Future<void> _external(MLPSchedule item) => mlpShowDialog<void>(
     context: context,
     builder: (dialog) => AlertDialog(
       title: const Text('Tashqi ilovani ochish'),
@@ -283,7 +284,7 @@ class _CalendarState extends State<MLPCalendarScreen>
                   : 'Natijani tahrirlash',
               icon: Icons.edit_note_rounded,
               onPressed: ended
-                  ? () => showModalBottomSheet<void>(
+                  ? () => mlpShowSheet<void>(
                       context: context,
                       isScrollControlled: true,
                       useSafeArea: true,

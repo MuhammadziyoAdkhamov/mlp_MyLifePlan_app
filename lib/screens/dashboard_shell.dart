@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/premium_scaffold.dart';
-import 'badges_screen.dart';
 import 'home_screen.dart';
-import 'journey_screen.dart';
+import 'roadmap_screen.dart';
+import 'learning_screen.dart';
+import 'ai_tutor_screen.dart';
 import 'profile_screen.dart';
-import 'statistics_screen.dart';
 
 class DashboardShell extends StatelessWidget {
   const DashboardShell({super.key, required this.index});
@@ -15,16 +15,18 @@ class DashboardShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      const HomeScreen(),
-      const StatisticsScreen(),
-      const JourneyScreen(),
-      const BadgesScreen(),
-      const ProfileScreen(),
-    ];
     return PremiumScaffold(
       padding: EdgeInsets.zero,
-      body: pages[index],
+      body: IndexedStack(
+        index: index,
+        children: const [
+          HomeScreen(),
+          RoadmapScreen(),
+          LearningScreen(),
+          AiTutorScreen(),
+          ProfileScreen(),
+        ],
+      ),
       safeArea: false,
       bottomNavigationBar: AppBottomNavBar(currentIndex: index),
     );

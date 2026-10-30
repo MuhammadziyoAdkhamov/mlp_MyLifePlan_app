@@ -1,17 +1,33 @@
-# MLP UI qolgan ishlar va beta chegaralari
+> **2026-10-30:** 27 ekranli yangi namuna bo‘yicha o‘zgarishlar davom etmoqda. Quyidagi eski test/render natijalari joriy kodga avtomatik tatbiq etilmaydi. Yangi holat: `MLP_UI_PROGRESS.md`; yangi loglar: `evidence/ios-reference-2026-10-29/`.
 
-2026-10-27: 28 ekran mahalliy UI prototip sifatida yozildi; yangi besh tabli shell faol. Ekranlar ro‘yxati va tekshirilgan holatlar `MLP_UI_SCREEN_INVENTORY.md`da. UI prototip va Android yopiq beta tayyorligi alohida baholanadi.
+# MLP: ochiq masalalar va release chegaralari
 
-1. **P0 — Android qurilmada yakuniy tekshiruv.** Qurilma/emulator yo‘q. Oldingi Gradle urinishida Java loopback xatosi bo‘lgan. Yangi APK isbotlanmaguncha eski APKni yangi deb tarqatmang. iOS native build bu Windows hostda tekshirilmagan.
-2. **P0 — host disk sig‘imi.** Umumiy parallel test C: diskida nusxa yozish uchun joy yetmasligi bilan to‘xtadi. Kam resursli ketma-ket run alohida bajariladi. Task generated cache cleanup avtomatik siyosat tomonidan bloklandi; foydalanuvchi fayllari o‘chirilmagan.
-3. **P1 — oddiy eski core CRUD saqlov semantikasi.** DemoStore oddiy task/habit/goal o‘zgarishlarini avval xotirada ko‘rsatadi; disk xatosida xato va Retry bor. Goal+roadmap va yangi batafsil fokus yozuvi rollbackga ega, UI repository commit-before-publish. Qolgan core operatsiyalarni xavfsiz transactionga o‘tkazish keyingi backend/data ishidir.
-4. **P1 — to‘liq UI bundle import.** Sozlamalardan ikkala kalitni qamragan JSON nusxa olinadi. Eski JSON import faqat core store uchun. UI bundle import hali mavjud emas va ekranda aniq aytilgan. Turli formatni noto‘g‘ri importerga bermang.
-5. **P1 — native accessibility va platform pickers.** Widget semantics/large text/back tekshiruvlari mavjud; fizik Android TalkBack/iOS VoiceOver, barcha native date/time picker holatlari, 24 soatlik lifecycle va haqiqiy klaviatura uchun qurilma testi kerak.
-6. **P2 — yirik tarix va jadval.** Prototip cheklovlari bor: 500 schedule, 100 chat xabari, cheklangan dashboard preview; eski to‘liq data oynasi ochiladi. Katta production tarix uchun paging/backend kerak.
-7. **P2 — umumiy qurilma hisoblari.** Demo logout ma’lumotni saqlaydi; yangi demo ism alohida xavfsiz account yaratmaydi. Mahalliy JSON shifrlanmagan. Bu chegaralar profil va maxfiylik oynasida aytilgan.
+2026-10-28. Joriy dalil: `MLP_UI_FIXES_COMPLETED.md` va
+`docs/evidence/ui-audit-2026-10-28/`. 31 asosiy ekran holati tekshirildi,
+10 UI topilmasi tuzatildi, 130 test o‘tdi. Bu native release uchun 100% emas.
 
-Quyidagilar UI scope ichida aniq preview/unavailable sifatida tugatilgan, ishlayotgandek ko‘rsatilmaydi: haqiqiy SMS/Google login, live AI, STT/TTS/mikrofon, joylashuv/jonli ob-havo, audio fayllar/real sleep playback, Android/iOS xabarnoma yetkazish, pullik obuna, hamkor sovg‘alari. Wakeword, tizim overlay va yangi production backend qo‘shilmagan. Firebase egalik qoidalari o‘zgartirilmagan.
+| Ustuvorlik | Qolgan masala | Aniq dalil / keyingi amal |
+|---|---|---|
+| P0 release gate | Joriy Android APK yig‘ilmadi | Yangi `flutter build apk --debug --no-pub` exit 1: `java.io.IOException: Unable to establish loopback connection`. `android-build.log`. Host Java/Gradle loopback tashxislanishi kerak; yangi APK bor deb tarqatilmasin |
+| P0 release gate | Joriy ilovaning Android runtime smoke testi ochiq | Pixel_4a headless ishga tushdi va ADB emulator-5554 device bo‘ldi; build yiqilgani uchun yangi ilova o‘rnatilmadi. Emulyatorning mavjudligi app testi o‘tganini bildirmaydi |
+| P1 | Toolchain | Doctor: Android license status unknown; Windows native uchun Visual Studio yo‘q. Windows native build ushbu Android loyihasi uchun shart emas. SDK litsenziyasi tekshirilishi kerak |
+| P1 | Ordinary core CRUD disk rejection | UI xato ko‘rsatadi, lekin ayrim task/habit/goal amallari diskdan oldin memoryni o‘zgartiradi. Saqlanmagan holatga rollback/retry va restart regressiyasi zarur. Atomic roadmap/focus va UI repository himoyalari saqlangan |
+| P1 | To‘liq backup restore | Export core+UI+fonni qamraydi; eski import faqat core. Versionli to‘liq importer, preview, rollback va duplicate siyosati kerak |
+| P1 | Native accessibility/lifecycle | TalkBack, real keyboard/gesture back, permission-denied gallery, lost-picker recovery, background/restart va uzoq sessiya fizik Androidda tekshiriladi. 60 FPS hali o‘lchanmagan |
+| P1 production | Auth/account isolation/cloud | Faol app lokal demo. Eski Firebase/Google servislarining mavjudligi yangi oqimni xavfsiz cloud app qilmaydi. User ownership, guest migration va deletion sinovlari kerak |
+| P1 production | Real tashqi xizmatlar | Matnli AI, STT/TTS, jonli weather, audio playback, local/push delivery, billing va partner rewards hozir to‘liq real ulanmagan. UI ularni preview/unavailable deb aytadi; reja `MLP_REAL_APP_ROADMAP_UZ.md`da |
+| P2 | Katta tarix | 500 schedule/100 chat kabi mahalliy limitlar bor; productionda ehtiyojga qarab paging va migration, tasodifiy yangi infratuzilma emas |
+| Keyingi platforma | iOS | Foydalanuvchi tanlovi: keyin. Mac/Xcode/iPhone/signing talab qilinadi; iOS 15 target va galereya description mavjud, native build/VoiceOver tasdiqlanmagan |
 
-**Keyingi bitta chipta: F-ANDROID-01 — joriy commitdan Android build va fizik qurilmada smoke test.** Qabul mezoni: guest → custom goal → task → schedule reminder intent → 1 daqiqa real fokus → qayd saqlash → self-report → namuna test → restartda ma’lumot saqlanishi. Back, keyboard, background pause, 320px va katta matn tekshiriladi. Build log, qurilma modeli/Android versiyasi va real screenshot dalili yoziladi. Yetkazish ulanmaguncha eslatma keladi deb va’da qilinmaydi.
+31 screenshot Flutter widget fixture renderidir; ular real telefondan olingan
+rasmlar emas. 30 primary screenning kengaytirilgan layout matritsasi va fon
+sahifasining alohida testi bor. Har nested dialogning har bir OS/text-scale
+kombinatsiyasi manual tekshirilgan deb da’vo qilinmaydi.
 
-Yakuniy dalil: 106/106 test passed; analyzer no issues; web release built va brauzerda focus/chat/reload tekshirildi. Source checkpoint `9520df6`. Batafsil yakuniy holat `MLP_UI_QA_REPORT.md` va `MLP_UI_FINAL_HANDOFF_UZ.md`da. Android build yangi urinishda ham Java loopback exit1 berdi; yangi APK olinmadi. ADB ro‘yxati bo‘sh.
+**Keyingi yagona chipta: ANDROID-01.** Java/Gradle loopback sababini aniqlash,
+joriy APK build, keyin guest → custom goal → task → schedule → focus → qayd →
+self-report → restart, gallery va system-back oqimlari. Eslatma yetkazish
+ulanmaguncha schedule intent “xabarnoma keldi” deb hisoblanmaydi.
+
+SDK/host to‘sig‘i uchun ilova UI kodi qayta yozilmasin. Mavjud dirty fayllar,
+staged `D lib/firebase_options.dart` va boshqa AI ishlari reset qilinmasin.

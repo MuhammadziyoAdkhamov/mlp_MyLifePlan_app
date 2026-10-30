@@ -16,7 +16,7 @@ class AppBadgeCard extends StatelessWidget {
     return GlassCard(
       padding: const EdgeInsets.all(14),
       borderColor: unlocked
-          ? AppColors.gold.withOpacity(0.38)
+          ? AppColors.gold.withValues(alpha: 0.38)
           : AppColors.borderSoft,
       glowColor: unlocked ? AppColors.gold : null,
       child: Column(
@@ -28,7 +28,7 @@ class AppBadgeCard extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: unlocked ? AppColors.goldGradient : null,
-              color: unlocked ? null : AppColors.surface3.withOpacity(0.7),
+              color: unlocked ? null : AppColors.surface3.withValues(alpha: 0.7),
             ),
             child: Icon(
               _iconForBadge(badge.id),

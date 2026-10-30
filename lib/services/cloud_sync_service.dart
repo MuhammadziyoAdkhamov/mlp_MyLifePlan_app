@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class CloudSyncService {
   CloudSyncService({FirebaseFirestore? firestore})
@@ -53,7 +54,7 @@ class CloudSyncService {
       }
     } catch (e) {
       // Catch errors so the legacy flow isn't interrupted
-      print('Migration dual-write failed: $e');
+      debugPrint('Migration dual-write failed: $e');
     }
   }
 

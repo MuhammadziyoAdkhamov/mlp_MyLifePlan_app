@@ -47,7 +47,7 @@ class _HabitTileState extends State<HabitTile> {
           onTap: widget.onTap,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           borderColor:
-              widget.completed ? AppColors.emerald.withOpacity(0.55) : null,
+              widget.completed ? AppColors.emerald.withValues(alpha: 0.55) : null,
           glowColor: widget.completed ? AppColors.emerald : color,
           child: Stack(
             children: [
@@ -59,9 +59,9 @@ class _HabitTileState extends State<HabitTile> {
                         borderRadius: BorderRadius.circular(24),
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.emerald.withOpacity(0.12),
+                            AppColors.emerald.withValues(alpha: 0.12),
                             Colors.transparent,
-                            AppColors.cyan.withOpacity(0.05),
+                            AppColors.cyan.withValues(alpha: 0.05),
                           ],
                         ),
                       ),
@@ -98,7 +98,7 @@ class _HabitTileState extends State<HabitTile> {
                             color: (widget.completed
                                     ? AppColors.emerald
                                     : color)
-                                .withOpacity(widget.completed ? 0.22 : 0.10),
+                                .withValues(alpha: widget.completed ? 0.22 : 0.10),
                             blurRadius: widget.completed ? 24 : 16,
                             offset: const Offset(0, 10),
                           ),
@@ -108,6 +108,7 @@ class _HabitTileState extends State<HabitTile> {
                         widget.completed
                             ? Icons.check_circle_rounded
                             : IconData(
+                                // ignore: non_const_argument_for_const_parameter
                                 widget.habit.iconCodePoint,
                                 fontFamily: 'MaterialIcons',
                               ),
@@ -134,7 +135,7 @@ class _HabitTileState extends State<HabitTile> {
                                       ? TextDecoration.lineThrough
                                       : TextDecoration.none,
                                   decorationColor:
-                                      AppColors.emerald.withOpacity(0.8),
+                                      AppColors.emerald.withValues(alpha: 0.8),
                                   decorationThickness: 2,
                                 ),
                             child: Text(
@@ -170,7 +171,7 @@ class _HabitTileState extends State<HabitTile> {
                                 Icon(
                                   Icons.notifications_none_rounded,
                                   size: 14,
-                                  color: AppColors.textMuted.withOpacity(0.8),
+                                  color: AppColors.textMuted.withValues(alpha: 0.8),
                                 ),
                               ],
                             ],
@@ -230,7 +231,7 @@ class _HabitTileState extends State<HabitTile> {
                           boxShadow: widget.completed
                               ? [
                                   BoxShadow(
-                                    color: AppColors.emerald.withOpacity(0.35),
+                                    color: AppColors.emerald.withValues(alpha: 0.35),
                                     blurRadius: 18,
                                     offset: const Offset(0, 8),
                                   ),

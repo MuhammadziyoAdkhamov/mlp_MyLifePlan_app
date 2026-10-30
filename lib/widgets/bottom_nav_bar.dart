@@ -9,19 +9,19 @@ class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
 
   static const _items = [
-    _NavItem(icon: Icons.home_rounded, label: 'Home', route: '/home'),
-    _NavItem(icon: Icons.bar_chart_rounded, label: 'Stats', route: '/stats'),
-    _NavItem(icon: Icons.flag_rounded, label: 'Journey', route: '/journey'),
-    _NavItem(icon: Icons.emoji_events_rounded, label: 'Badges', route: '/badges'),
-    _NavItem(icon: Icons.person_rounded, label: 'Profile', route: '/profile'),
+    _NavItem(icon: Icons.home_rounded, label: 'Bosh sahifa', route: '/home'),
+    _NavItem(icon: Icons.map_rounded, label: 'Yo‘l xaritasi', route: '/roadmap'),
+    _NavItem(icon: Icons.school_rounded, label: 'O‘rganish', route: '/learning'),
+    _NavItem(icon: Icons.psychology_rounded, label: 'AI Ustoz', route: '/ai-tutor'),
+    _NavItem(icon: Icons.person_rounded, label: 'Profil', route: '/profile'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.background.withOpacity(0.96),
-        border: Border(top: BorderSide(color: AppColors.borderSoft.withOpacity(0.8))),
+        color: AppColors.background.withValues(alpha: 0.96),
+        border: Border(top: BorderSide(color: AppColors.borderSoft.withValues(alpha: 0.8))),
       ),
       padding: EdgeInsets.only(
         left: 16,
@@ -42,8 +42,8 @@ class AppBottomNavBar extends StatelessWidget {
               height: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: active ? AppColors.primary.withOpacity(0.18) : Colors.transparent,
-                boxShadow: active ? [BoxShadow(color: AppColors.primary.withOpacity(0.25), blurRadius: 24)] : null,
+                color: active ? AppColors.primary.withValues(alpha: 0.18) : Colors.transparent,
+                boxShadow: active ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.25), blurRadius: 24)] : null,
               ),
               child: Icon(item.icon, color: active ? AppColors.primary : AppColors.textMuted, size: 22),
             ),

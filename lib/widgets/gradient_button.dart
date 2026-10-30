@@ -13,6 +13,7 @@ class GradientButton extends StatefulWidget {
     this.icon,
     this.height = 54,
     this.enabled = true,
+    this.colors = const [AppColors.primary, AppColors.primary2],
   });
 
   final String text;
@@ -20,6 +21,9 @@ class GradientButton extends StatefulWidget {
   final IconData? icon;
   final double height;
   final bool enabled;
+  final List<Color> colors;
+
+
 
   @override
   State<GradientButton> createState() => _GradientButtonState();
@@ -97,7 +101,7 @@ class _GradientButtonState extends State<GradientButton>
                     boxShadow: _active
                         ? [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(
+                              color: AppColors.primary.withValues(alpha: 
                                 0.28 + (pulse * 0.12),
                               ),
                               blurRadius: 26 + (pulse * 18),
@@ -105,7 +109,7 @@ class _GradientButtonState extends State<GradientButton>
                               offset: const Offset(0, 14),
                             ),
                             BoxShadow(
-                              color: AppColors.cyan.withOpacity(
+                              color: AppColors.cyan.withValues(alpha: 
                                 0.10 + (pulse * 0.08),
                               ),
                               blurRadius: 34 + (pulse * 14),
@@ -125,8 +129,8 @@ class _GradientButtonState extends State<GradientButton>
                                   ? AppColors.primaryGradient
                                   : LinearGradient(
                                       colors: [
-                                        AppColors.primary.withOpacity(0.25),
-                                        AppColors.primary.withOpacity(0.18),
+                                        AppColors.primary.withValues(alpha: 0.25),
+                                        AppColors.primary.withValues(alpha: 0.18),
                                       ],
                                     ),
                             ),
@@ -140,9 +144,9 @@ class _GradientButtonState extends State<GradientButton>
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    Colors.white.withOpacity(0.18),
-                                    Colors.white.withOpacity(0.02),
-                                    Colors.black.withOpacity(0.05),
+                                    Colors.white.withValues(alpha: 0.18),
+                                    Colors.white.withValues(alpha: 0.02),
+                                    Colors.black.withValues(alpha: 0.05),
                                   ],
                                 ),
                               ),
@@ -161,9 +165,9 @@ class _GradientButtonState extends State<GradientButton>
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          Colors.white.withOpacity(0),
-                                          Colors.white.withOpacity(0.34),
-                                          Colors.white.withOpacity(0),
+                                          Colors.white.withValues(alpha: 0),
+                                          Colors.white.withValues(alpha: 0.34),
+                                          Colors.white.withValues(alpha: 0),
                                         ],
                                       ),
                                     ),
@@ -177,7 +181,7 @@ class _GradientButtonState extends State<GradientButton>
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(AppRadius.md),
                               border: Border.all(
-                                color: Colors.white.withOpacity(
+                                color: Colors.white.withValues(alpha: 
                                   _hovered ? 0.28 : 0.16,
                                 ),
                               ),
@@ -202,7 +206,7 @@ class _GradientButtonState extends State<GradientButton>
                                       color: Colors.white,
                                       shadows: [
                                         Shadow(
-                                          color: Colors.white.withOpacity(0.35),
+                                          color: Colors.white.withValues(alpha: 0.35),
                                           blurRadius: 12,
                                         ),
                                       ],
@@ -224,7 +228,7 @@ class _GradientButtonState extends State<GradientButton>
                                       letterSpacing: 0.1,
                                       shadows: [
                                         Shadow(
-                                          color: Colors.black.withOpacity(0.22),
+                                          color: Colors.black.withValues(alpha: 0.22),
                                           blurRadius: 8,
                                           offset: const Offset(0, 2),
                                         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/models/mlp_schedule.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../../demo/demo_store.dart';
@@ -265,7 +266,7 @@ class _EditorState extends State<MLPScheduleEditor> {
       );
       return;
     }
-    final task = await showModalBottomSheet<DemoTask>(
+    final task = await mlpShowSheet<DemoTask>(
       context: context,
       useSafeArea: true,
       builder: (sheet) => ListView.builder(

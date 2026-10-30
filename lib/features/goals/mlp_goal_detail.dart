@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../../demo/demo_forms.dart';
 import '../../demo/demo_store.dart';
@@ -169,7 +170,7 @@ class MLPGoalDetailScreen extends StatelessWidget {
                             if (!task.completed) {
                               DemoForms.submit(context, store, task);
                             } else {
-                              showDialog<void>(
+                              mlpShowDialog<void>(
                                 context: context,
                                 builder: (dialog) => AlertDialog(
                                   title: const Text('Topshirilgan hisobot'),
@@ -246,7 +247,8 @@ class MLPGoalDetailScreen extends StatelessWidget {
                             if (!yes || !context.mounted) return;
                             await _action(context, () async {
                               await store.deleteGoal(goalId);
-                              if (context.mounted && Navigator.canPop(context)) {
+                              if (context.mounted &&
+                                  Navigator.canPop(context)) {
                                 Navigator.pop(context);
                               }
                             });

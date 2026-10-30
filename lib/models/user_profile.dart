@@ -8,6 +8,7 @@ class UserProfile {
     required this.createdAt,
     this.avatarUrl,
     this.growthFocus = 'consistency',
+    this.coins = 0,
   });
 
   final String id;
@@ -18,6 +19,7 @@ class UserProfile {
   final DateTime createdAt;
   final String? avatarUrl;
   final String growthFocus;
+  final int coins;
 
   UserProfile copyWith({
     String? id,
@@ -28,6 +30,7 @@ class UserProfile {
     DateTime? createdAt,
     String? avatarUrl,
     String? growthFocus,
+    int? coins,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -38,6 +41,7 @@ class UserProfile {
       createdAt: createdAt ?? this.createdAt,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       growthFocus: growthFocus ?? this.growthFocus,
+      coins: coins ?? this.coins,
     );
   }
 
@@ -51,6 +55,7 @@ class UserProfile {
       createdAt: DateTime.parse(json['createdAt'] as String),
       avatarUrl: json['avatarUrl'] as String?,
       growthFocus: json['growthFocus'] as String? ?? 'consistency',
+      coins: json['coins'] as int? ?? 0,
     );
   }
 
@@ -64,6 +69,7 @@ class UserProfile {
       'createdAt': createdAt.toIso8601String(),
       'avatarUrl': avatarUrl,
       'growthFocus': growthFocus,
+      'coins': coins,
     };
   }
 
@@ -75,6 +81,7 @@ class UserProfile {
       totalXp: 1240,
       level: 7,
       createdAt: DateTime.now().subtract(const Duration(days: 68)),
+      coins: 250,
     );
   }
 }

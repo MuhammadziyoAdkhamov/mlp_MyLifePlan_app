@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/design_system/mlp_widgets.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
+import '../demo/demo_forms.dart';
 import '../data/repositories/mlp_ui_repository.dart';
 import '../demo/demo_store.dart';
 import '../features/ai_companion/mlp_companion_pages.dart';
@@ -18,6 +21,7 @@ import '../features/workspace/mlp_workspace_pages.dart';
 import 'mlp_environment.dart';
 import 'router/mlp_routes.dart';
 import 'theme/mlp_design_system.dart';
+import '../core/design_system/mlp_haptics.dart';
 
 class MLPProductShell extends StatefulWidget {
   const MLPProductShell({
@@ -97,9 +101,12 @@ class _ProductShellState extends State<MLPProductShell>
   Future<void> open(MLPScreen screen, {MLPRouteArgs? args}) async {
     final root = {
       MLPScreen.today: 0,
+      MLPScreen.projects: 1,
       MLPScreen.focus: 2,
-      MLPScreen.chat: 3,
-      MLPScreen.profile: 4,
+      MLPScreen.tasks: 3,
+      MLPScreen.analytics: 4,
+      MLPScreen.profile: 5,
+      MLPScreen.chat: 6,
     }[screen];
     if (root != null) {
       tab(root);
@@ -171,15 +178,22 @@ class _ProductShellState extends State<MLPProductShell>
         ),
         MLPScreen.passport => MLPPassportPage(e: e),
         MLPScreen.analytics => MLPGrowthPage(e: e),
+        MLPScreen.chat => MLPScaffold(body: MLPChatPage(e: e, showBack: true)),
+        MLPScreen.profile => MLPScaffold(
+          body: MLPProfilePage(e: e, showBack: true),
+        ),
         MLPScreen.rewards => MLPRewardsPage(e: e),
         MLPScreen.weather => MLPWeatherPage(e: e),
         MLPScreen.soundspace => MLPSoundspacePage(e: e),
         MLPScreen.settings => MLPSettingsPage(e: e),
         MLPScreen.notifications => MLPNotificationsPage(e: e),
-        MLPScreen.today ||
-        MLPScreen.focus ||
-        MLPScreen.chat ||
-        MLPScreen.profile => _TabFrame(key: frame, e: e),
+        MLPScreen.today => MLPScaffold(body: MLPTodayPage(e: e)),
+        MLPScreen.projects => MLPScaffold(body: MLPGoalsPage(e: e)),
+        MLPScreen.tasks => MLPScaffold(body: MLPTasksPage(e: e)),
+        MLPScreen.focus => MLPScaffold(
+          title: 'Fokus sessiyasi',
+          body: MLPFocusHub(e: e),
+        ),
         null => const MLPPage(
           title: 'Sahifa topilmadi',
           children: [
@@ -215,11 +229,10 @@ class _ProductShellState extends State<MLPProductShell>
     child: Navigator(
       key: navigator,
       observers: [MLPRouteFeedbackObserver()],
-      onGenerateRoute: (settings) => PageRouteBuilder<void>(
+      onGenerateRoute: (settings) => _MLPPageRoute(
+        reducedMotion: MediaQuery.disableAnimationsOf(context),
         settings: settings,
-        transitionDuration: MLPDimensions.motion(context, route: true),
-        reverseTransitionDuration: MLPDimensions.motion(context, route: true),
-        pageBuilder: (context, _, __) => settings.name == '/'
+        builder: (context) => settings.name == '/'
             ? _TabFrame(key: frame, e: e)
             : page(
                 MLPScreen.parse(settings.name),
@@ -228,11 +241,24 @@ class _ProductShellState extends State<MLPProductShell>
                     : const MLPRouteArgs(),
                 settings.arguments,
               ),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
       ),
     ),
   );
+}
+
+class _MLPPageRoute extends CupertinoPageRoute<void> {
+  _MLPPageRoute({
+    required super.builder,
+    super.settings,
+    required this.reducedMotion,
+  });
+  final bool reducedMotion;
+  @override
+  Duration get transitionDuration =>
+      reducedMotion ? Duration.zero : super.transitionDuration;
+  @override
+  Duration get reverseTransitionDuration =>
+      reducedMotion ? Duration.zero : super.reverseTransitionDuration;
 }
 
 class _TabFrame extends StatefulWidget {
@@ -245,7 +271,67 @@ class _TabFrame extends StatefulWidget {
 class _TabFrameState extends State<_TabFrame> {
   int index = 0;
   void select(int value) {
-    if (mounted) setState(() => index = value.clamp(0, 4));
+    MLPHaptics.selection();
+    if (mounted) setState(() => index = value.clamp(0, 6));
+  }
+
+  Future<void> add(BuildContext context) {
+    MLPHaptics.medium();
+    return mlpShowSheet<void>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (sheet) => SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Keyingi qadamingiz',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            for (final action in <(String, IconData, VoidCallback)>[
+              (
+                'Yangi vazifa',
+                CupertinoIcons.add_circled,
+                () => DemoForms.task(context, widget.e.store),
+              ),
+              (
+                'Yangi maqsad',
+                CupertinoIcons.scope,
+                () => widget.e.go(MLPScreen.goalDiscovery),
+              ),
+              ('Fokus sessiyasi', CupertinoIcons.timer, () => select(2)),
+              (
+                'Taqvim',
+                CupertinoIcons.calendar,
+                () => widget.e.go(MLPScreen.calendar),
+              ),
+              (
+                'Ustoz AI',
+                CupertinoIcons.sparkles,
+                () => widget.e.go(MLPScreen.chat),
+              ),
+              (
+                'Mening profilim',
+                CupertinoIcons.person_crop_circle,
+                () => widget.e.go(MLPScreen.profile),
+              ),
+            ])
+              MLPMenuTile(
+                title: action.$1,
+                icon: action.$2,
+                onTap: () {
+                  Navigator.pop(sheet);
+                  action.$3();
+                },
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -259,58 +345,141 @@ class _TabFrameState extends State<_TabFrame> {
           if (!popped && index != 0) select(0);
         },
         child: MLPScaffold(
-          actions: [
-            IconButton(
-              tooltip: 'Sozlamalar',
-              onPressed: () => e.go(MLPScreen.settings),
-              icon: const Icon(Icons.settings_outlined),
+          title: index == 2 ? 'Fokus' : null,
+          leading: index == 2
+              ? IconButton(
+                  tooltip: 'Orqaga',
+                  icon: const Icon(CupertinoIcons.chevron_back),
+                  onPressed: () => select(3),
+                )
+              : null,
+          actions: index == 2
+              ? [
+                  IconButton(
+                    tooltip: 'Boshqa amallar',
+                    onPressed: () => add(context),
+                    icon: const Icon(CupertinoIcons.slider_horizontal_3),
+                  ),
+                ]
+              : null,
+          body: AnimatedSwitcher(
+            duration: MLPDimensions.motion(context),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: KeyedSubtree(
+              key: ValueKey(index),
+              child: switch (index) {
+                0 => MLPTodayPage(key: ValueKey(e.store.todayKey), e: e),
+                1 => MLPIosPlanPage(e: e, initialGoals: true),
+                2 => MLPFocusHub(e: e),
+                3 => MLPIosPlanPage(e: e),
+                4 => MLPGrowthPage(e: e, embedded: true),
+                6 => MLPChatPage(e: e),
+                _ => MLPProfilePage(e: e),
+              },
             ),
-          ],
-          title: index == 0 || index == 4
-              ? null
-              : MLPFloatingTabBar.labels[index],
-          body: Column(
-            children: [
-              Expanded(
-                child: switch (index) {
-                  0 => MLPTodayPage(key: ValueKey(e.store.todayKey), e: e),
-                  1 => MLPGoalsPage(e: e),
-                  2 => MLPFocusHub(e: e),
-                  3 => MLPChatPage(e: e),
-                  _ => MLPProfilePage(e: e),
-                },
-              ),
-            ],
           ),
           bottomNavigationBar: MediaQuery.viewInsetsOf(context).bottom > 0
               ? null
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (index != 3 && !e.ui.assistantHidden)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () => select(3),
-                              icon: const Icon(Icons.auto_awesome, size: 18),
-                              label: const Text('Ustozni ochish'),
-                            ),
-                            IconButton(
-                              tooltip: 'Ustoz tezkor tugmasini yashirish',
-                              onPressed: () => e.act(
-                                context,
-                                () => e.ui.hideAssistant(true),
+              : ListenableBuilder(
+                  listenable: e.focus,
+                  builder: (context, _) {
+                    final hasLiveFocus =
+                        (e.focus.running || e.focus.elapsed > 0) && index != 2;
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (hasLiveFocus)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: GestureDetector(
+                              onTap: () {
+                                MLPHaptics.medium();
+                                select(2);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 7,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF131D38),
+                                      Color(0xFF1E2F56),
+                                    ],
+                                  ),
+                                  border: Border.all(
+                                    color:
+                                        (e.focus.running
+                                                ? MLPColors.turquoise
+                                                : MLPColors.warning)
+                                            .withValues(alpha: .5),
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          (e.focus.running
+                                                  ? MLPColors.turquoise
+                                                  : MLPColors.warning)
+                                              .withValues(alpha: .25),
+                                      blurRadius: 12,
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: e.focus.running
+                                            ? MLPColors.turquoise
+                                            : MLPColors.warning,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      e.focus.running
+                                          ? 'Fokus faol'
+                                          : 'Fokus pauzada',
+                                      style: const TextStyle(
+                                        color: MLPColors.text,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${(e.focus.remaining ~/ 60).toString().padLeft(2, '0')}:${(e.focus.remaining % 60).toString().padLeft(2, '0')}',
+                                      style: TextStyle(
+                                        color: e.focus.running
+                                            ? MLPColors.turquoise
+                                            : MLPColors.warning,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w800,
+                                        fontFamily: 'monospace',
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    const Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 11,
+                                      color: MLPColors.secondaryText,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              icon: const Icon(Icons.close, size: 16),
                             ),
-                          ],
-                        ),
-                      ),
-                    MLPFloatingTabBar(index: index, onChanged: select),
-                  ],
+                          ),
+                        MLPFloatingTabBar(index: index, onChanged: select),
+                      ],
+                    );
+                  },
                 ),
         ),
       ),

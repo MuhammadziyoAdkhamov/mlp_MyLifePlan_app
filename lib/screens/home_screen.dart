@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../core/app_colors.dart';
 import '../models/growth_focus.dart';
+import '../models/learning_roadmap.dart';
 import '../providers/app_state.dart';
 import '../widgets/habit_tile.dart';
 
@@ -79,9 +80,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       },
     );
 
-    if (result == true && mounted) {
-      await context.read<AppState>().toggleHabitToday(habitId);
-    }
+    if (result != true) return;
+    if (!context.mounted) return;
+    await context.read<AppState>().toggleHabitToday(habitId);
   }
 
   Future<void> _confirmDeleteHabit(
@@ -118,9 +119,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       },
     );
 
-    if (result == true && mounted) {
-      await context.read<AppState>().deleteHabit(habitId);
-    }
+    if (result != true) return;
+    if (!context.mounted) return;
+    await context.read<AppState>().deleteHabit(habitId);
   }
 
   @override
@@ -187,6 +188,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
+                      if (app.learningRoadmaps.isNotEmpty)
+                        SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                          sliver: SliverToBoxAdapter(
+                            child: _StaggeredFadeSlide(
+                              controller: _introController,
+                              intervalStart: 0.05,
+                              intervalEnd: 0.45,
+                              offsetY: 20,
+                              child: _NextActionCard(
+                                roadmap: app.learningRoadmaps.last,
+                                onStart: () {
+                                  HapticFeedback.lightImpact();
+                                  context.go('/learning');
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
                       SliverPadding(
                         padding: const EdgeInsets.fromLTRB(20, 22, 20, 10),
                         sliver: SliverToBoxAdapter(
@@ -556,7 +576,7 @@ class _AvatarButtonState extends State<_AvatarButton> {
             gradient: AppColors.primaryGradient,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.28),
+                color: AppColors.primary.withValues(alpha: 0.28),
                 blurRadius: 30,
                 offset: const Offset(0, 12),
               ),
@@ -726,7 +746,7 @@ class _LevelCard extends StatelessWidget {
                   gradient: AppColors.primaryGradient,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.35),
+                      color: AppColors.primary.withValues(alpha: 0.35),
                       blurRadius: 32,
                       offset: const Offset(0, 12),
                     ),
@@ -776,7 +796,7 @@ class _LevelCard extends StatelessWidget {
                 return LinearProgressIndicator(
                   value: value,
                   minHeight: 9,
-                  backgroundColor: AppColors.surface3.withOpacity(0.72),
+                  backgroundColor: AppColors.surface3.withValues(alpha: 0.72),
                   color: AppColors.primary,
                 );
               },
@@ -811,9 +831,9 @@ class _TinyStatRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.surface2.withOpacity(0.65),
+        color: AppColors.surface2.withValues(alpha: 0.65),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderSoft.withOpacity(0.8)),
+        border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.8)),
       ),
       child: Row(
         children: [
@@ -854,9 +874,9 @@ class _WeekMiniChart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.surface2.withOpacity(0.55),
+        color: AppColors.surface2.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.borderSoft.withOpacity(0.78)),
+        border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.78)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -886,13 +906,13 @@ class _WeekMiniChart extends StatelessWidget {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              AppColors.primary.withOpacity(0.65),
+                              AppColors.primary.withValues(alpha: 0.65),
                               AppColors.cyan,
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.cyan.withOpacity(0.24),
+                              color: AppColors.cyan.withValues(alpha: 0.24),
                               blurRadius: 12,
                             ),
                           ],
@@ -930,9 +950,9 @@ class _MiniInsight extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
       decoration: BoxDecoration(
-        color: AppColors.surface2.withOpacity(0.54),
+        color: AppColors.surface2.withValues(alpha: 0.54),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderSoft.withOpacity(0.72)),
+        border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.72)),
       ),
       child: Row(
         children: [
@@ -1007,16 +1027,16 @@ class _QuickActionCardState extends State<_QuickActionCard> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
             decoration: BoxDecoration(
-              color: AppColors.surface.withOpacity(0.74),
+              color: AppColors.surface.withValues(alpha: 0.74),
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
                 color: _hovered
-                    ? widget.color.withOpacity(0.38)
-                    : AppColors.borderSoft.withOpacity(0.85),
+                    ? widget.color.withValues(alpha: 0.38)
+                    : AppColors.borderSoft.withValues(alpha: 0.85),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: widget.color.withOpacity(_hovered ? 0.22 : 0.10),
+                  color: widget.color.withValues(alpha: _hovered ? 0.22 : 0.10),
                   blurRadius: _hovered ? 30 : 20,
                   offset: const Offset(0, 12),
                 ),
@@ -1029,10 +1049,10 @@ class _QuickActionCardState extends State<_QuickActionCard> {
                   height: 42,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: widget.color.withOpacity(0.16),
+                    color: widget.color.withValues(alpha: 0.16),
                     boxShadow: [
                       BoxShadow(
-                        color: widget.color.withOpacity(0.15),
+                        color: widget.color.withValues(alpha: 0.15),
                         blurRadius: 18,
                       ),
                     ],
@@ -1142,13 +1162,13 @@ class _CompletedFilterPill extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
           decoration: BoxDecoration(
             color: hideCompleted
-                ? AppColors.emerald.withOpacity(0.14)
-                : AppColors.surface2.withOpacity(0.64),
+                ? AppColors.emerald.withValues(alpha: 0.14)
+                : AppColors.surface2.withValues(alpha: 0.64),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: hideCompleted
-                  ? AppColors.emerald.withOpacity(0.55)
-                  : AppColors.borderSoft.withOpacity(0.82),
+                  ? AppColors.emerald.withValues(alpha: 0.55)
+                  : AppColors.borderSoft.withValues(alpha: 0.82),
             ),
           ),
           child: Row(
@@ -1256,7 +1276,7 @@ class _MotivationCard extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: (done ? AppColors.gold : AppColors.primary)
-                      .withOpacity(0.26),
+                      .withValues(alpha: 0.26),
                   blurRadius: 22,
                   offset: const Offset(0, 10),
                 ),
@@ -1401,7 +1421,7 @@ class _BreathingDotState extends State<_BreathingDot>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(glow),
+                color: widget.color.withValues(alpha: glow),
                 blurRadius: 10 + (_controller.value * 10),
                 spreadRadius: _controller.value * 2,
               ),
@@ -1482,7 +1502,7 @@ class _AmbientOrb extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [color.withOpacity(opacity), color.withOpacity(0)],
+            colors: [color.withValues(alpha: opacity), color.withValues(alpha: 0)],
           ),
         ),
       ),
@@ -1573,9 +1593,9 @@ class _HomeSkeletonState extends State<_HomeSkeleton>
                 begin: Alignment(alignment - 1, 0),
                 end: Alignment(alignment + 1, 0),
                 colors: [
-                  AppColors.surface2.withOpacity(0.70),
-                  AppColors.surface3.withOpacity(0.95),
-                  AppColors.surface2.withOpacity(0.70),
+                  AppColors.surface2.withValues(alpha: 0.70),
+                  AppColors.surface3.withValues(alpha: 0.95),
+                  AppColors.surface2.withValues(alpha: 0.70),
                 ],
               ),
             ),
@@ -1607,6 +1627,90 @@ class _HomeSkeletonState extends State<_HomeSkeleton>
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _NextActionCard extends StatelessWidget {
+  const _NextActionCard({required this.roadmap, required this.onStart});
+
+  final LearningRoadmap roadmap;
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final nextStageIndex = roadmap.stages.indexWhere((s) => !s.isCompleted);
+    if (nextStageIndex == -1) return const SizedBox.shrink();
+    
+    final stage = roadmap.stages[nextStageIndex];
+
+    return GlassCard(
+      glowColor: AppColors.primary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Keyingi qadam',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                'Bosqich ${nextStageIndex + 1}/${roadmap.stages.length}',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            stage.title,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            stage.objective,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onStart,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                elevation: 0,
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Darsni boshlash', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward_rounded, size: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

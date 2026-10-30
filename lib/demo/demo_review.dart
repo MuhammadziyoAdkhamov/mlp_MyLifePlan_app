@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 
 import 'demo_store.dart';
 import '../app/theme/mlp_design_system.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
 
-const _panel = MLPColors.secondary;
 const _line = MLPColors.border;
 const _muted = MLPColors.secondaryText;
 const _mint = MLPColors.primaryLight;
@@ -850,7 +850,7 @@ class DemoHub extends StatelessWidget {
       'Natijani baholash va keyingi haftani rejalash',
     ];
     const minutes = [25, 30, 25, 50, 50, 40, 25];
-    final confirmed = await showDialog<bool>(
+    final confirmed = await mlpShowDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('7 kunlik rejani qo‘shish'),
@@ -929,7 +929,7 @@ class DemoHub extends StatelessWidget {
   }
 
   Future<void> _showImport(BuildContext context) async {
-    final imported = await showDialog<bool>(
+    final imported = await mlpShowDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (_) => _ImportDialog(store: store),
@@ -966,7 +966,7 @@ class _ImportDialogState extends State<_ImportDialog> {
       setState(() => _error = 'JSON matnini joylashtiring.');
       return;
     }
-    final replace = await showDialog<bool>(
+    final replace = await mlpShowDialog<bool>(
       context: context,
       builder: (confirmContext) => AlertDialog(
         title: const Text('Joriy ma’lumotlar almashtirilsinmi?'),
@@ -1054,7 +1054,7 @@ Future<void> _showExport(
   required String filename,
   required String content,
   required String description,
-}) => showDialog<void>(
+}) => mlpShowDialog<void>(
   context: context,
   builder: (dialogContext) => AlertDialog(
     title: Text(title),
@@ -1174,16 +1174,10 @@ class _ReviewPanel extends StatelessWidget {
   const _ReviewPanel({required this.child});
   final Widget child;
   @override
-  Widget build(BuildContext context) => Material(
-    color: _panel,
-    shape: RoundedRectangleBorder(
-      side: const BorderSide(color: _line),
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: SizedBox(
-      width: double.infinity,
-      child: Padding(padding: const EdgeInsets.all(24), child: child),
-    ),
+  Widget build(BuildContext context) => MLPLiquidSurface(
+    radius: 18,
+    padding: const EdgeInsets.all(24),
+    child: SizedBox(width: double.infinity, child: child),
   );
 }
 

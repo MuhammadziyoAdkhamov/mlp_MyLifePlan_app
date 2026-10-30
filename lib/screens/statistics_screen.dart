@@ -285,7 +285,7 @@ class _CoachInsight extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       glowColor: color,
-      borderColor: color.withOpacity(0.26),
+      borderColor: color.withValues(alpha: 0.26),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -294,7 +294,7 @@ class _CoachInsight extends StatelessWidget {
             height: 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
             ),
             child: Icon(icon, color: color, size: 23),
           ),
@@ -400,9 +400,9 @@ class _PatternTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.surface2.withOpacity(0.58),
+        color: AppColors.surface2.withValues(alpha: 0.58),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderSoft.withOpacity(0.75)),
+        border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.75)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

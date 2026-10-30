@@ -71,11 +71,11 @@ class _ProgressRingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
-      ..color = backgroundColor.withOpacity(0.9);
+      ..color = backgroundColor.withValues(alpha: 0.9);
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    final gradient = const SweepGradient(
+    const gradient = SweepGradient(
       startAngle: -math.pi / 2,
       endAngle: math.pi * 1.5,
       colors: [AppColors.cyan, AppColors.primary2, AppColors.primary, AppColors.emerald],

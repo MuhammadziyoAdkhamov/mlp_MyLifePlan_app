@@ -13,6 +13,8 @@ enum MLPScreen {
   roadmap('/goals/roadmap', 'Yo‘l xaritasini ko‘rish', 'B'),
   goalDetail('/goals/detail', 'Maqsad tafsilotlari', 'C'),
   today('/today', 'Bugun', 'C'),
+  projects('/projects', 'Loyihalar', 'C'),
+  tasks('/tasks', 'Vazifalar', 'C'),
   calendar('/calendar', 'Taqvim', 'C'),
   scheduleEditor('/calendar/edit', 'Mashg‘ulotni rejalash', 'C'),
   focus('/focus', 'Fokus markazi', 'C'),

@@ -1,20 +1,27 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/router/mlp_routes.dart';
 import '../../app/theme/mlp_design_system.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_brand.dart';
+import '../ai_companion/mlp_ai_orb.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 
 Future<void> _open(BuildContext context, MLPScreen screen, Widget child) =>
     Navigator.of(context).push<void>(
-      PageRouteBuilder<void>(
-        settings: RouteSettings(name: screen.path),
-        transitionDuration: MLPDimensions.motion(context, route: true),
-        reverseTransitionDuration: MLPDimensions.motion(context, route: true),
-        pageBuilder: (_, __, ___) => child,
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
-      ),
+      MediaQuery.disableAnimationsOf(context)
+          ? PageRouteBuilder<void>(
+              settings: RouteSettings(name: screen.path),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+              pageBuilder: (_, __, ___) => child,
+            )
+          : CupertinoPageRoute<void>(
+              settings: RouteSettings(name: screen.path),
+              builder: (_) => child,
+            ),
     );
 
 class MLPEntryGate extends StatefulWidget {
@@ -102,24 +109,35 @@ class MLPSplashScreen extends StatelessWidget {
   const MLPSplashScreen({super.key});
   @override
   Widget build(BuildContext context) => const MLPScaffold(
-    body: Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MLPAvatarOrb(),
-            SizedBox(height: 24),
-            Text(
-              'MLP',
-              style: TextStyle(fontSize: 34, fontWeight: FontWeight.w800),
+    body: Stack(
+      fit: StackFit.expand,
+      children: [
+        _AccountScenery(),
+        Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _MLPWordmark(),
+                SizedBox(height: 30),
+                MLPLiquidSurface(
+                  radius: 24,
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CupertinoActivityIndicator(color: MLPColors.turquoise),
+                      SizedBox(width: 12),
+                      Flexible(child: Text('Maqsaddan natijaga')),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 8),
-            Text('Maqsaddan natijaga'),
-            SizedBox(height: 24),
-            CircularProgressIndicator(),
-          ],
+          ),
         ),
-      ),
+      ],
     ),
   );
 }
@@ -154,68 +172,129 @@ class _MLPWelcomeScreenState extends State<MLPWelcomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => _AccountPage(
-    title: null,
-    children: [
-      const SizedBox(height: 16),
-      const MLPWelcomeHero(),
-      const SizedBox(height: 28),
-      Text(
-        'Maqsadlaringni natijaga aylantir.',
-        style: Theme.of(context).textTheme.displaySmall,
-      ),
-      const SizedBox(height: 16),
-      const Text(
-        'MLP bilan rejalashtir, bajar va rivojlanishingni kuzat.',
-        style: TextStyle(
-          color: MLPColors.secondaryText,
-          fontSize: 16,
-          height: 1.6,
-        ),
-      ),
-      const SizedBox(height: 24),
-      const _DemoNotice(
-        'Demo rejim: ma’lumotlar shu qurilmada saqlanadi. Haqiqiy AI va SMS tasdig‘i ulanmagan.',
-      ),
-      const SizedBox(height: 28),
-      MLPPrimaryButton(
-        label: 'Boshlash',
-        onPressed: busy
-            ? null
-            : () => _open(
-                context,
-                MLPScreen.registration,
-                MLPRegistrationScreen(repository: widget.repository),
+  Widget build(BuildContext context) => MLPScaffold(
+    body: Stack(
+      fit: StackFit.expand,
+      children: [
+        const _AccountScenery(),
+        LayoutBuilder(
+          builder: (context, viewport) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: viewport.maxHeight),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 460),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: (viewport.maxHeight * .09).clamp(16.0, 76.0),
+                        ),
+                        const Text(
+                          'Maqsadlaringni\nnatijaga aylantir.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 29,
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        const Text(
+                          'MLP bilan rejalashtir, bajar va rivojlanishingni kuzat.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: MLPColors.secondaryText,
+                            height: 1.5,
+                          ),
+                        ),
+                        const MLPAINebula(height: 210),
+                        const Text(
+                          'Yaxshiroq versiyangiz sari\nhar kuni bir qadam.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                            shadows: [
+                              Shadow(color: Colors.black, blurRadius: 8),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        MLPPrimaryButton(
+                          label: 'Boshlash',
+                          onPressed: busy
+                              ? null
+                              : () => _open(
+                                  context,
+                                  MLPScreen.registration,
+                                  MLPRegistrationScreen(
+                                    repository: widget.repository,
+                                  ),
+                                ),
+                          icon: Icons.arrow_forward_rounded,
+                        ),
+                        const SizedBox(height: 10),
+                        MLPSecondaryButton(
+                          label: 'Hisobim bor',
+                          onPressed: busy
+                              ? null
+                              : () => _open(
+                                  context,
+                                  MLPScreen.login,
+                                  MLPLoginScreen(repository: widget.repository),
+                                ),
+                        ),
+                        const SizedBox(height: 4),
+                        TextButton(
+                          onPressed: busy ? null : _guest,
+                          child: Text(
+                            busy ? 'Saqlanmoqda…' : 'Mehmon sifatida kirish',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        if (error != null) ...[
+                          const SizedBox(height: 12),
+                          _DemoNotice(error!, error: true),
+                        ],
+                        const SizedBox(height: 14),
+                        const Text(
+                          'Demo rejim: ma’lumotlar shu qurilmada saqlanadi. '
+                          'Haqiqiy AI va SMS tasdig‘i ulanmagan.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: MLPColors.secondaryText,
+                            fontSize: 11,
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Mavjud vazifa va maqsadlaringiz saqlanadi. Sinov uchun '
+                          'haqiqiy telefon raqamingizni kiritishingiz shart emas.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: MLPColors.secondaryText,
+                            fontSize: 10,
+                            height: 1.6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-        icon: Icons.arrow_forward_rounded,
-      ),
-      const SizedBox(height: 12),
-      MLPSecondaryButton(
-        label: 'Hisobim bor',
-        onPressed: busy
-            ? null
-            : () => _open(
-                context,
-                MLPScreen.login,
-                MLPLoginScreen(repository: widget.repository),
-              ),
-      ),
-      const SizedBox(height: 8),
-      TextButton(
-        onPressed: busy ? null : _guest,
-        child: Text(busy ? 'Saqlanmoqda…' : 'Mehmon sifatida kirish'),
-      ),
-      if (error != null) _DemoNotice(error!, error: true),
-      const SizedBox(height: 16),
-      const Text(
-        'Mavjud vazifa va maqsadlaringiz saqlanadi. Sinov uchun haqiqiy telefon raqamingizni kiritishingiz shart emas.',
-        style: TextStyle(
-          color: MLPColors.secondaryText,
-          fontSize: 12,
-          height: 1.6,
+            ),
+          ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
 
@@ -320,11 +399,10 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
               ('Qiz', 'Qiz'),
               ('Ko‘rsatmaslik', 'Ko‘rsatmaslikni afzal ko‘raman'),
             ].map(
-              (v) => CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: gender == v.$1,
-                title: Text(v.$2),
-                onChanged: busy ? null : (_) => setState(() => gender = v.$1),
+              (v) => _AccountChoice(
+                selected: gender == v.$1,
+                title: v.$2,
+                onTap: busy ? null : () => setState(() => gender = v.$1),
               ),
             ),
             const Text(
@@ -481,19 +559,68 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
       '${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}';
   Future<void> _pick(bool first) async {
     final value = first ? start : finish;
-    final result = await showTimePicker(
+    var picked = value;
+    final result = await mlpShowSheet<int>(
       context: context,
-      initialTime: TimeOfDay(hour: value ~/ 60, minute: value % 60),
-      helpText: first ? 'Boshlanish soati' : 'Tugash soati',
-      cancelText: 'Bekor qilish',
-      confirmText: 'Tanlash',
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (sheet) => SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: MLPColors.muted,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                first ? 'Boshlanish soati' : 'Tugash soati',
+                textAlign: TextAlign.center,
+                style: Theme.of(sheet).textTheme.titleMedium,
+              ),
+              SizedBox(
+                height: 216,
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.time,
+                  use24hFormat: true,
+                  initialDateTime: DateTime(
+                    2026,
+                    1,
+                    1,
+                    value ~/ 60,
+                    value % 60,
+                  ),
+                  onDateTimeChanged: (date) =>
+                      picked = date.hour * 60 + date.minute,
+                ),
+              ),
+              MLPPrimaryButton(
+                label: 'Tanlash',
+                onPressed: () => Navigator.pop(sheet, picked),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => Navigator.pop(sheet),
+                child: const Text('Bekor qilish'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-    if (result != null) {
+    if (result != null && mounted) {
       setState(() {
         if (first) {
-          start = result.hour * 60 + result.minute;
+          start = result;
         } else {
-          finish = result.hour * 60 + result.minute;
+          finish = result;
         }
       });
     }
@@ -597,14 +724,35 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: notifications,
-              title: const Text('Eslatma xohishi'),
-              subtitle: const Text(
-                'Tanlov saqlanadi. Haqiqiy bildirishnoma ruxsati va yetkazish hali ulanmagan.',
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Eslatma xohishi',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Semantics(
+                  label: 'Eslatma xohishi',
+                  child: CupertinoSwitch(
+                    value: notifications,
+                    activeTrackColor: MLPColors.turquoise,
+                    onChanged: busy
+                        ? null
+                        : (v) => setState(() => notifications = v),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Tanlov saqlanadi. Haqiqiy bildirishnoma ruxsati va yetkazish hali ulanmagan.',
+              style: TextStyle(
+                color: MLPColors.secondaryText,
+                fontSize: 12,
+                height: 1.6,
               ),
-              onChanged: busy ? null : (v) => setState(() => notifications = v),
             ),
             const SizedBox(height: 20),
             MLPTextField(
@@ -641,8 +789,9 @@ class _DemoNotice extends StatelessWidget {
   final String message;
   final bool error;
   @override
-  Widget build(BuildContext context) => MLPGlassCard(
-    padding: 16,
+  Widget build(BuildContext context) => MLPLiquidSurface(
+    padding: const EdgeInsets.all(16),
+    blur: false,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -671,14 +820,161 @@ class _AccountPage extends StatelessWidget {
   Widget build(BuildContext context) => MLPScaffold(
     title: title,
     body: SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(
+              MediaQuery.sizeOf(context).width < 360 ? 16 : 24,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
+              children: [
+                if (title != null) ...[
+                  _AccountHeading(title: title!),
+                  const SizedBox(height: 24),
+                ],
+                MLPLiquidSurface(
+                  radius: 26,
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: children,
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _AccountScenery extends StatelessWidget {
+  const _AccountScenery();
+  @override
+  Widget build(BuildContext context) => const IgnorePointer(
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment(.3, -.4),
+          radius: 1.1,
+          colors: [Color(0x22162C8E), Colors.transparent],
+        ),
+      ),
+    ),
+  );
+}
+
+class _MLPWordmark extends StatelessWidget {
+  const _MLPWordmark();
+  @override
+  Widget build(BuildContext context) => const Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      MLPBrandMark(size: 145),
+      SizedBox(height: 18),
+      Text(
+        'MLP',
+        style: TextStyle(
+          fontSize: 42,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.5,
+        ),
+      ),
+      SizedBox(height: 12),
+      Text(
+        'Maqsadlaringni\nnatijaga aylantir',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 15,
+          height: 1.5,
+          color: MLPColors.secondaryText,
+        ),
+      ),
+    ],
+  );
+}
+
+class _AccountHeading extends StatelessWidget {
+  const _AccountHeading({required this.title});
+  final String title;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 4, bottom: 4),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            title == 'Mening tanlovlarim'
+                ? 'Kun tartibingiz'
+                : title == 'Hisobga kirish'
+                ? 'Xush kelibsiz'
+                : 'Siz haqingizda',
+            style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+          ),
+        ),
+        const Icon(
+          CupertinoIcons.person_crop_circle,
+          size: 26,
+          color: MLPColors.secondaryText,
+        ),
+      ],
+    ),
+  );
+}
+
+class _AccountChoice extends StatelessWidget {
+  const _AccountChoice({
+    required this.selected,
+    required this.title,
+    required this.onTap,
+  });
+  final bool selected;
+  final String title;
+  final VoidCallback? onTap;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Semantics(
+      checked: selected,
+      inMutuallyExclusiveGroup: true,
+      child: MLPPressResponse(
+        child: MLPLiquidSurface(
+          blur: false,
+          radius: 14,
+          tint: selected ? MLPColors.turquoise.withValues(alpha: .1) : null,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(fontSize: 14, height: 1.5),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Icon(
+                      selected
+                          ? CupertinoIcons.checkmark_circle_fill
+                          : CupertinoIcons.circle,
+                      color: selected ? MLPColors.turquoise : MLPColors.muted,
+                      size: 23,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

@@ -20,7 +20,7 @@ class XPHistoryTile extends StatelessWidget {
             height: 42,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary.withOpacity(0.14),
+              color: AppColors.primary.withValues(alpha: 0.14),
             ),
             child: const Icon(Icons.star_rounded, color: AppColors.cyan, size: 20),
           ),

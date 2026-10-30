@@ -22,7 +22,7 @@ class JourneyTaskTile extends StatelessWidget {
       opacity: locked ? 0.58 : 1,
       child: GlassCard(
         onTap: locked ? null : onTap,
-        borderColor: completed ? AppColors.emerald.withOpacity(0.4) : null,
+        borderColor: completed ? AppColors.emerald.withValues(alpha: 0.4) : null,
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
@@ -31,7 +31,7 @@ class JourneyTaskTile extends StatelessWidget {
               height: 42,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: completed ? AppColors.emerald.withOpacity(0.18) : AppColors.surface3,
+                color: completed ? AppColors.emerald.withValues(alpha: 0.18) : AppColors.surface3,
               ),
               child: Icon(
                 locked ? Icons.lock_rounded : completed ? Icons.check_rounded : Icons.radio_button_unchecked_rounded,

@@ -21,9 +21,9 @@ class GlowIconButton extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color.withOpacity(0.13),
-        border: Border.all(color: color.withOpacity(0.28)),
-        boxShadow: [BoxShadow(color: color.withOpacity(0.18), blurRadius: 24)],
+        color: color.withValues(alpha: 0.13),
+        border: Border.all(color: color.withValues(alpha: 0.28)),
+        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.18), blurRadius: 24)],
       ),
       child: IconButton(
         onPressed: onPressed,

@@ -21,9 +21,9 @@ class CalendarHeatmap extends StatelessWidget {
           width: 18,
           height: 18,
           decoration: BoxDecoration(
-            color: color.withOpacity(value == 0 ? 0.46 : 0.95),
+            color: color.withValues(alpha: value == 0 ? 0.46 : 0.95),
             borderRadius: BorderRadius.circular(5),
-            border: Border.all(color: AppColors.borderSoft.withOpacity(0.7)),
+            border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.7)),
           ),
         );
       }).toList(),

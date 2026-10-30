@@ -293,9 +293,9 @@ class _TopBar extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
           decoration: BoxDecoration(
-            color: AppColors.surface2.withOpacity(0.62),
+            color: AppColors.surface2.withValues(alpha: 0.62),
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: AppColors.borderSoft.withOpacity(0.75)),
+            border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.75)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -525,8 +525,8 @@ class _PremiumVisual extends StatelessWidget {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        data.color.withOpacity(0.38),
-                        data.color.withOpacity(0.10),
+                        data.color.withValues(alpha: 0.38),
+                        data.color.withValues(alpha: 0.10),
                         Colors.transparent,
                       ],
                     ),
@@ -537,11 +537,11 @@ class _PremiumVisual extends StatelessWidget {
                   height: 190,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.surface.withOpacity(0.70),
-                    border: Border.all(color: data.color.withOpacity(0.38)),
+                    color: AppColors.surface.withValues(alpha: 0.70),
+                    border: Border.all(color: data.color.withValues(alpha: 0.38)),
                     boxShadow: [
                       BoxShadow(
-                        color: data.color.withOpacity(0.24),
+                        color: data.color.withValues(alpha: 0.24),
                         blurRadius: 55,
                         offset: const Offset(0, 22),
                       ),
@@ -570,7 +570,7 @@ class _PremiumVisual extends StatelessWidget {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: data.color.withOpacity(0.35),
+                              color: data.color.withValues(alpha: 0.35),
                               blurRadius: 32,
                               offset: const Offset(0, 12),
                             ),
@@ -624,12 +624,12 @@ class _FloatingMiniChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surface2.withOpacity(0.78),
+        color: AppColors.surface2.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.42)),
+        border: Border.all(color: color.withValues(alpha: 0.42)),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.15),
+            color: color.withValues(alpha: 0.15),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -664,9 +664,9 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.42)),
+        border: Border.all(color: color.withValues(alpha: 0.42)),
       ),
       child: Text(
         text,
@@ -706,7 +706,7 @@ class _PageDots extends StatelessWidget {
             boxShadow: active
                 ? [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.35),
+                      color: AppColors.primary.withValues(alpha: 0.35),
                       blurRadius: 14,
                     ),
                   ]
@@ -799,7 +799,7 @@ class _Orb extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: RadialGradient(
-          colors: [color.withOpacity(opacity), color.withOpacity(0)],
+          colors: [color.withValues(alpha: opacity), color.withValues(alpha: 0)],
         ),
       ),
     );
@@ -825,13 +825,13 @@ class _OrbitPainter extends CustomPainter {
     final ringPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.4
-      ..color = color.withOpacity(0.30);
+      ..color = color.withValues(alpha: 0.30);
 
     canvas.drawCircle(center, radius, ringPaint);
     canvas.drawCircle(center, radius * 0.72, ringPaint);
 
-    final dotPaint = Paint()..color = color.withOpacity(0.95);
-    final secondDotPaint = Paint()..color = AppColors.cyan.withOpacity(0.90);
+    final dotPaint = Paint()..color = color.withValues(alpha: 0.95);
+    final secondDotPaint = Paint()..color = AppColors.cyan.withValues(alpha: 0.90);
 
     final angle = progress * math.pi * 2 + (pageIndex * 0.8);
     final point = Offset(
@@ -859,8 +859,8 @@ class _OrbitPainter extends CustomPainter {
 class _StarsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final whitePaint = Paint()..color = Colors.white.withOpacity(0.55);
-    final bluePaint = Paint()..color = AppColors.cyan.withOpacity(0.52);
+    final whitePaint = Paint()..color = Colors.white.withValues(alpha: 0.55);
+    final bluePaint = Paint()..color = AppColors.cyan.withValues(alpha: 0.52);
 
     for (int i = 0; i < 48; i++) {
       final dx = ((i * 43 + 17) % 100) / 100 * size.width;

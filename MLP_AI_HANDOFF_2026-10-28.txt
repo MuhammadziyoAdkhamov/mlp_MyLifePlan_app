@@ -1,0 +1,351 @@
+MLP — BOSHQA AI UCHUN TO‘LIQ DAVOM ETTIRISH FAYLI
+Holat sanasi: 2026-10-28, Asia/Tashkent
+Muallif: shu loyihada ishlagan Codex. Bu fayl yangi AI uchun boshlang‘ich kontekst.
+
+YANGI AI UCHUN BIRINCHI TOPSHIRIQ
+
+Siz mavjud MLP Flutter loyihasini davom ettiryapsiz. Loyihani boshidan yaratmang. Avval bu faylni, haqiqiy kodni va Git holatini o‘qing. Quyida ko‘rsatilgan tekshirilgan funksiyalarni, foydalanuvchi ma’lumotlarini, mavjud backend fayllarini va boshqa mualliflarning o‘zgarishlarini saqlang. Birinchi navbatda 9-bo‘limdagi uchta aniq qolgan nuqsonni tuzating. So‘ng platforma/runtime tekshiruvlarini bajaring. Ishni katta qayta yozishga aylantirmang. Bajarilgan ish va haqiqiy test natijalarini yangilab boring. Ushbu hujjatni o‘qish kodning joriy holatini tekshirish o‘rnini bosmaydi.
+
+1. FOYDALANUVCHI NIMANI XOHLAYDI
+
+- Mahsulot: MLP / MYLife Plan; auditoriya: talaba va junior mutaxassislar.
+- Barcha faol ekranlarda premium iOS uslubidagi Liquid Glass: navy fon, cyan/violet, haqiqiy BackdropFilter blur, shaffof yuzalar, yupqa chegaralar, yumshoq chuqurlik.
+- Faqat Home emas: Loyihalar, Vazifalar, Fokus, Statistika, Taqvim, Ustoz AI, Goals, Rewards, Profile, Settings, Login, Onboarding va ichki formalar/dialoglar.
+- Asos: foydalanuvchining ekranlar montaji. Figma havolasi YO‘Q; foydalanuvchi «Faqat shu rasm asosida davom eting» dedi. Screenshotni butun UI sifatida ko‘rsatish mumkin emas; haqiqiy Flutter widgetlar kerak.
+- Pomodoro 25:00, Start/Pause/Resume/Stop, vazifaga bog‘lash, holatni tiklash, haqiqiy faol vaqt tarixi.
+- Galereyadan global fon rasmi tanlash, saqlash, preview va standart fonga qaytish.
+- Barcha haqiqiy biznes funksiyalar va ma’lumotlar saqlansin. Soxta SMS/live AI/musiqa xizmatini haqiqiy deb ko‘rsatmang.
+- Android/iOS o‘lchamlari, SafeArea, katta matn, kamaytirilgan harakat va tezkor UI.
+- Foydalanuvchi tez natija va foizli qisqa statusni xohlaydi. Oxirgi ish holati taxminan 85/100 deb aytilgan. Bu native release yoki 60 FPS tasdig‘i emas.
+- ENG OXIRGI KO‘RSATMA: brauzerni qayta ochmang; foydalanuvchi o‘zi ko‘rgan. Avval boshqa AIga beradigan shu TXT tayyorlansin.
+
+Reference rasmning lokal manzili:
+C:\Users\THEMIL~1\AppData\Local\Temp\codex-clipboard-c22c710e-82f1-404b-bd57-6a4a1764df4d.png
+Qayta yuborilgan o‘sha reference:
+C:\Users\THEMIL~1\AppData\Local\Temp\codex-clipboard-92e1bd8d-914a-4428-ae84-5c1d103c15a3.png
+Bu temp fayllar keyin o‘chishi mumkin. Hozirgi renderlar doimiy loyiha docs/evidence papkasida bor.
+
+2. ANIQ LOYIHA, ENTRYPOINT VA GIT HOLATI
+
+Root:
+C:\Users\TheMillionaire\Downloads\MY_QUESTs\habit_tracker_GOAL\mylife_plan_guest_mode_fixed_1
+
+Flutter entrypoint: lib/main.dart
+Faol oqim: MLPBootstrap -> MplDemoApp -> MLPAppearanceHost / MaterialApp -> MLPEntryGate -> MLPProductShell.
+Faol app Firebase login shell emas, mahalliy UI/prototip oqimi. README eski Google/Firebase da’volarini sanaydi; uni active main.dart dalili o‘rnida olmang.
+
+Branch: feat/mlp-beta-sprint01
+Hozirgi HEAD: 4a15b9e — docs: record completed MLP UI QA and browser smoke evidence
+Oldingi: 9520df6 — feat: complete MLP local UI workflows and iOS-style navigation
+Oldingi: 5f6abaf — calendar/schedule editor
+Oldingi: 91b78a6 — onboarding/custom goal roadmap
+
+MUHIM: oxirgi Liquid Glass va galereya o‘zgarishlari hali commit QILINMAGAN. Ular working tree ichida bor. Faqat eski commitni checkout qilish yangi ishni yo‘qotishi mumkin.
+Loyiha avvaldan ko‘p dirty/untracked fayl bilan kelgan. Stagingda lib/firebase_options.dart o‘chirilishi avvaldan bor; bunga tegmang va commitga tasodifan kiritmang.
+git reset --hard, git clean, ommaviy stash, git checkout -- ., git add . ishlatmang. Commit qilinsa faqat aniq tekshirilgan fayllarni allowlist bilan tanlang. Oldingi muallif ishini o‘z ishingiz deb commit qilmang.
+AGENTS.md loyiha/ota kataloglarida oldingi tekshiruvda topilmadi; yangi sessiyada bor-yo‘qligini yana tekshiring.
+Maxfiy konfiguratsiya fayllarining qiymatlarini log/AI javobi/Gitga chiqarmang.
+
+3. FAOL KOD TUZILMASI
+
+lib/main.dart
+  Bootstrap, SharedPreferences/DemoStore init, load/error/retry.
+
+lib/app/
+  mlp_product_shell.dart: ichki Navigator, route dispatch, 5 asosiy ko‘rinish, + action sheet, yagona fokus controller.
+  mlp_environment.dart: store/ui/prefs/focus/go/tab/clock bog‘lovchisi; xatoli yozuv uchun act(), info(), MLPPage/MenuTile.
+  router/mlp_routes.dart: 30 ta MLPScreen named route; args va feedback observer.
+  theme/mlp_design_system.dart: barcha premium navy/cyan/violet ranglar, typography, Cupertino theme, dialog/sheet/input/page-transition theme.
+
+lib/core/design_system/
+  mlp_widgets.dart: MLPScaffold, MLPAppBar, floating tab bar, tugmalar, glass card, field, progress, confirmation sheet, toast, empty/error/loading.
+  mlp_liquid_glass.dart: haqiqiy clipped/grouped BackdropFilter, MLPLiquidSurface, ambient/photo background, press response, round action, segmented, shared modal wrapperlar.
+  mlp_reference_components.dart: compact header, haftalik strip, kichik metrics, task/project card, badge, vaqt formatlash.
+  mlp_appearance.dart: gallery picker adapter, rasm decode/resize, local appearance controller, inherited Scope va Host.
+
+lib/demo/
+  demo_store.dart: asosiy domain va mahalliy saqlov, tasks/goals/habits/focus/activity, CRUD, import/export, rollback.
+  demo_app.dart: faol MaterialApp va saqlab qolingan eski workspace. Legacy oynalar Settings orqali ochiladi.
+  demo_forms.dart: haqiqiy task/goal/habit formalar, validatsiya va saqlash.
+  demo_review.dart: topshirish/o‘z hisoboti va eski tekshiruv dialoglari.
+
+lib/data/
+  repositories/mlp_ui_repository.dart: local profile/preferences/onboarding, goal metadata, schedules, chat, assessments, focus draft, cosmetic va UI state. Bu redesignda schema qayta yozilmadi.
+  models/mlp_schedule.dart: recurrence, start/end, capacity/conflicts, planner math.
+
+lib/features/onboarding/mlp_account_flow.dart
+  Entry gate, scenic Splash/Welcome, demo Registration/Login, preferences. Haqiqiy OTP emas. Form validatsiyasi, mehmon kirishi va saqlov bor.
+lib/features/workspace/mlp_workspace_pages.dart
+  MLPTodayPage, MLPGoalsPage (Loyihalar + maqsadlar), yangi MLPTasksPage; mlpStartTask va task CRUD/action sheet.
+lib/features/goals/mlp_goal_flow.dart
+  Erkin matnli maqsad -> aniqlashtirish -> boshlang‘ich self-assessment -> editable roadmap -> atomic goal+linked tasks.
+lib/features/goals/mlp_goal_detail.dart
+  Goal detail, progress, linked tasks, edit/archive/delete.
+lib/features/planner/mlp_calendar.dart / mlp_schedule_editor.dart
+  Taqvim, kun/hafta/oy, recurring mashg‘ulot, conflict/capacity confirmation, reminder niyati, occurrence report.
+lib/features/focus/mlp_focus_controller.dart
+  Yagona haqiqiy clock-based fokus holati. UI redesign controller/store mantiqini almashtirmagan.
+lib/features/focus/mlp_focus_pages.dart
+  Setup, active ring, pause/resume/finish, custom duration, task linkage, summary/note/save/history.
+lib/features/ai_companion/mlp_companion_pages.dart / mlp_ai_orb.dart
+  Local deterministic assistant adapter, chat persistence/retry, animated nebula/orb, voice preview va personalizatsiya.
+lib/features/progress/mlp_progress_pages.dart
+  Verification, predefined quiz, passport, Statistika (Hafta/8 hafta/Oy/Yil), haqiqiy session seconds va project donut.
+lib/features/lifestyle/mlp_lifestyle_pages.dart
+  Profile, Settings, Notifications, Rewards, sample Weather, Soundspace catalog, export/privacy.
+lib/features/lifestyle/mlp_background_settings.dart
+  Mavzu va fon: real gallery select, preview, cancel/error/reset, saved image.
+
+MUHIM: lib/screens/, lib/widgets/, lib/providers/, lib/routes/, lib/core/design/, lib/core/domain/, lib/features/ustoz/, home/, learning/ va boshqa parallel/legacy kataloglar ham bor. Ularni faol main.dart bilan adashtirmang. Ko‘pi oldindan mavjud dirty/untracked ishlar. Ularni o‘chirmang, «duplicate ekan» deb avtomatik birlashtirmang. Avval haqiqiy import graphni tekshiring.
+
+4. NAVIGATSIYA VA EKRANLAR
+
+Pastki bar: Bugun / Loyihalar / markaziy + / Vazifalar / Statistika.
+Programmatik index: 0 Today, 1 Projects, 2 FocusHub, 3 Tasks, 4 Statistics.
+Center + tab tanlash emas, real glass menyu: Yangi vazifa, Yangi maqsad, Fokus sessiyasi, Taqvim, Ustoz AI, Mening profilim.
+Ustoz va Profil endi alohida push route; showBack:true bilan orqaga qaytadi. Eski e.tab(3)=chat, e.tab(4)=profile taxminini ishlatmang.
+Home ismi/profil semantics -> Profil; Home Ustoz kartasi -> Chat; assistant kartasini yashirish/Settingsda tiklash bor.
+
+30 ta route:
+/splash, /welcome, /registration, /login, /preferences,
+/goals/new, /goals/clarify, /goals/diagnosis, /goals/roadmap, /goals/detail,
+/today, /projects, /tasks, /calendar, /calendar/edit,
+/focus, /focus/active, /focus/summary,
+/ustoz, /ustoz/voice, /ustoz/preferences,
+/verification, /passport, /progress,
+/rewards, /weather, /soundspace, /profile, /settings, /notifications.
+Mavzu va fon qo‘shimcha sahifasi Settings/Profile ichidan to‘g‘ridan-to‘g‘ri route bilan ochiladi; MLPScreen enumiga kiritilmagan.
+Goal wizardning o‘rta route’lari draftsiz ochilsa fallback beradi; bu ataylab xavfsiz recover holati.
+
+5. NIMALAR AMALGA OSHIRILDI
+
+- Barcha faol sahifalarga shared glass cards/scaffold/appbar/theme tatbiq qilindi; legacy form/review/dialoglar ham glass wrapper oladi.
+- Navy #040916, Cyan #00D1FF, Violet #A855F7, Green #22C55E, Amber #F59E0B. Asosiy matn soft white.
+- Blur sigma10 clipped; BackdropGroup bilan sibling capture birlashadi. Modal/tab alohida blur. High contrastda blur o‘chadi va yuzalar deyarli opaque.
+- Responsive floating glass bar va amaldagi plus menyusi; real navigatsiya saqlangan.
+- Home ixcham greeting, muhim task, real focus/count metrics, jadval va task timeline. Soat bo‘lmasa «Vaqt berilmagan»; soxta 10:00 yo‘q.
+- Priority bug tuzatildi: task.priority 1 eng muhim, oldingi descending tartib almashtirildi.
+- Loyihalar mavjud task.project bo‘yicha guruhlanadi. Yangi mustaqil Project backend modeli YARATILMAGAN. Search/date/status filter, project tasks sheet, goal/archive CRUD saqlangan.
+- Tasks alohida Bugun/Barchasi/Muhim, qidiruv, priority/project pills, real saved focus, hisobot, play va CRUD.
+- Circular focus ring, real countdown, start/pause/resume/finish, 25/5 va 50/10/custom, bog‘langan task, note/save/history.
+- Statistika fake +12% emas: filtrlangan saved session seconds, haftalik/8haftalik/oy/yil, oldingi/keyingi davr, project mapping, donut, clipboard report.
+- Focus faoliyat va mustaqil ko‘nikma bahosi alohida. Manual goal progress, task self-report va predefined quiz bir-biriga tenglashtirilmaydi.
+- Ustoz orb/cloud raster asset + bounded yengil animatsiya; idle holatda cheksiz animation yo‘q. Deterministic demo adapter va yozish retry saqlangan.
+- Profile compact avatar/name/pro info, real stats, grouped rows va persistent Cupertino switch.
+- Scenic onboarding, glass auth/preferences, Cupertino time wheel va switch; demo auth oshkora.
+- Settings/Profile -> Mavzu va fon -> galereyadan haqiqiy rasm tanlash, preview, saqlash, tasdiqlangan reset.
+- iOS image_picker permission matni qo‘shildi; camera/mic permission qo‘shilmadi. iOS minimum15.0 qilib dependencyga moslashtirildi.
+
+6. SAQLOV VA BUZILMASLIGI KERAK BO‘LGAN QOIDALAR
+
+SharedPreferences:
+  mpl_lifeos_demo_v1 = asosiy DemoStore (task, goal, habit, focus, activity).
+  mlp_ui_prototype_v1 = profile, preferences, goalPlans, schedules, chat, assessments, focusDraft va boshqa UI metadata.
+  mlp_appearance_background_v1 = faqat shaxsiy fon PNG/appearance envelope.
+Bu kalitlarni almashtirmang yoki yangi UI uchun eski ma’lumotni clear qilmang.
+Yozuv commit muvaffaqiyatli bo‘lgandan keyingina state publish qilinsin. Failure/cancel eski state’ni saqlaydi. Corrupt raw qiymat o‘z-o‘zidan o‘chirilmaydi.
+UI repo main raw hajm limiti2MiB; import ham cheklangan. Fon alohida kalitda, main JSONga avtomatik tiqilmaydi.
+Gallery input <=16MiB; dart:ui decode bilan longest side <=1440px; PNG <=700KiB; base64 envelope <1MiB. Rasm originali o‘zgarmaydi. Local scope barcha shared fonga tarqaladi; ustida .72 navy veil o‘qilishni saqlaydi.
+ImagePicker cancel hech narsani almashtirmaydi. Write/reset failure oldingi image’ni qoldiradi. Android retrieveLostData startup recovery bor.
+UI tanlovlarini reset qilish appearance rasmni ham tozalash oqimiga kiritilgan; asosiy DemoStore tarixini o‘chirmaydi. Har bir reset matnini/failure tartibini saqlang.
+Focus UI controller yagona nusxa. Start/pause actual clock; lifecycle backgroundda pauza qiladi. Qayta ochishda draft PAUZA holatida tiklanadi, yopiq vaqtga soxta kredit berilmaydi. Backgroundda cheksiz ishlash xizmati yo‘q.
+Focus save idempotent, taskni avtomatik completed qilmaydi, break work credit bermaydi.
+Ma’lumot shu qurilma/brauzer originida qoladi; bulut backup kafolati yo‘q. Ilova ma’lumotlarini/browser storage’ni o‘chirish yoki uninstall lokal ma’lumotni yo‘qotishi mumkin. JSON eksport nusxa uchun bor.
+To‘liq UI eksport bor, ammo uning to‘liq restore importer’i tayyor deb da’vo qilmang. Eski core importer task/goal/habit/activity formatiga tegishli.
+
+7. HAQIQIY VA ULANMAGAN FUNKSIYALAR
+
+HAQIQIY lokal: goal/task/habit CRUD, free-text goal flow, schedule/recurrence/conflict, focus state/history, self-report, predefined quiz scoring, stats filters, preferences/profile, chat pair persistence, cosmetic selection, import/exportning mavjud oqimlari, gallery image persistence.
+ULANMAGAN faol prototipda: production Google/SMS/OTP, real LLM/voice STT/TTS, wake word, Android overlay, haqiqiy ob-havo API, audio playback, litsenziyali/pullik musiqa, push/local notification delivery, partner rewards/payment, cloud sync.
+Bu joylarda real tushuntiruvchi info/preview state bor; dead tap deb yashirmang, ammo haqiqiy xizmat bor deb ham aytmang.
+Firebase/services/firestore qoidalari legacy manbada bor. Ularni ownership bypass bilan almashtirmang. Active local app va legacy backend yo‘llarini integratsiyasiz aralashtirmang.
+
+8. HAQIQIY TEKSHIRUV NATIJALARI
+
+flutter pub get: muvaffaqiyatli; image_picker ^1.2.4 qo‘shildi, pubspec.lock yangilandi.
+flutter analyze: exit0, No issues found,35.3s.
+  docs/evidence/sprint01/liquid-glass-analyze.log
+flutter test --concurrency=1 --reporter expanded: exit0,116/116 passed, taxminan1m06s.
+  docs/evidence/sprint01/liquid-glass-tests.log
+  Shu jumladan appearance7 test: resize/persist/restart/cancel/invalid/corrupt/write/reset/lost-data/widget responsive.
+  Foundation/product24:30 route, haqiqiy nav/back, plus->task->restart, actual53s focus save, stats davrlari, assistant hide, responsive18 pages.
+  Onboarding/goal/calendar:320/390/844landscape/1440 va keyboard/large text.
+flutter build web --release --optimization-level=1 --no-pub: exit0, Built build/web,81.2s; Wasm dry run ham muvaffaqiyatli.
+  docs/evidence/sprint01/liquid-glass-web-build.log
+
+31 ta widget screen capture va9 ta asosiy ekran contact sheet:
+  docs/evidence/sprint01/liquid-glass/contact-sheet.png
+  docs/evidence/sprint01/liquid-glass/README.md
+  docs/evidence/sprint01/liquid-glass/background-settings-390.png
+Ko‘rinishlarda screenshot fixture uchun mock profil/sessionlar bor. 5h32m va18:24 REAL USER natijasi emas. README buni belgilaydi. Widget render native 60 FPS yoki native picker ishlaganini isbotlamaydi.
+
+Web build localhost8765 da avvalgi Python serverdan ishlatilgan. Foydalanuvchi hozirgi ko‘rinishni o‘zi ochib ko‘rganini aytdi. Oxirgi Codex browser reload tekshiruvi session tab yo‘qligi bilan tugadi; yangilangan build bo‘yicha Codex tomonidan to‘liq browser smoke HALI QAYTA BAJARILMAGAN. Oldingi pre-Liquid brauzer smoke dalillarini yangi runtime dalili deb ko‘rsatmang.
+
+Android oldingi build log: Java «Unable to establish loopback connection», exit1. ADB device ulanmagan. Bu redesigndan keyingi yangi APK hali olinmagan.
+  docs/evidence/sprint01/flutter-build-android-product.txt
+  docs/evidence/sprint01/adb-devices-product.txt
+iOS build bu Windows hostda bajarilmadi. image_picker_ios resolved pod15.0 talab qilgani uchun Runner3target va AppFrameworkInfo15.0 moslashtirildi. Hozir iOS13/14 qo‘llanadi deb aytmang.
+Native FPS profiling, haqiqiy Android/iOS gallery permission/picker va device smoke qolgan.
+
+9. BIRINCHI DAVOM ETTIRILADIGAN ANIQ ISHLAR
+
+Bu uch nuqson final read-only reviewda topildi; hali TUZATILMAGAN.116green test ularni qoplamaydi.
+
+TICKET1 — Chat reduced-motion yuborish xatosi (P1).
+Fayl: lib/features/ai_companion/mlp_companion_pages.dart, send() ichidagi post-frame scroll.animateTo (taxminan130-qator).
+MLPDimensions.motion(context) reduced-motionda Duration.zero beradi; ScrollPosition.animateTo duration>0 talab qiladi. Javob saqlangandan keyin callback assertion berishi mumkin.
+Tuzatish: duration==Duration.zero bo‘lsa jumpTo(maxScrollExtent); aks holda animateTo. mounted/hasClients guardlarini saqlang.
+Qabul: disableAnimations=true, ko‘p xabarli scrollable chatda send qilib,2persistedmessage va exception yo‘qligini test qiling.
+
+TICKET2 — Voice -> Chat back stack (P2).
+O‘sha fayl, MLPVoicePage «Chatga qaytish» callback, taxminan621-qator.
+Hozir e.go(MLPScreen.chat) yangi Chat’ni Voice ustiga push qiladi. Home->Chat->Voice->End->Back yana tugagan Voicega qaytadi.
+Tuzatish: normal Chat->Voice oqimida mavjud Chatga pop qaytish; direct Voice ochilishida ham xavfsiz fallback. Navigatsiya holatini tekshirmay barcha route’ni pop qilmang. Kerak bo‘lsa route settings/args yoki environment API bilan aniq yeching.
+Qabul: normal va direct voice entry, end, system Back ketma-ketligini test qiling.
+
+TICKET3 — Modal/secondary reduced-motion (P2).
+Shared mlpShowDialog va mlpShowSheet ichida disableAnimations holatida AnimationStyle.noAnimation berilmagan. Ayrim MaterialPageRoute (goal wizard/planner/Settings preferences/appearance) Cupertino transition theme orqali reduced-motionda ham harakatlanadi.
+Tuzatish: SDKdagi qo‘llab-quvvatlangan animationStyle / sheetAnimationStyle va shared PageTransitionsBuilder yoki route helper bilan reduced-motionni hisobga oling. Dizayn/CRUDni qayta yozmang.
+Qabul: actual dialog/sheet/page transition reduced-motionda animatsiyasiz, oddiy rejimda esa ishlashi test qilinsin.
+
+KEYINGI TARTIB:
+1) Yuqoridagi3kichik ticketni tuzating, meaningful regression tests.
+2) flutter analyze; flutter test --concurrency=1. Oldingi116ni kamaytirib yashirmang.
+3) Bitta webrelease build, real browser smoke: plus/task, focus pause/resume/finish/save/reload, Profile->Settings->gallery select/cancel/reload/reset, Ustoz/back. Foydalanuvchi oxirgi «ochma» degan — brauzerni avtomatik ko‘rsatishdan oldin uning yangi ko‘rsatmasini hisobga oling.
+4) Android native build/runtime blockerini tekshiring; Java loopbackni yashirmang. Haqiqiy device bo‘lmasa native tested deb aytmang.
+5) Mac/iOS15+ device smoke va frame profiling. Windowsdan iOS tayyor deb yakunlamang.
+6) Explicit file allowlist bilan checkpoint commit; pre-existing user changes va staged Firebase deletion tegilmasin. So‘ng QA/handoffni aniq commit bilan yangilang.
+7) UI va uning real runtime gate’lari tugagach userga foiz va qolgan integratsiyalarni halol ayting. All functionality degani soxta live backend yaratish degani emas.
+
+10. TEZ BOSHLASH BUYRUQLARI (POWERSHELL)
+
+Set-Location -LiteralPath 'C:\Users\TheMillionaire\Downloads\MY_QUESTs\habit_tracker_GOAL\mylife_plan_guest_mode_fixed_1'
+git status --short
+git branch --show-current
+git log -5 --oneline
+flutter doctor -v
+flutter pub get
+flutter analyze
+flutter test --concurrency=1
+
+Tez targeted test:
+flutter test --concurrency=1 test/mlp_foundation_test.dart test/mlp_product_test.dart test/mlp_appearance_test.dart
+
+Web:
+flutter build web --release --optimization-level=1 --no-pub
+python -m http.server 8765 --bind 127.0.0.1 --directory build/web
+http://127.0.0.1:8765/
+Agar8765server ishlab turgan bo‘lsa ikkinchisini ishga tushirmang; portni tekshiring. Har builddan keyin browser reload kerak bo‘lishi mumkin. Origin/port o‘zgarsa local browser storage boshqa bo‘ladi.
+
+Dev muqobil:
+flutter run -d web-server --web-hostname 127.0.0.1 --web-port 8766
+Bu8766origin yangi localstate bo‘lishini hisobga oling.
+
+Android:
+flutter devices
+flutter build apk --debug
+flutter run -d <haqiqiy-device-id>
+
+Bu Windowsda flutter C:\Users\TheMillionaire\src\flutter\bin\flutter.bat orqali topilgan.
+Flutter test/build komandalarini SERIAL bajaring: parallel compiler jarayonlari .cache.dill.track.dill collision bergan. Bu source xatosi emas.
+Disk oldin to‘lgan; oxirgi tekshiruvda taxminan9GB bo‘sh edi. Boshqa kataloglarni avtomatik recursive delete qilmang. Oldingi cache cleanup avtomatik approval tomonidan rad etilgan; ayni deletionni boshqa yo‘l bilan chetlab o‘tmang.
+
+11. OXIRGI REDESIGNDA O‘ZGARGAN FAOL FAYLLAR ALLOWLISTI
+
+lib/app/mlp_environment.dart
+lib/app/mlp_product_shell.dart
+lib/app/router/mlp_routes.dart
+lib/app/theme/mlp_design_system.dart
+lib/core/design_system/mlp_widgets.dart
+lib/core/design_system/mlp_liquid_glass.dart (yangi)
+lib/core/design_system/mlp_reference_components.dart (yangi)
+lib/core/design_system/mlp_appearance.dart (yangi)
+lib/demo/demo_app.dart
+lib/demo/demo_forms.dart
+lib/demo/demo_review.dart
+lib/features/ai_companion/mlp_companion_pages.dart
+lib/features/ai_companion/mlp_ai_orb.dart (yangi)
+lib/features/focus/mlp_focus_pages.dart
+lib/features/goals/mlp_goal_detail.dart
+lib/features/lifestyle/mlp_lifestyle_pages.dart
+lib/features/lifestyle/mlp_background_settings.dart (yangi)
+lib/features/onboarding/mlp_account_flow.dart
+lib/features/planner/mlp_calendar.dart
+lib/features/planner/mlp_schedule_editor.dart
+lib/features/progress/mlp_progress_pages.dart
+lib/features/workspace/mlp_workspace_pages.dart
+test/mlp_foundation_test.dart
+test/mlp_product_test.dart
+test/mlp_visual_test.dart
+test/mlp_appearance_test.dart (yangi)
+pubspec.yaml
+pubspec.lock
+ios/Runner/Info.plist
+ios/Runner.xcodeproj/project.pbxproj
+ios/Flutter/AppFrameworkInfo.plist
+assets/images/mlp_moon_mountain_v1.png (yangi)
+assets/images/mlp_ai_nebula_v1.png (yangi)
+docs/MLP_LIQUID_GLASS_AUDIT.md (yangi)
+docs/evidence/sprint01/liquid-glass/ (31screen+contactsheet+README)
+docs/evidence/sprint01/liquid-glass-analyze.log
+docs/evidence/sprint01/liquid-glass-tests.log
+docs/evidence/sprint01/liquid-glass-web-build.log
+MLP_AI_HANDOFF_2026-10-28.txt (ushbu fayl)
+
+Bu ro‘yxat avtomatik git add uchun buyruq emas. Har bir diffni ko‘rib chiqing. lib/core/app_theme.dart, lib/screens/*, lib/widgets/*, providers/models/services va test/local_storage_service_test.dart dagi ko‘p dirty o‘zgarishlar pre-existing, mazkur redesign commitiga kiritilmang.
+
+12. ASSETLAR VA DIZAYN PROVENANCE
+
+Generated scene: assets/images/mlp_moon_mountain_v1.png
+Generated orb: assets/images/mlp_ai_nebula_v1.png
+Ikkalasi image_gen orqali shu vazifa uchun yangi asset sifatida yaratildi; butun screenshotni UI sifatida bake qilinmadi. Pubspec assets/images/ni allaqachon oladi.
+Hero yakuniy prompt mazmuni: standalone no-text/no-UI9:16 wallpaper; lone backpacker rocky summit lowerhalf; large cyan moon horizon; navy star sky top45%; layered blue mountains/mist/dark foreground; cyan #00D1FF/violet.
+Orb yakuniy prompt mazmuni: standalone no-text/no-UI4:3; glossy black friendly orb, ikki white-lavender eye; cyan halo va electric cloudwisps; nearblack edges.
+Welcome scene cacheWidth cheklangan, AI nebula alohida RepaintBoundary va bounded animation; full image blur’ini har frame animatsiya qilmang.
+
+13. QO‘SHIMCHA MANBALAR VA ESKI HUJJATLAR
+
+docs/MLP_BASELINE_AUDIT.md — boshlang‘ich haqiqiy audit.
+docs/MLP_ARCHITECTURE.md — avvalgi arxitektura va saqlov oqimi.
+docs/MLP_SPRINT_BOARD.md — avvalgi ticketlar.
+docs/MLP_UI_FINAL_HANDOFF_UZ.md / MLP_UI_QA_REPORT.md / MLP_UI_SCREEN_INVENTORY.md — OLDINGI28ekranli pre-Liquid holat; foydali kontekst, lekin oxirgi30route/galereya holati uchun ushbu fayl va real source ustuvor.
+docs/MLP_LIQUID_GLASS_AUDIT.md — oxirgi redesignning dastlabki audit/scope va iOS15moslik izohi.
+Rasmiy gallery package/setup: https://pub.dev/packages/image_picker
+Moslik uchun real resolved image_picker_ios podspec tekshirildi (15.0). Faqat eski README jadvaliga qarab targetni13ga qaytarmang.
+
+14. BOSHQA AI VA CODEX O‘RTASIDA HAMJIHAT ISHLASH
+
+- Bir vaqtda bir xil faylni ikki AI yozmasin. Ish boshida file ownership va Git snapshotni belgilang.
+- Har kichik yakunlangan ish uchun: muammo, o‘zgargan aniq fayl, test buyrug‘i/exit/result, qolgan muammo va commitni yozing.
+- Bu faylning oxiriga «DAVOM ETTIRISH JURNALI» qo‘shib yangilang; eski tarixni taxmin bilan almashtirmang.
+- Codexga qaytilganda shu faylni, oxirgi git status/log va yangi AI commit/fayl ro‘yxatini yuboring. Codex real kodni qayta o‘qib davom etadi.
+- Chat xotirasi o‘rniga repository/source/loglarni authoritative deb biling. Boshqa AIga faqat TXT berilsa-yu kodga kirish bo‘lmasa, u haqiqiy implementatsiyani tekshira olmaydi; shu lokal loyiha papkasiga ham kirish kerak.
+- Foydalanuvchining oxirgi talabi hujjatni avval tayyorlash bo‘ldi. Shu sabab yuqoridagi3final-review nuqson ochiq qoldirildi; ular yashirilmagan. Bu hujjatni «hamma native/runtime100%tayyor» da’vosi sifatida o‘qimang.
+
+DAVOM ETTIRISH JURNALI
+2026-10-28 / Codex: Liquid Glass active UI va gallery implementatsiyasi working tree’da.116testpass, analyzerclean, webreleasebuilt.31screenrender. iOS target15moslashtirildi.3finalreview ticket+native/runtime gates ochiq. Handoff TXT foydalanuvchi talabiga binoan yaratildi; yangi checkpoint commit hali yo‘q.
+
+============================================================
+2026-10-28 — UI AUDIT CONTINUATION (supersedes older status above)
+============================================================
+Read first: docs/MLP_UI_AUDIT_REPORT.md, docs/MLP_UI_FIXES_COMPLETED.md,
+docs/MLP_UI_REMAINING_ISSUES.md, docs/MLP_REAL_APP_ROADMAP_UZ.md.
+31 active primary screen states reviewed; 10 concrete UI issues fixed.
+130/130 full Flutter tests pass; flutter analyze no issues; web release rebuilt.
+31 refreshed widget screenshots + four review sheets, NOT native screenshots.
+Earlier reduced-motion chat and voice-pop fixes already existed; preserved and
+regression-tested. New fixes: safe habit error feedback and 48px action, true
+store XP total, reduced-motion dialogs/secondary transitions/confetti, bounded
+celebration, responsive neutral web frame with reversible toggle, floating tab
+bar shrink-wrap, shared custom focus dialog. No new business backend or migration.
+Native attempt: Pixel_4a headless booted and ADB connected, but current Android
+APK build fails with java.io.IOException: Unable to establish loopback connection.
+No current app native smoke pass. Native limits and exact logs are in docs.
+User decisions: Android first, iOS later (no Mac/iPhone yet); Uzbek IT students
+and juniors; real TEXT AI first; monthly server/AI target $0-20; voice/weather/
+audio/paid services/partner rewards also wanted later, with actual dependencies.
+Next ONE ticket: ANDROID-01, diagnose build blocker then actual runtime smoke.
+Branch feat/mlp-beta-sprint01; baseline HEAD 4a15b9e; this audit has no new commit.
+Preserve all pre-existing dirty changes and staged deletion of firebase_options.
+Do not trust old unqualified 100% demo claims; use latest evidence reports.
+============================================================

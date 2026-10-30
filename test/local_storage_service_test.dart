@@ -49,7 +49,10 @@ void main() {
     expect(await storage.loadAppData(userId: 'account-a'), {
       'owner': 'account-a',
     });
-    expect(await storage.loadLegacyAppData(), {'owner': 'legacy'});
+    expect(await storage.loadLegacyAppData(), {
+      'profile': {'id': 'account-a'},
+      'owner': 'legacy',
+    });
   });
 
   test('legacy account data only migrates to its matching user', () async {

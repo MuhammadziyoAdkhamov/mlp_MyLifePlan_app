@@ -12,8 +12,11 @@ import '../models/habit_completion.dart';
 import '../models/habit_enums.dart';
 import '../models/growth_focus.dart';
 import '../models/journey_task.dart';
+import '../models/learning_goal.dart';
+import '../models/learning_roadmap.dart';
 import '../models/user_profile.dart';
 import '../models/xp_history_item.dart';
+import '../models/coin_transaction.dart';
 import '../services/auth_service.dart';
 import '../services/cloud_sync_service.dart';
 import '../services/local_storage_service.dart';
@@ -50,6 +53,9 @@ class AppState extends ChangeNotifier {
   List<XPHistoryItem> xpHistory = [];
   List<JourneyTask> journeyTasks = [];
   List<FocusSession> focusSessions = [];
+  List<CoinTransaction> coinHistory = [];
+  List<LearningGoal> learningGoals = [];
+  List<LearningRoadmap> learningRoadmaps = [];
 
   static const String guestEmail = 'guest@mylife.local';
 
@@ -63,6 +69,20 @@ class AppState extends ChangeNotifier {
     if (!isCloudUser) return 'Local mode';
     if (lastSyncedAt == null) return 'Cloud connected';
     return 'Cloud synced';
+  }
+
+  Future<void> earnCoins(int amount, String title) async {
+    profile = profile.copyWith(coins: profile.coins + amount);
+    coinHistory = [
+      CoinTransaction(
+        id: _id('coin'),
+        title: title,
+        amount: amount,
+        createdAt: DateTime.now(),
+      ),
+      ...coinHistory,
+    ];
+    await _saveAndNotify();
   }
 
   Future<void> init() async {
@@ -1044,6 +1064,8 @@ class AppState extends ChangeNotifier {
       'badges',
       'journeyTasks',
       'focusSessions',
+      'learningGoals',
+      'learningRoadmaps',
     ]) {
       final cloudItems = cloudData[key];
       final guestItems = guestData[key];
@@ -1163,6 +1185,27 @@ class AppState extends ChangeNotifier {
         )
         .toList();
 
+    coinHistory = (data['coinHistory'] as List<dynamic>? ?? [])
+        .map(
+          (item) =>
+              CoinTransaction.fromJson(Map<String, dynamic>.from(item as Map)),
+        )
+        .toList();
+
+    learningGoals = (data['learningGoals'] as List<dynamic>? ?? [])
+        .map(
+          (item) =>
+              LearningGoal.fromJson(Map<String, dynamic>.from(item as Map)),
+        )
+        .toList();
+
+    learningRoadmaps = (data['learningRoadmaps'] as List<dynamic>? ?? [])
+        .map(
+          (item) =>
+              LearningRoadmap.fromJson(Map<String, dynamic>.from(item as Map)),
+        )
+        .toList();
+
     if (badges.isEmpty) badges = _defaultBadges();
     if (journeyTasks.isEmpty) {
       journeyTasks = _defaultJourneyTasks(DateTime.now());
@@ -1181,6 +1224,9 @@ class AppState extends ChangeNotifier {
       'focusSessions': focusSessions
           .map((session) => session.toJson())
           .toList(),
+      'coinHistory': coinHistory.map((txn) => txn.toJson()).toList(),
+      'learningGoals': learningGoals.map((g) => g.toJson()).toList(),
+      'learningRoadmaps': learningRoadmaps.map((r) => r.toJson()).toList(),
     };
   }
 

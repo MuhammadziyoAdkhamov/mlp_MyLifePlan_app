@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
+import '../core/design_system/mlp_haptics.dart';
+import '../core/design_system/mlp_confetti.dart';
 
 import 'demo_store.dart';
 
@@ -17,7 +20,23 @@ abstract final class DemoForms {
     var priority = existing?.priority ?? 2;
     var due = existing?.dueDate ?? store.today;
     String? goalId = existing?.goalId ?? initialGoalId;
-    final durations = {5, 15, 25, 45, 60, 90, minutes}.toList()..sort();
+    final durations = {
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      39,
+      45,
+      50,
+      58,
+      60,
+      75,
+      90,
+      120,
+      minutes,
+    }.toList()..sort();
     await _open(
       context,
       title: existing == null ? 'Yangi vazifa' : 'Vazifani tahrirlash',
@@ -395,8 +414,20 @@ abstract final class DemoForms {
       ],
       save: completed
           ? null
-          : () =>
-                store.submitTask(current.id, proof.text, evidenceUrl: url.text),
+          : () async {
+              await store.submitTask(
+                current.id,
+                proof.text,
+                evidenceUrl: url.text,
+              );
+              if (context.mounted) {
+                MLPConfetti.show(
+                  context,
+                  title: 'Vazifa topshirildi! 🎉',
+                  subtitle: '+40 XP qo‘shildi',
+                );
+              }
+            },
     );
   }
 
@@ -531,7 +562,7 @@ abstract final class DemoForms {
     required Future<void> Function()? save,
     String saveLabel = 'Saqlash',
     String? Function()? validate,
-  }) => showDialog<void>(
+  }) => mlpShowDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (context) => _DemoFormDialog(
@@ -687,7 +718,7 @@ class _DemoFormDialogState extends State<_DemoFormDialog> {
       child: AlertDialog(
         scrollable: true,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        clipBehavior: Clip.antiAlias,
         title: Text(widget.title),
         content: SizedBox(
           width: 500,
@@ -748,8 +779,12 @@ class _DemoFormDialogState extends State<_DemoFormDialog> {
                       });
                       try {
                         await widget.save!();
-                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          MLPHaptics.success();
+                          Navigator.of(context).pop();
+                        }
                       } catch (error) {
+                        MLPHaptics.error();
                         if (context.mounted) {
                           update(() {
                             _saving = false;

@@ -171,6 +171,68 @@ void main() {
     },
   );
   testWidgets(
+    'statistics period controls filter saved seconds and navigate historical ranges',
+    (tester) async {
+      await prepare();
+      await store.clearAll();
+      final today = now;
+      for (final record in [
+        ('current-week', DateTime(2026, 10, 27, 18), 60),
+        ('previous-week', DateTime(2026, 10, 20, 18), 120),
+        ('previous-month', DateTime(2026, 9, 27, 18), 180),
+      ]) {
+        now = record.$2;
+        await store.saveDetailedFocus(
+          id: record.$1,
+          seconds: record.$3,
+          note: 'Saqlangan haqiqiy fokus sessiyasi.',
+        );
+      }
+      now = today;
+      await tester.pumpWidget(app(MLPGrowthPage(e: e)));
+      await tester.pumpAndSettle();
+      void expectTotal(String text) => expect(
+        find.descendant(
+          of: find.byType(MLPGlassCard).first,
+          matching: find.text(text),
+        ),
+        findsOneWidget,
+      );
+      expectTotal('1m');
+      expect(find.text('26 Okt – 1 Noy 2026'), findsOneWidget);
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byWidgetPredicate(
+                (widget) =>
+                    widget is IconButton && widget.tooltip == 'Keyingi davr',
+              ),
+            )
+            .onPressed,
+        isNull,
+      );
+      await tester.tap(find.byTooltip('Oldingi davr'));
+      await tester.pumpAndSettle();
+      expectTotal('2m');
+      expect(find.text('19 Okt – 25 Okt 2026'), findsOneWidget);
+      await tester.tap(find.byTooltip('Keyingi davr'));
+      await tester.pumpAndSettle();
+      expectTotal('1m');
+      await tester.tap(find.text('8 hafta'));
+      await tester.pumpAndSettle();
+      expectTotal('6m');
+      await tester.tap(find.text('Oy'));
+      await tester.pumpAndSettle();
+      expectTotal('3m');
+      await tester.tap(find.text('Yil'));
+      await tester.pumpAndSettle();
+      expectTotal('6m');
+      expect(store.focusSessions.length, 3);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
     'all production tabs and every secondary route build; missing arguments recover',
     (tester) async {
       await prepare();
@@ -190,8 +252,8 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
-      for (final index in [1, 2, 3, 4, 0]) {
+      expect(find.text('Hozirgi vazifa'), findsOneWidget);
+      for (final index in [1, 2, 3, 4, 5, 6, 0]) {
         final bar = tester.widget<MLPFloatingTabBar>(
           find.byType(MLPFloatingTabBar),
         );
@@ -201,13 +263,7 @@ void main() {
       }
       final nav = tester.state<NavigatorState>(find.byType(Navigator).last);
       for (final screen in MLPScreen.values.where(
-        (s) => ![
-          MLPScreen.splash,
-          MLPScreen.today,
-          MLPScreen.focus,
-          MLPScreen.chat,
-          MLPScreen.profile,
-        ].contains(s),
+        (s) => s != MLPScreen.splash,
       )) {
         nav.pushNamed<void>(screen.path);
         await tester.pumpAndSettle();
@@ -221,6 +277,157 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     },
   );
+  testWidgets(
+    'visible tabs and home actions reach projects tasks statistics profile and Ustoz',
+    (tester) async {
+      await prepare();
+      final semantics = tester.ensureSemantics();
+      try {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          app(
+            MLPProductShell(
+              store: store,
+              ui: ui,
+              prefs: prefs,
+              clock: () => now,
+              legacyBuilder: e.legacy,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        Future<void> tapTab(String label) async {
+          await tester.tap(
+            find.descendant(
+              of: find.byType(MLPFloatingTabBar),
+              matching: find.text(label),
+            ),
+          );
+          await tester.pumpAndSettle();
+        }
+
+        await tapTab('Maqsadlar');
+        expect(find.byType(MLPIosPlanPage), findsOneWidget);
+        expect(find.text('Maqsad qo‘shish'), findsOneWidget);
+        await tapTab('Fokus');
+        expect(find.byType(MLPFocusHub), findsOneWidget);
+        await tapTab('Ustoz');
+        expect(find.byType(MLPChatPage), findsOneWidget);
+        await tapTab('Bugun');
+        await tester.tap(find.bySemanticsLabel(RegExp('Mening profilim')));
+        await tester.pumpAndSettle();
+        expect(find.byType(MLPProfilePage), findsOneWidget);
+        await tester.scrollUntilVisible(
+          find.text('Statistikalarim'),
+          180,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(find.text('Statistikalarim'));
+        await tester.pumpAndSettle();
+        expect(find.byType(MLPGrowthPage), findsOneWidget);
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(find.byType(MLPTodayPage), findsOneWidget);
+        await tester.scrollUntilVisible(
+          find.text('Yordam kerakmi?'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Yordam kerakmi?'));
+        await tester.pumpAndSettle();
+        expect(find.byType(MLPChatPage), findsOneWidget);
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(find.byType(MLPTodayPage), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      } finally {
+        semantics.dispose();
+      }
+    },
+  );
+  testWidgets('Plan add action saves a real task visible after restart', (
+    tester,
+  ) async {
+    await prepare();
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final before = store.tasks.length;
+    await tester.pumpWidget(
+      app(
+        MLPProductShell(
+          store: store,
+          ui: ui,
+          prefs: prefs,
+          clock: () => now,
+          legacyBuilder: e.legacy,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(MLPFloatingTabBar),
+        matching: find.text('Maqsadlar'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Vazifalar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Vazifa qo‘shish'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.enterText(
+      find.byType(TextFormField).at(0),
+      'Portfolio kirish ekranini yaratish',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'Flutter portfel');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Saqlash'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Saqlash'));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(store.tasks.length, before + 1);
+    final task = store.tasks.singleWhere(
+      (t) => t.title == 'Portfolio kirish ekranini yaratish',
+    );
+    expect(task.project, 'Flutter portfel');
+    expect(task.completed, false);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(MLPFloatingTabBar),
+        matching: find.text('Maqsadlar'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(MLPIosPlanPage), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text(task.title),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(task.title), findsOneWidget);
+    final restored = DemoStore(prefs, now: () => now);
+    await restored.init();
+    expect(
+      restored.tasks.singleWhere((t) => t.id == task.id).title,
+      task.title,
+    );
+    restored.dispose();
+    expect(prefs.getString('legacy'), 'preserve');
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
   testWidgets(
     'chat sends one persisted deterministic turn and has no live AI claim',
     (tester) async {
@@ -244,18 +451,18 @@ void main() {
     final handle = tester.ensureSemantics();
     await tester.pumpWidget(app(Scaffold(body: MLPFocusHub(e: e))));
     await tester.scrollUntilVisible(
-      find.text('Fokusni boshlash'),
+      find.text('Boshlash'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Fokusni boshlash'), findsOneWidget);
+    expect(find.bySemanticsLabel('Boshlash'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp('Fokus. Qolgan vaqt')), findsOneWidget);
     handle.dispose();
     await tester.pumpWidget(const SizedBox());
   });
   testWidgets(
-    'responsive pages support 320, standard, large text and landscape',
+    'responsive pages support 320, 360, 393, large text, insets and landscape',
     (tester) async {
       await prepare();
       addTearDown(tester.view.resetPhysicalSize);
@@ -264,9 +471,13 @@ void main() {
       final pages = <Widget>[
         MLPTodayPage(e: e),
         MLPGoalsPage(e: e),
+        MLPTasksPage(e: e),
+        MLPIosPlanPage(e: e),
+        MLPIosPlanPage(e: e, initialGoals: true),
         MLPFocusHub(e: e),
         MLPActiveFocusPage(e: e),
         MLPFocusSummaryPage(e: e),
+        MLPChatPage(e: e),
         MLPVoicePage(e: e),
         MLPAIPreferencesPage(e: e),
         MLPVerificationPage(e: e),
@@ -281,24 +492,40 @@ void main() {
       ];
       for (final config in [
         (const Size(320, 740), 1.0),
+        (const Size(360, 800), 1.0),
+        (const Size(393, 852), 1.4),
         (const Size(390, 844), 1.4),
         (const Size(430, 932), 2.0),
         (const Size(844, 390), 1.0),
       ]) {
         tester.view.physicalSize = config.$1;
         for (final page in pages) {
-          await tester.pumpWidget(
-            app(
-              MediaQuery(
-                data: MediaQueryData(
-                  size: config.$1,
-                  textScaler: TextScaler.linear(config.$2),
+          final errorHandler = FlutterError.onError;
+          FlutterError.onError = (details) {
+            FlutterError.dumpErrorToConsole(details, forceReport: true);
+            errorHandler?.call(details);
+          };
+          try {
+            await tester.pumpWidget(
+              app(
+                MediaQuery(
+                  data: MediaQueryData(
+                    size: config.$1,
+                    textScaler: TextScaler.linear(config.$2),
+                    padding: const EdgeInsets.only(top: 44, bottom: 34),
+                    viewPadding: const EdgeInsets.only(top: 44, bottom: 34),
+                    viewInsets: config.$1.width == 360
+                        ? const EdgeInsets.only(bottom: 280)
+                        : EdgeInsets.zero,
+                  ),
+                  child: Scaffold(body: page),
                 ),
-                child: Scaffold(body: page),
               ),
-            ),
-          );
-          await tester.pumpAndSettle();
+            );
+            await tester.pumpAndSettle();
+          } finally {
+            FlutterError.onError = errorHandler;
+          }
           expect(
             tester.takeException(),
             isNull,
@@ -326,7 +553,11 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Fokusni boshlash'));
+      await tester.scrollUntilVisible(
+        find.text('Fokusni boshlash'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Fokusni boshlash'));
       await tester.pumpAndSettle();
@@ -336,9 +567,13 @@ void main() {
       final taskId = active.e.focus.taskId;
       now = now.add(const Duration(seconds: 53));
       active.e.focus.tick();
-      await tester.ensureVisible(find.text('Yakunlash'));
+      await tester.scrollUntilVisible(
+        find.byTooltip('Yakunlash'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Yakunlash'));
+      await tester.tap(find.byTooltip('Yakunlash'));
       await tester.pumpAndSettle();
       await tester.enterText(
         find.byType(TextFormField).first,
@@ -346,7 +581,11 @@ void main() {
       );
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Sessiyani saqlash'));
+      await tester.scrollUntilVisible(
+        find.text('Sessiyani saqlash'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
       expect(active.e.focus.elapsed, 53);
       await tester.tap(find.text('Sessiyani saqlash'));
@@ -458,11 +697,19 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Ustoz tezkor tugmasini yashirish'));
+      await ui.hideAssistant(true);
       await tester.pumpAndSettle();
       expect(ui.assistantHidden, true);
-      expect(find.byTooltip('Ustozni ochish'), findsNothing);
-      await tester.ensureVisible(find.text('Fokusni boshlash'));
+      expect(find.text('Yordam kerakmi?'), findsNothing);
+      final restoredUi = MLPLocalUiRepository(prefs);
+      await restoredUi.init();
+      expect(restoredUi.assistantHidden, true);
+      restoredUi.dispose();
+      await tester.scrollUntilVisible(
+        find.text('Fokusni boshlash'),
+        -200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Fokusni boshlash'));
       await tester.pumpAndSettle();
@@ -483,8 +730,74 @@ void main() {
       await tester.pumpAndSettle();
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
-      expect(find.text('BUGUNGI ASOSIY QADAM'), findsOneWidget);
+      expect(find.text('Hozirgi vazifa'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
     },
   );
+  testWidgets('home week selection starts a real five minute linked task', (
+    tester,
+  ) async {
+    await prepare();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    await store.addTask(
+      title: 'Ertangi portfel tekshiruvi',
+      project: 'Portfolio',
+      minutes: 30,
+      dueDate: tomorrow,
+    );
+    await tester.pumpWidget(app(MLPScaffold(body: MLPTodayPage(e: e))));
+    await tester.tap(find.text('${tomorrow.day}').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Ertangi portfel tekshiruvi'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('5 daqiqalik variant'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('5 daqiqalik variant'));
+    await tester.pump();
+    expect(focus.running, true);
+    expect(focus.duration, 300);
+    expect(focus.task?.title, 'Ertangi portfel tekshiruvi');
+    now = now.add(const Duration(seconds: 17));
+    focus.pause();
+    await focus.persist();
+    final restoredUi = MLPLocalUiRepository(prefs);
+    await restoredUi.init();
+    final restored = MLPFocusController(store, restoredUi, clock: () => now);
+    expect(restored.elapsed, 17);
+    expect(restored.duration, 300);
+    expect(restored.taskId, focus.taskId);
+    expect(restored.running, false);
+    restored.dispose();
+    restoredUi.dispose();
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('50/10 preset persists and starts its ten minute break', (
+    tester,
+  ) async {
+    await prepare();
+    await tester.pumpWidget(app(MLPScaffold(body: MLPFocusHub(e: e))));
+    await tester.tap(find.text('50/10'));
+    await tester.pumpAndSettle();
+    expect(focus.duration, 3000);
+    expect(focus.breakSeconds, 600);
+    await focus.persist();
+    final fresh = MLPLocalUiRepository(prefs);
+    await fresh.init();
+    expect(fresh.focusDraft?['breakSeconds'], 600);
+    fresh.dispose();
+    await tester.scrollUntilVisible(
+      find.text('Tanaffus'),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Tanaffus'));
+    await tester.pump();
+    expect(focus.isBreak, true);
+    expect(focus.duration, 600);
+    expect(focus.running, true);
+    await tester.pumpWidget(const SizedBox());
+  });
 }

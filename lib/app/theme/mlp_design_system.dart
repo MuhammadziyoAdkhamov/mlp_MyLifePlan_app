@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 /// Shared product tokens. Preview capability labels do not use success color.
 abstract final class MLPColors {
-  static const background = Color(0xFF070E1B);
-  static const secondary = Color(0xFF111C2B);
-  static const elevated = Color(0xFF192739);
-  static const border = Color(0xFF2B3859);
-  static const primary = Color(0xFF8C6BFF);
+  static const background = Color(0xFF040916);
+  static const secondary = Color(0xFF0C1422);
+  static const elevated = Color(0xFF172334);
+  static const border = Color(0xFF26344A);
+  static const primary = Color(0xFFA855F7);
   static const primaryLight = Color(0xFFB6A3FF);
-  static const turquoise = Color(0xFF00D1EF);
-  static const success = Color(0xFF51D3A1);
-  static const warning = Color(0xFFF4BC68);
+  static const turquoise = Color(0xFF00D1FF);
+  static const success = Color(0xFF22C55E);
+  static const warning = Color(0xFFF59E0B);
   static const error = Color(0xFFFF8D9E);
   static const text = Color(0xFFF7F8FF);
   static const secondaryText = Color(0xFFAAB6D5);
@@ -34,6 +35,29 @@ abstract final class MLPDimensions {
       : compactMotion;
 }
 
+/// Secondary Material routes use the same accessibility policy as the shell.
+class MLPPageTransitionsBuilder extends CupertinoPageTransitionsBuilder {
+  const MLPPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (MediaQuery.disableAnimationsOf(context)) return child;
+    return super.buildTransitions(
+      route,
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    );
+  }
+}
+
 abstract final class MLPTheme {
   static ThemeData get dark {
     final base = ThemeData.dark(useMaterial3: true);
@@ -47,6 +71,48 @@ abstract final class MLPTheme {
       borderSide: const BorderSide(color: MLPColors.border),
     );
     return base.copyWith(
+      cupertinoOverrideTheme: const CupertinoThemeData(
+        brightness: Brightness.dark,
+        primaryColor: MLPColors.turquoise,
+        barBackgroundColor: Color(0xB30C1422),
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.iOS: MLPPageTransitionsBuilder(),
+          TargetPlatform.android: MLPPageTransitionsBuilder(),
+          TargetPlatform.windows: MLPPageTransitionsBuilder(),
+          TargetPlatform.macOS: MLPPageTransitionsBuilder(),
+          TargetPlatform.linux: MLPPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: MLPPageTransitionsBuilder(),
+        },
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: MLPColors.elevated.withValues(alpha: .88),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(26),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: .16),
+            width: .8,
+          ),
+        ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: MLPColors.elevated.withValues(alpha: .86),
+        modalBackgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        showDragHandle: true,
+        dragHandleColor: Colors.white.withValues(alpha: .24),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: MLPColors.turquoise,
+        selectionColor: MLPColors.turquoise.withValues(alpha: .25),
+        selectionHandleColor: MLPColors.turquoise,
+      ),
       scaffoldBackgroundColor: MLPColors.background,
       colorScheme: const ColorScheme.dark(
         primary: MLPColors.primary,
@@ -108,15 +174,15 @@ abstract final class MLPTheme {
           ),
       dividerColor: MLPColors.border,
       appBarTheme: const AppBarTheme(
-        backgroundColor: MLPColors.background,
+        backgroundColor: Colors.transparent,
         foregroundColor: MLPColors.text,
         surfaceTintColor: Colors.transparent,
-        centerTitle: false,
+        centerTitle: true,
         elevation: 0,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: MLPColors.background,
+        fillColor: Colors.white.withValues(alpha: .04),
         border: border,
         enabledBorder: border,
         focusedBorder: border.copyWith(

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import '../../core/design_system/mlp_focus_dial.dart';
 import '../../app/mlp_environment.dart';
 import '../../app/router/mlp_routes.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
+import '../../core/design_system/mlp_haptics.dart';
 import '../../data/models/mlp_schedule.dart';
 
 class MLPFocusHub extends StatelessWidget {
@@ -10,6 +14,115 @@ class MLPFocusHub extends StatelessWidget {
   final MLPEnvironment e;
   @override
   Widget build(BuildContext context) => ListenableBuilder(
+    listenable: e.focus,
+    builder: (context, _) => MLPPage(
+      children: [
+        MLPSegmented(
+          labels: const ['25/5', '50/10', 'Maxsus'],
+          selected: e.focus.duration == 1500
+              ? 0
+              : e.focus.duration == 3000
+              ? 1
+              : 2,
+          onChanged: (value) {
+            if (e.focus.running || e.focus.elapsed > 0) {
+              e.info(
+                context,
+                'Sessiya davom etmoqda',
+                'Vaqtni o‘zgartirishdan oldin joriy sessiyani yakunlang.',
+              );
+            } else if (value == 2) {
+              _custom(context);
+            } else {
+              e.act(
+                context,
+                () async => e.focus.configure(
+                  value == 0 ? 25 : 50,
+                  value == 0 ? 5 : 10,
+                  task: e.focus.taskId,
+                ),
+              );
+            }
+          },
+        ),
+        const SizedBox(height: 20),
+        Center(child: _TimerRing(e: e)),
+        const SizedBox(height: 16),
+        MLPMenuTile(
+          title: e.focus.task?.title ?? 'Erkin fokus',
+          subtitle: e.focus.task?.project ?? 'O‘zingiz uchun vaqt',
+          icon: CupertinoIcons.folder,
+          onTap: () => _settings(context),
+        ),
+        const SizedBox(height: 24),
+        MLPPrimaryButton(
+          label: e.focus.elapsed > 0 || e.focus.running
+              ? 'Sessiyaga qaytish'
+              : 'Boshlash',
+          icon: CupertinoIcons.play_fill,
+          onPressed: () {
+            if (e.focus.remaining > 0) e.focus.start();
+            e.go(MLPScreen.activeFocus);
+          },
+        ),
+        const SizedBox(height: 20),
+        Wrap(
+          alignment: WrapAlignment.spaceEvenly,
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            _FocusTool(
+              label: 'Musiqa',
+              icon: CupertinoIcons.music_note_2,
+              onPressed: () => e.go(MLPScreen.soundspace),
+            ),
+            _FocusTool(
+              label: 'Tanaffus',
+              icon: Icons.local_cafe_outlined,
+              onPressed: () {
+                if (e.focus.elapsed > 0 || e.focus.running) {
+                  e.info(
+                    context,
+                    'Avval sessiyani yakunlang',
+                    'Faol vaqt saqlangach, tanlangan tanaffusni boshlashingiz mumkin.',
+                  );
+                } else {
+                  final minutes = e.focus.breakSeconds ~/ 60;
+                  e.focus.configure(minutes, minutes, rest: true);
+                  e.focus.start();
+                  e.go(MLPScreen.activeFocus);
+                }
+              },
+            ),
+            _FocusTool(
+              label: 'Sozlash',
+              icon: CupertinoIcons.slider_horizontal_3,
+              onPressed: () => _settings(context),
+            ),
+            _FocusTool(
+              label: 'Tarix',
+              icon: CupertinoIcons.clock,
+              onPressed: () => _settings(context),
+            ),
+          ],
+        ),
+        if (e.focus.error != null)
+          MLPErrorState(message: e.focus.error!, onRetry: e.focus.persist),
+      ],
+    ),
+  );
+
+  void _settings(BuildContext context) => mlpShowSheet<void>(
+    context: context,
+    useSafeArea: true,
+    isScrollControlled: true,
+    builder: (_) => SizedBox(
+      height: MediaQuery.sizeOf(context).height * .8,
+      child: details(context),
+    ),
+  );
+
+  Widget details(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([e.focus, e.store]),
     builder: (context, _) => MLPPage(
       children: [
@@ -41,26 +154,212 @@ class MLPFocusHub extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  for (final pair in [(25, 5), (50, 10)])
+                  for (final pair in [
+                    (15, 3),
+                    (25, 5),
+                    (39, 5),
+                    (50, 10),
+                    (60, 10),
+                    (90, 15),
+                  ])
                     ChoiceChip(
-                      label: Text('${pair.$1}/${pair.$2}'),
+                      label: Text(
+                        pair.$1 == 39
+                            ? '39 daq 🎯'
+                            : (pair.$1 == 25 || pair.$1 == 50
+                                  ? '${pair.$1}/${pair.$2}'
+                                  : '${pair.$1} daq'),
+                      ),
                       selected: e.focus.duration == pair.$1 * 60,
                       onSelected: e.focus.elapsed > 0 || e.focus.running
                           ? null
-                          : (_) => e.act(
-                              context,
-                              () async => e.focus.configure(
-                                pair.$1,
-                                pair.$2,
-                                task: e.focus.taskId,
-                              ),
-                            ),
+                          : (_) {
+                              MLPHaptics.selection();
+                              e.act(
+                                context,
+                                () async => e.focus.configure(
+                                  pair.$1,
+                                  pair.$2,
+                                  task: e.focus.taskId,
+                                ),
+                              );
+                            },
                     ),
                   ActionChip(
-                    label: const Text('O‘z vaqtim'),
-                    onPressed: () => _custom(context),
+                    label: const Text('O‘z vaqtim ✏️'),
+                    onPressed: e.focus.elapsed > 0 || e.focus.running
+                        ? null
+                        : () => _custom(context),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .04),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: .08),
+                  ),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: '5 daqiqa kamaytirish',
+                            icon: const Icon(
+                              Icons.replay_5_rounded,
+                              size: 20,
+                              color: MLPColors.turquoise,
+                            ),
+                            onPressed:
+                                (e.focus.elapsed > 0 ||
+                                    e.focus.running ||
+                                    e.focus.duration <= 300)
+                                ? null
+                                : () {
+                                    MLPHaptics.selection();
+                                    final m = ((e.focus.duration ~/ 60) - 5)
+                                        .clamp(1, 180);
+                                    e.act(
+                                      context,
+                                      () async => e.focus.configure(
+                                        m,
+                                        e.focus.breakSeconds ~/ 60,
+                                        task: e.focus.taskId,
+                                      ),
+                                    );
+                                  },
+                          ),
+                          IconButton(
+                            tooltip: '1 daqiqa kamaytirish',
+                            icon: const Icon(
+                              Icons.remove_circle_outline_rounded,
+                              size: 20,
+                              color: MLPColors.text,
+                            ),
+                            onPressed:
+                                (e.focus.elapsed > 0 ||
+                                    e.focus.running ||
+                                    e.focus.duration <= 60)
+                                ? null
+                                : () {
+                                    MLPHaptics.selection();
+                                    final m = ((e.focus.duration ~/ 60) - 1)
+                                        .clamp(1, 180);
+                                    e.act(
+                                      context,
+                                      () async => e.focus.configure(
+                                        m,
+                                        e.focus.breakSeconds ~/ 60,
+                                        task: e.focus.taskId,
+                                      ),
+                                    );
+                                  },
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: (e.focus.elapsed > 0 || e.focus.running)
+                            ? null
+                            : () => _custom(context),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${e.focus.duration ~/ 60} daqiqa',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: MLPColors.turquoise,
+                                ),
+                              ),
+                              const Text(
+                                'Bemalol sozlang (1–180)',
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  color: MLPColors.secondaryText,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: '1 daqiqa qo‘shish',
+                            icon: const Icon(
+                              Icons.add_circle_outline_rounded,
+                              size: 20,
+                              color: MLPColors.text,
+                            ),
+                            onPressed:
+                                (e.focus.elapsed > 0 ||
+                                    e.focus.running ||
+                                    e.focus.duration >= 180 * 60)
+                                ? null
+                                : () {
+                                    MLPHaptics.selection();
+                                    final m = ((e.focus.duration ~/ 60) + 1)
+                                        .clamp(1, 180);
+                                    e.act(
+                                      context,
+                                      () async => e.focus.configure(
+                                        m,
+                                        e.focus.breakSeconds ~/ 60,
+                                        task: e.focus.taskId,
+                                      ),
+                                    );
+                                  },
+                          ),
+                          IconButton(
+                            tooltip: '5 daqiqa qo‘shish',
+                            icon: const Icon(
+                              Icons.forward_5_rounded,
+                              size: 20,
+                              color: MLPColors.turquoise,
+                            ),
+                            onPressed:
+                                (e.focus.elapsed > 0 ||
+                                    e.focus.running ||
+                                    e.focus.duration >= 175 * 60)
+                                ? null
+                                : () {
+                                    MLPHaptics.selection();
+                                    final m = ((e.focus.duration ~/ 60) + 5)
+                                        .clamp(1, 180);
+                                    e.act(
+                                      context,
+                                      () async => e.focus.configure(
+                                        m,
+                                        e.focus.breakSeconds ~/ 60,
+                                        task: e.focus.taskId,
+                                      ),
+                                    );
+                                  },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
@@ -175,7 +474,7 @@ class MLPFocusHub extends StatelessWidget {
   Future<void> _custom(BuildContext context) async {
     final input = TextEditingController(text: '${e.focus.duration ~/ 60}');
     final key = GlobalKey<FormState>();
-    final value = await showDialog<int>(
+    final value = await mlpShowDialog<int>(
       context: context,
       builder: (dialog) => AlertDialog(
         title: const Text('Fokus davomiyligi'),
@@ -232,8 +531,48 @@ class MLPActiveFocusPage extends StatelessWidget {
     child: ListenableBuilder(
       listenable: e.focus,
       builder: (context, _) => MLPPage(
-        title: e.focus.isBreak ? 'Tanaffus' : 'Fokusda',
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: ExcludeSemantics(
+                child: RepaintBoundary(
+                  child: Image.asset(
+                    'assets/images/mlp_moon_mountain_v1.png',
+                    fit: BoxFit.cover,
+                    color: const Color(0x9909182C),
+                    colorBlendMode: BlendMode.multiply,
+                  ),
+                ),
+              ),
+            ),
+            const Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xCC030B1D),
+                        Color(0x22030B1D),
+                        Color(0xEE030B1D),
+                      ],
+                      stops: [0, .4, 1],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        title: e.focus.isBreak ? 'Tanaffus' : 'Fokus',
         children: [
+          const Text(
+            'Kichik qadamlar katta natijalarga olib keladi.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: MLPColors.secondaryText),
+          ),
           const SizedBox(height: 16),
           Text(
             e.focus.task?.title ?? 'O‘zingiz uchun vaqt',
@@ -241,7 +580,13 @@ class MLPActiveFocusPage extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 28),
-          Center(child: _TimerRing(e: e)),
+          const SizedBox(height: 100),
+          Center(
+            child: MLPTimerDisplay(
+              seconds: e.focus.remaining,
+              label: 'Qolgan vaqt',
+            ),
+          ),
           const SizedBox(height: 24),
           Text(
             e.focus.running
@@ -262,14 +607,17 @@ class MLPActiveFocusPage extends StatelessWidget {
             spacing: 12,
             runSpacing: 12,
             children: [
-              MLPPrimaryButton(
+              MLPCircleAction(
+                size: 60,
                 label: e.focus.running ? 'Pauza' : 'Davom etish',
                 icon: e.focus.running ? Icons.pause : Icons.play_arrow,
                 onPressed: e.focus.remaining == 0
                     ? null
                     : () => e.focus.running ? e.focus.pause() : e.focus.start(),
               ),
-              MLPSecondaryButton(
+              MLPCircleAction(
+                size: 60,
+                color: const Color(0xFFFF526D),
                 label: 'Yakunlash',
                 icon: Icons.stop_rounded,
                 onPressed: () {
@@ -327,6 +675,14 @@ class _SummaryState extends State<MLPFocusSummaryPage> {
       child: MLPPage(
         title: 'Sessiya yakuni',
         children: [
+          const Center(
+            child: Icon(
+              CupertinoIcons.star_fill,
+              color: MLPColors.warning,
+              size: 72,
+            ),
+          ),
+          const SizedBox(height: 20),
           Center(
             child: MLPTimerDisplay(
               seconds: e.focus.elapsed,
@@ -438,49 +794,79 @@ class _TimerRing extends StatelessWidget {
         '${e.focus.isBreak ? 'Tanaffus' : 'Fokus'}. Qolgan vaqt ${e.focus.remaining ~/ 60} daqiqa ${e.focus.remaining % 60} soniya',
     child: ExcludeSemantics(
       child: SizedBox(
-        width: 252,
+        width: 320,
         child: AspectRatio(
           aspectRatio: 1,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox.expand(
-                child: CircularProgressIndicator(
-                  value: e.focus.duration == 0
-                      ? 0
-                      : e.focus.remaining / e.focus.duration,
-                  strokeWidth: 7,
-                  strokeCap: StrokeCap.round,
-                  backgroundColor: MLPColors.border,
-                  color: MLPColors.turquoise,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(28),
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(
+              end: e.focus.duration == 0
+                  ? 0
+                  : e.focus.remaining / e.focus.duration,
+            ),
+            duration: MLPDimensions.motion(context),
+            builder: (context, value, child) =>
+                CustomPaint(painter: MLPFocusDialPainter(value), child: child),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(40),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      e.focus.isBreak ? 'Tanaffus' : 'Pomodoro',
+                      e.focus.isBreak ? 'Tanaffus' : 'Fokus vaqti',
                       style: const TextStyle(color: MLPColors.secondaryText),
                     ),
-                    const SizedBox(height: 12),
-                    MLPTimerDisplay(
-                      seconds: e.focus.remaining,
-                      label: 'Qolgan vaqt',
-                    ),
-                    const SizedBox(height: 12),
-                    Icon(
-                      e.focus.running ? Icons.graphic_eq : Icons.timelapse,
-                      color: MLPColors.turquoise,
+                    const SizedBox(height: 10),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '${(e.focus.remaining ~/ 60).toString().padLeft(2, '0')}:${(e.focus.remaining % 60).toString().padLeft(2, '0')}',
+                        style: const TextStyle(
+                          fontSize: 58,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -1,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
+    ),
+  );
+}
+
+class _FocusTool extends StatelessWidget {
+  const _FocusTool({
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+  });
+  final String label;
+  final IconData icon;
+  final VoidCallback onPressed;
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 68,
+    child: Column(
+      children: [
+        MLPCircleAction(
+          label: label,
+          icon: icon,
+          onPressed: onPressed,
+          filled: false,
+          size: 52,
+        ),
+        const SizedBox(height: 7),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 12),
+        ),
+      ],
     ),
   );
 }

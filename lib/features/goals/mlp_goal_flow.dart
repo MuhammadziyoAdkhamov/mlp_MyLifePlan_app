@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../app/router/mlp_routes.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../../demo/demo_store.dart';
 
@@ -99,6 +100,20 @@ class _DiscoveryState extends State<MLPGoalDiscoveryScreen> {
                 ]
                 .map(
                   (c) => ChoiceChip(
+                    avatar: Icon(
+                      c == 'Dasturlash'
+                          ? Icons.code_rounded
+                          : c == 'Ta’lim'
+                          ? Icons.school_outlined
+                          : c == 'Sog‘lom turmush'
+                          ? Icons.favorite_outline
+                          : Icons.category_outlined,
+                      size: 18,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
                     label: Text(c),
                     selected: draft.category == c,
                     onSelected: (_) => setState(() => draft.category = c),
@@ -383,10 +398,10 @@ class _DiagnosticState extends State<MLPDiagnosticScreen> {
         ),
         const SizedBox(height: 16),
         ...['Boshlang‘ich', 'O‘rta', 'Amaliy tajriba bor', 'Bilmayman'].map(
-          (l) => CheckboxListTile(
-            value: level == l,
-            title: Text(l),
-            onChanged: (_) => setState(() => level = l),
+          (l) => MLPSelectionTile(
+            selected: level == l,
+            label: l,
+            onSelected: () => setState(() => level = l),
           ),
         ),
         const SizedBox(height: 20),
@@ -401,16 +416,16 @@ class _DiagnosticState extends State<MLPDiagnosticScreen> {
         const SizedBox(height: 20),
         ...List.generate(
           questions[step].answers.length,
-          (i) => CheckboxListTile(
-            value: answers[step] == i,
-            title: Text(questions[step].answers[i]),
-            onChanged: (_) => setState(() => answers[step] = i),
+          (i) => MLPSelectionTile(
+            selected: answers[step] == i,
+            label: questions[step].answers[i],
+            onSelected: () => setState(() => answers[step] = i),
           ),
         ),
-        CheckboxListTile(
-          value: answers[step] == -1,
-          title: const Text('Bilmayman'),
-          onChanged: (_) => setState(() => answers[step] = -1),
+        MLPSelectionTile(
+          selected: answers[step] == -1,
+          label: 'Bilmayman',
+          onSelected: () => setState(() => answers[step] = -1),
         ),
         const SizedBox(height: 20),
         MLPPrimaryButton(

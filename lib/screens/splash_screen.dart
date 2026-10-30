@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppColors.primaryGradient,
-                boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.45), blurRadius: 44)],
+                boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.45), blurRadius: 44)],
               ),
               child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 46),
             ),

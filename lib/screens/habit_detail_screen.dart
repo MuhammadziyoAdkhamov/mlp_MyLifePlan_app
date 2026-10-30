@@ -155,8 +155,9 @@ class HabitDetailScreen extends StatelessWidget {
     final value = match == null ? null : int.tryParse(match.group(1)!);
     if (value == null) return 10;
     if (lower.contains('hour') || lower.contains('soat')) return value * 60;
-    if (lower.contains('page') || lower.contains('sahifa'))
+    if (lower.contains('page') || lower.contains('sahifa')) {
       return (value / 2).round().clamp(5, 120).toInt();
+    }
     if (lower.contains('glass') || lower.contains('cup')) return 2;
     return value.clamp(2, 180).toInt();
   }
@@ -406,7 +407,7 @@ class HabitDetailScreen extends StatelessWidget {
               GlassCard(
                 glowColor: completedToday ? AppColors.emerald : color,
                 borderColor:
-                    completedToday ? AppColors.emerald.withOpacity(0.52) : null,
+                    completedToday ? AppColors.emerald.withValues(alpha: 0.52) : null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -567,7 +568,7 @@ class _TodayStatusCard extends StatelessWidget {
     return GlassCard(
       onTap: completedToday || skippedToday ? onUndo : null,
       glowColor: statusColor,
-      borderColor: statusColor.withOpacity(0.48),
+      borderColor: statusColor.withValues(alpha: 0.48),
       child: Row(
         children: [
           Container(
@@ -581,7 +582,7 @@ class _TodayStatusCard extends StatelessWidget {
                   : AppColors.primaryGradient,
               boxShadow: [
                 BoxShadow(
-                    color: statusColor.withOpacity(0.30),
+                    color: statusColor.withValues(alpha: 0.30),
                     blurRadius: 32,
                     offset: const Offset(0, 12))
               ],
@@ -717,7 +718,7 @@ class _InsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       glowColor: color,
-      borderColor: color.withOpacity(0.24),
+      borderColor: color.withValues(alpha: 0.24),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -725,7 +726,7 @@ class _InsightCard extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-                shape: BoxShape.circle, color: color.withOpacity(0.14)),
+                shape: BoxShape.circle, color: color.withValues(alpha: 0.14)),
             child: Icon(icon, color: color, size: 22),
           ),
           const SizedBox(width: 12),
@@ -785,9 +786,9 @@ class _WeekDayDot extends StatelessWidget {
             color: done
                 ? AppColors.emerald
                 : skipped
-                    ? AppColors.rose.withOpacity(0.22)
+                    ? AppColors.rose.withValues(alpha: 0.22)
                     : AppColors.surface3,
-            border: Border.all(color: displayColor.withOpacity(0.75)),
+            border: Border.all(color: displayColor.withValues(alpha: 0.75)),
           ),
           child: done
               ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
@@ -795,7 +796,7 @@ class _WeekDayDot extends StatelessWidget {
                   ? const Icon(Icons.favorite_rounded,
                       color: AppColors.rose, size: 16)
                   : Icon(Icons.circle_outlined,
-                      color: color.withOpacity(0.55), size: 14),
+                      color: color.withValues(alpha: 0.55), size: 14),
         ),
       ],
     );
@@ -814,9 +815,9 @@ class _InfoRow extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
       decoration: BoxDecoration(
-          color: AppColors.surface2.withOpacity(0.55),
+          color: AppColors.surface2.withValues(alpha: 0.55),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.borderSoft.withOpacity(0.78))),
+          border: Border.all(color: AppColors.borderSoft.withValues(alpha: 0.78))),
       child: Row(
         children: [
           Expanded(
@@ -847,7 +848,7 @@ class _DangerDeleteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       glowColor: AppColors.rose,
-      borderColor: AppColors.rose.withOpacity(0.32),
+      borderColor: AppColors.rose.withValues(alpha: 0.32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -871,7 +872,7 @@ class _DangerDeleteCard extends StatelessWidget {
                   style: TextStyle(
                       color: AppColors.rose, fontWeight: FontWeight.w800)),
               style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.rose.withOpacity(0.55)),
+                  side: BorderSide(color: AppColors.rose.withValues(alpha: 0.55)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18))),

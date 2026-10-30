@@ -6,6 +6,7 @@ import '../features/focus/mlp_focus_controller.dart';
 import 'router/mlp_routes.dart';
 import 'theme/mlp_design_system.dart';
 import '../core/design_system/mlp_widgets.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
 
 class MLPEnvironment {
   MLPEnvironment({
@@ -49,7 +50,7 @@ class MLPEnvironment {
   }
 
   Future<void> info(BuildContext context, String title, String text) =>
-      showDialog<void>(
+      mlpShowDialog<void>(
         context: context,
         builder: (dialog) => AlertDialog(
           title: Text(title),
@@ -65,8 +66,15 @@ class MLPEnvironment {
 }
 
 class MLPPage extends StatelessWidget {
-  const MLPPage({super.key, this.title, required this.children, this.actions});
+  const MLPPage({
+    super.key,
+    this.title,
+    required this.children,
+    this.actions,
+    this.background,
+  });
   final String? title;
+  final Widget? background;
   final List<Widget> children;
   final List<Widget>? actions;
   @override
@@ -83,7 +91,12 @@ class MLPPage extends StatelessWidget {
     );
     return title == null
         ? body
-        : MLPScaffold(title: title, actions: actions, body: body);
+        : MLPScaffold(
+            title: title,
+            actions: actions,
+            body: body,
+            background: background,
+          );
   }
 }
 

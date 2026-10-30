@@ -20,6 +20,11 @@ class MLPFocusController extends ChangeNotifier with WidgetsBindingObserver {
       } catch (_) {
         error = 'Oldingi taymer holati mos emas. Qayta boshlashingiz mumkin.';
       }
+    } else {
+      final savedMinutes = ui.prefs.getInt('mlp_preferred_focus_minutes');
+      if (savedMinutes != null && savedMinutes >= 1 && savedMinutes <= 180) {
+        duration = savedMinutes * 60;
+      }
     }
     WidgetsBinding.instance.addObserver(this);
   }
@@ -79,6 +84,9 @@ class MLPFocusController extends ChangeNotifier with WidgetsBindingObserver {
     isBreak = rest;
     sessionId = _newId();
     error = null;
+    if (!rest) {
+      unawaited(ui.prefs.setInt('mlp_preferred_focus_minutes', minutes));
+    }
     _emit();
     unawaited(persist());
   }

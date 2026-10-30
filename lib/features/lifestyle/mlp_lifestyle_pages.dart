@@ -1,13 +1,17 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../app/mlp_environment.dart';
 import '../../app/router/mlp_routes.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
+import '../../core/design_system/mlp_appearance.dart';
 import '../../data/models/mlp_schedule.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../onboarding/mlp_account_flow.dart';
+import 'mlp_background_settings.dart';
 
 class MLPReward {
   const MLPReward(this.id, this.title, this.xp, this.color);
@@ -27,7 +31,7 @@ class MLPRewardsPage extends StatelessWidget {
   Future<void> detail(
     BuildContext context,
     MLPReward reward,
-  ) => showModalBottomSheet<void>(
+  ) => mlpShowSheet<void>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -186,20 +190,10 @@ class _WeatherState extends State<MLPWeatherPage> {
               },
             ),
             const SizedBox(height: 16),
-            Wrap(
-              spacing: 10,
-              children: [
-                ChoiceChip(
-                  label: const Text('Bugun'),
-                  selected: day == 0,
-                  onSelected: (_) => setState(() => day = 0),
-                ),
-                ChoiceChip(
-                  label: const Text('Ertaga'),
-                  selected: day == 1,
-                  onSelected: (_) => setState(() => day = 1),
-                ),
-              ],
+            MLPSegmented(
+              labels: const ['Bugun', 'Ertaga'],
+              selected: day,
+              onChanged: (value) => setState(() => day = value),
             ),
             const SizedBox(height: 20),
             MLPGlassCard(
@@ -404,8 +398,9 @@ class _SoundState extends State<MLPSoundspacePage> {
 }
 
 class MLPProfilePage extends StatelessWidget {
-  const MLPProfilePage({super.key, required this.e});
+  const MLPProfilePage({super.key, required this.e, this.showBack = false});
   final MLPEnvironment e;
+  final bool showBack;
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([e.ui, e.store]),
@@ -421,6 +416,7 @@ class MLPProfilePage extends StatelessWidget {
         children: [
           Row(
             children: [
+              if (showBack) const BackButton(),
               Expanded(
                 child: Text(
                   'Profil',
@@ -434,8 +430,9 @@ class MLPProfilePage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          MLPGlassCard(
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
                 Container(
@@ -462,10 +459,13 @@ class MLPProfilePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name, style: Theme.of(context).textTheme.titleLarge),
+                      Text(
+                        name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Katta maqsadlar sari, har kuni bir qadam.',
+                        'Katta maqsadlar sari\nhar kuni bir qadam.',
                         style: TextStyle(
                           color: MLPColors.secondaryText,
                           fontSize: 12,
@@ -474,72 +474,153 @@ class MLPProfilePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(width: 8),
+                Semantics(
+                  button: true,
+                  label: 'MLP Pro haqida',
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => _proInfo(context, e),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: MLPColors.warning.withValues(alpha: .07),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: MLPColors.warning.withValues(alpha: .3),
+                        ),
+                      ),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.workspace_premium_rounded,
+                            size: 22,
+                            color: MLPColors.warning,
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'MLP Pro',
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: MLPColors.warning,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
+          const SizedBox(height: 14),
+          _ProfileStats(e: e),
           const SizedBox(height: 16),
-          MLPMetrics(
-            items: [
-              (
-                value: '${e.store.streak}',
-                label: 'Faol kunlar ketma-ketligi',
-                icon: Icons.local_fire_department_outlined,
+          _GlassMenuGroup(
+            children: [
+              _GlassMenuRow(
+                title: 'Mening yutuqlarim',
+                icon: CupertinoIcons.rosette,
+                onTap: () => e.go(MLPScreen.rewards),
               ),
-              (
-                value: '${e.store.todayFocusMinutes}',
-                label: 'Bugun fokus · daqiqa',
-                icon: Icons.timelapse,
+              _GlassMenuRow(
+                title: 'Maqsadlarim',
+                icon: CupertinoIcons.scope,
+                onTap: () => e.tab(1),
               ),
-              (
-                value: '${e.store.goals.length}',
-                label: 'Mahalliy maqsadlar',
-                icon: Icons.flag_outlined,
+              _GlassMenuRow(
+                title: 'Statistikalarim',
+                icon: CupertinoIcons.chart_bar,
+                onTap: () => e.go(MLPScreen.analytics),
+              ),
+              _GlassMenuRow(
+                title: 'Ko‘nikmalar pasporti',
+                icon: CupertinoIcons.checkmark_shield,
+                onTap: () => e.go(MLPScreen.passport),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          MLPMenuTile(
-            title: 'Ko‘nikmalar pasporti',
-            icon: Icons.verified_outlined,
-            onTap: () => e.go(MLPScreen.passport),
+          const SizedBox(height: 12),
+          _GlassMenuGroup(
+            children: [
+              _GlassMenuRow(
+                title: 'Sozlamalar',
+                icon: CupertinoIcons.gear,
+                onTap: () => e.go(MLPScreen.settings),
+              ),
+              _GlassMenuRow(
+                title: 'Mavzu',
+                detail: 'Liquid Glass',
+                icon: CupertinoIcons.moon,
+                onTap: () => Navigator.push<void>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MLPBackgroundSettingsPage(),
+                  ),
+                ),
+              ),
+              _GlassMenuRow(
+                title: 'Bildirishnomalar',
+                icon: CupertinoIcons.bell,
+                trailing: CupertinoSwitch(
+                  value: e.ui.preferences.notifications,
+                  activeTrackColor: MLPColors.turquoise,
+                  onChanged: (v) => e.act(
+                    context,
+                    () => e.ui.savePreferences(
+                      MLPUserPreferences.fromJson({
+                        ...e.ui.preferences.toJson(),
+                        'notifications': v,
+                      }),
+                    ),
+                  ),
+                ),
+                onTap: () => e.go(MLPScreen.notifications),
+              ),
+              _GlassMenuRow(
+                title: 'Yordam va fikr-mulohaza',
+                icon: CupertinoIcons.question_square,
+                onTap: () => e.info(
+                  context,
+                  'Beta tekshiruvi',
+                  'Ekran nomi, bajarilgan qadamlar, kutilgan va amaldagi natijani loyiha egasiga yetkazing. Ilova ichida yuborish xizmati ulanmagan.',
+                ),
+              ),
+            ],
           ),
-          MLPMenuTile(
-            title: 'Mening yutuqlarim',
-            icon: Icons.emoji_events_outlined,
-            onTap: () => e.go(MLPScreen.rewards),
+          const SizedBox(height: 12),
+          _GlassMenuGroup(
+            children: [
+              _GlassMenuRow(
+                title: 'Ustoz AI',
+                icon: CupertinoIcons.sparkles,
+                onTap: () => e.go(MLPScreen.chat),
+              ),
+              _GlassMenuRow(
+                title: 'Ob-havo va reja',
+                icon: CupertinoIcons.cloud,
+                onTap: () => e.go(MLPScreen.weather),
+              ),
+              _GlassMenuRow(
+                title: 'MLP Soundspace',
+                icon: CupertinoIcons.headphones,
+                onTap: () => e.go(MLPScreen.soundspace),
+              ),
+              _GlassMenuRow(
+                title: 'MLP Pro',
+                detail: 'Demo',
+                icon: Icons.workspace_premium_outlined,
+                onTap: () => _proInfo(context, e),
+              ),
+            ],
           ),
-          MLPMenuTile(
-            title: 'Maqsadlarim',
-            icon: Icons.flag_outlined,
-            onTap: () => e.tab(1),
-          ),
-          MLPMenuTile(
-            title: 'Rivojlanishim',
-            icon: Icons.bar_chart_outlined,
-            onTap: () => e.go(MLPScreen.analytics),
-          ),
-          MLPMenuTile(
-            title: 'Ob-havo va reja',
-            icon: Icons.cloud_outlined,
-            onTap: () => e.go(MLPScreen.weather),
-          ),
-          MLPMenuTile(
-            title: 'MLP Soundspace',
-            icon: Icons.headphones_outlined,
-            onTap: () => e.go(MLPScreen.soundspace),
-          ),
-          MLPMenuTile(
-            title: 'MLP Pro',
-            subtitle: 'Obuna va to‘lov mavjud emas',
-            icon: Icons.workspace_premium_outlined,
-            onTap: () => e.info(
-              context,
-              'MLP Pro',
-              'Yopiq demo uchun obuna sotilmaydi. To‘lov, karta yoki pullik xizmat ulanmagan.',
-            ),
-          ),
+          const SizedBox(height: 16),
           const MLPNotice(
-            'Mahalliy demo profil. Telefon tasdiqlanmagan. Ma’lumotlar shu qurilmada saqlanadi.',
+            'Mahalliy demo profil. Telefon tasdiqlanmagan. Bildirishnoma tanlovi saqlanadi, lekin tizim orqali yetkazish ulanmagan.',
           ),
           MLPSecondaryButton(
             label: 'Profildan chiqish',
@@ -563,6 +644,229 @@ class MLPProfilePage extends StatelessWidget {
       );
     },
   );
+
+  static void _proInfo(BuildContext context, MLPEnvironment e) => e.info(
+    context,
+    'MLP Pro',
+    'Bu demo uchun obuna sotilmaydi. To‘lov, karta yoki pullik xizmat ulanmagan. Belgini bosish xaridni boshlamaydi.',
+  );
+}
+
+class _ProfileStats extends StatelessWidget {
+  const _ProfileStats({required this.e});
+  final MLPEnvironment e;
+  @override
+  Widget build(BuildContext context) {
+    final start = DateTime(
+      e.store.today.year,
+      e.store.today.month,
+      e.store.today.day - e.store.today.weekday + 1,
+    );
+    final end = DateTime(start.year, start.month, start.day + 7);
+    final minutes =
+        e.store.focusSessions
+            .where((s) => !s.date.isBefore(start) && s.date.isBefore(end))
+            .fold<int>(0, (sum, s) => sum + s.seconds) ~/
+        60;
+    final items = [
+      (
+        '${e.store.streak}',
+        'Ketma-ket kun',
+        CupertinoIcons.flame_fill,
+        MLPColors.error,
+      ),
+      (
+        '${e.store.tasks.where((t) => t.completed).length}',
+        'Topshirilgan',
+        CupertinoIcons.scope,
+        MLPColors.warning,
+      ),
+      (
+        '${minutes ~/ 60}h ${minutes % 60}m',
+        'Bu hafta',
+        CupertinoIcons.chart_bar_fill,
+        MLPColors.turquoise,
+      ),
+    ];
+    return MLPLiquidSurface(
+      radius: 16,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final stacked = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+          Widget item(int index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(items[index].$3, size: 22, color: items[index].$4),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        items[index].$1,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        items[index].$2,
+                        style: const TextStyle(
+                          fontSize: 9,
+                          color: MLPColors.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+          return stacked
+              ? Column(children: List.generate(3, item))
+              : Row(
+                  children: List.generate(3, (i) => Expanded(child: item(i))),
+                );
+        },
+      ),
+    );
+  }
+}
+
+class _GlassMenuGroup extends StatelessWidget {
+  const _GlassMenuGroup({required this.children});
+  final List<Widget> children;
+  @override
+  Widget build(BuildContext context) => MLPLiquidSurface(
+    radius: 16,
+    child: Column(
+      children: [
+        for (var i = 0; i < children.length; i++) ...[
+          children[i],
+          if (i < children.length - 1)
+            Divider(
+              height: 1,
+              thickness: .5,
+              indent: 44,
+              color: Colors.white.withValues(alpha: .08),
+            ),
+        ],
+      ],
+    ),
+  );
+}
+
+class _GlassMenuRow extends StatelessWidget {
+  const _GlassMenuRow({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+    this.detail,
+    this.trailing,
+  });
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+  final String? detail;
+  final Widget? trailing;
+  @override
+  Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 34),
+          child: Row(
+            children: [
+              Icon(icon, size: 20, color: MLPColors.secondaryText),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(title, style: const TextStyle(fontSize: 12)),
+              ),
+              if (detail != null) ...[
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    detail!,
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: MLPColors.muted,
+                    ),
+                  ),
+                ),
+              ],
+              if (trailing != null) ...[
+                const SizedBox(width: 8),
+                trailing!,
+              ] else ...[
+                const SizedBox(width: 8),
+                const Icon(
+                  CupertinoIcons.chevron_right,
+                  size: 13,
+                  color: MLPColors.secondaryText,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _GlassSwitch extends StatelessWidget {
+  const _GlassSwitch({
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+  final String title, subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: MLPLiquidSurface(
+      radius: 16,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontSize: 14)),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: MLPColors.secondaryText,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Semantics(
+            label: title,
+            child: CupertinoSwitch(
+              value: value,
+              onChanged: onChanged,
+              activeTrackColor: MLPColors.turquoise,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class MLPSettingsPage extends StatelessWidget {
@@ -575,7 +879,7 @@ class MLPSettingsPage extends StatelessWidget {
     final form = GlobalKey<FormState>();
     bool busy = false;
     String? error;
-    await showDialog<void>(
+    await mlpShowDialog<void>(
       context: context,
       builder: (dialog) => StatefulBuilder(
         builder: (context, refresh) => AlertDialog(
@@ -645,11 +949,12 @@ class MLPSettingsPage extends StatelessWidget {
       'version': 1,
       'core': jsonDecode(e.store.exportJson()),
       'ui': jsonDecode(e.ui.exportUiState()),
+      'appearance': MLPAppearanceScope.maybeOf(context)?.exportState(),
     });
-    await showDialog<void>(
+    await mlpShowDialog<void>(
       context: context,
       builder: (dialog) => AlertDialog(
-        title: const Text('To‘liq mahalliy nusxa'),
+        title: const Text('Mahalliy nusxa · fon rasmi ham kiradi'),
         content: SizedBox(
           width: 600,
           child: SingleChildScrollView(
@@ -684,13 +989,13 @@ class MLPSettingsPage extends StatelessWidget {
     builder: (context, _) => MLPPage(
       title: 'Sozlamalar',
       children: [
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Profil ma’lumotlari',
           subtitle: e.ui.profile?.name,
           icon: Icons.person_outline,
           onTap: () => _identity(context),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Shaxsiy tanlovlar',
           subtitle: '${e.ui.preferences.minutes} daqiqa / kun',
           icon: Icons.tune,
@@ -702,28 +1007,29 @@ class MLPSettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Ustoz va ruxsatlar',
           icon: Icons.auto_awesome,
           onTap: () => e.go(MLPScreen.aiPersonalization),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Bildirishnomalar',
           subtitle: 'Faqat mahalliy reja · yetkazish ulanmagan',
           icon: Icons.notifications_none,
           onTap: () => e.go(MLPScreen.notifications),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Mavzu',
-          subtitle: 'Qorong‘i · firuza',
+          subtitle: 'iOS Liquid Glass · shaxsiy fon',
           icon: Icons.dark_mode_outlined,
-          onTap: () => e.info(
+          onTap: () => Navigator.push<void>(
             context,
-            'Qorong‘i mavzu',
-            'Ushbu versiyada qorong‘i mavzu tayyor. Tizimdagi kamaytirilgan harakat va kattalashtirilgan matn tanlovlari hisobga olinadi. Yorug‘ mavzu hozircha mavjud emas.',
+            MaterialPageRoute(
+              builder: (_) => const MLPBackgroundSettingsPage(),
+            ),
           ),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Til',
           subtitle: 'O‘zbekcha · lotin',
           icon: Icons.translate,
@@ -733,19 +1039,19 @@ class MLPSettingsPage extends StatelessWidget {
             'Interfeys o‘zbekcha lotin yozuvida. Boshqa tillar hali tarjima qilinmagan.',
           ),
         ),
-        SwitchListTile.adaptive(
-          title: const Text('Ustoz tezkor tugmasi'),
-          subtitle: const Text('Faqat ilova ichida'),
+        _GlassSwitch(
+          title: 'Ustoz tezkor tugmasi',
+          subtitle: 'Faqat ilova ichida',
           value: !e.ui.assistantHidden,
           onChanged: (v) => e.act(context, () => e.ui.hideAssistant(!v)),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Mahalliy nusxa olish',
-          subtitle: 'Maqsadlar, qaydlar, taqvim va UI tanlovlari · JSON',
+          subtitle: 'Maqsadlar, qaydlar, taqvim, UI va fon rasmi · JSON',
           icon: Icons.save_alt,
           onTap: () => _backup(context),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Ma’lumotlar va avvalgi ish oynasi',
           subtitle:
               'Vazifa va odatlar CRUD, asosiy JSON import/eksport, CSV va ICS',
@@ -758,16 +1064,16 @@ class MLPSettingsPage extends StatelessWidget {
         const MLPNotice(
           'Asosiy JSON import eski ma’lumotlar oynasida faqat vazifa, maqsad, odat va faoliyatni tiklaydi. To‘liq UI nusxasini import qilish hali mavjud emas. Uni asosiy JSON importeriga bermang.',
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Maxfiylik',
           icon: Icons.shield_outlined,
           onTap: () => e.info(
             context,
             'Mahalliy demo va maxfiylik',
-            'Bu ish oqimida hisob, chat va baholash shu qurilmada saqlanadi. Serverga AI so‘rovi yuborilmaydi; mikrofon, kamera va joylashuv so‘ralmaydi. Mahalliy saqlov shifrlanmagan. Umumiy qurilmada maxfiy ma’lumot kiritmang. Eksportni faqat o‘zingiz ishonadigan joyda saqlang.',
+            'Bu ish oqimida hisob, chat, baholash va tanlangan fon rasmi shu qurilmada saqlanadi. Galereyadan faqat o‘zingiz tanlagan rasm olinadi; serverga yuborilmaydi. Mikrofon, kamera va joylashuv so‘ralmaydi. Mahalliy saqlov shifrlanmagan. JSON nusxasiga fon rasmi ham kiradi. Eksportni faqat o‘zingiz ishonadigan joyda saqlang. Fon rasmini «Mavzu» bo‘limida o‘chirishingiz mumkin.',
           ),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Yordam va fikr-mulohaza',
           icon: Icons.help_outline,
           onTap: () => e.info(
@@ -776,7 +1082,7 @@ class MLPSettingsPage extends StatelessWidget {
             'Muammo haqida ekran nomi, bajarilgan qadamlar, kutilgan va amaldagi natijani loyiha egasiga yetkazing. Ilova ichida yuborish xizmati hali ulanmagan.',
           ),
         ),
-        MLPMenuTile(
+        _SettingsRow(
           title: 'Ilova haqida',
           subtitle: 'MLP · mahalliy UI prototip',
           icon: Icons.info_outline,
@@ -790,15 +1096,17 @@ class MLPSettingsPage extends StatelessWidget {
         MLPSecondaryButton(
           label: 'UI tanlovlarini tozalash',
           onPressed: () async {
+            final appearance = MLPAppearanceScope.maybeOf(context);
             final yes = await MLPConfirmationSheet.show(
               context,
               title: 'UI ma’lumoti tozalansinmi?',
               message:
-                  'Demo profil, chat, jadval, baholashlar va tanlovlar o‘chadi. Asosiy maqsad, vazifa va fokus tarixi qoladi.',
+                  'Demo profil, chat, jadval, baholashlar, tanlovlar va shaxsiy fon rasmi o‘chadi. Asosiy maqsad, vazifa va fokus tarixi qoladi.',
             );
             if (yes && context.mounted) {
               await e.act(context, () async {
                 await e.focus.discard();
+                await appearance?.setBackground(null);
                 e.tab(0);
                 await e.ui.resetUiData();
               });
@@ -842,13 +1150,11 @@ class MLPNotificationsPage extends StatelessWidget {
             'Bu ekran rejalangan eslatma niyatlarini ko‘rsatadi. Android/iOS push yoki mahalliy xabarnoma yetkazish ulanmagan; ruxsat berilgan deb ko‘rsatilmaydi.',
             warning: true,
           ),
-          SwitchListTile.adaptive(
-            title: const Text('Eslatma tanlovim'),
-            subtitle: Text(
-              e.ui.preferences.notifications
-                  ? 'Tanlov saqlangan · yetkazish faol emas'
-                  : 'Tanlov o‘chirilgan',
-            ),
+          _GlassSwitch(
+            title: 'Eslatma tanlovim',
+            subtitle: e.ui.preferences.notifications
+                ? 'Tanlov saqlangan · yetkazish faol emas'
+                : 'Tanlov o‘chirilgan',
             value: e.ui.preferences.notifications,
             onChanged: (v) => e.act(
               context,
@@ -908,5 +1214,27 @@ class MLPNotificationsPage extends StatelessWidget {
         ],
       );
     },
+  );
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+    this.subtitle,
+  });
+  final String title;
+  final String? subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: _GlassMenuGroup(
+      children: [
+        _GlassMenuRow(title: title, icon: icon, onTap: onTap, detail: subtitle),
+      ],
+    ),
   );
 }

@@ -77,7 +77,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.surface2.withOpacity(0.72),
+        fillColor: AppColors.surface2.withValues(alpha: 0.72),
         hintStyle: GoogleFonts.poppins(color: AppColors.textMuted, fontSize: 13),
         labelStyle: GoogleFonts.poppins(color: AppColors.textSecondary, fontSize: 13),
         border: OutlineInputBorder(

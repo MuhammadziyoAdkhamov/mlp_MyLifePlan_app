@@ -13,6 +13,10 @@ import '../features/goals/mlp_goal_detail.dart';
 import '../app/router/mlp_routes.dart';
 import '../features/planner/mlp_calendar.dart';
 import '../app/mlp_product_shell.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
+import '../core/design_system/mlp_appearance.dart';
+import '../core/design_system/mlp_haptics.dart';
+import '../core/design_system/mlp_device_frame.dart';
 
 const _bg = MLPColors.background,
     _panel = MLPColors.secondary,
@@ -53,31 +57,40 @@ class MplDemoApp extends StatelessWidget {
   final DateTime Function()? clock;
   final bool enableOnboarding;
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: 'MLP — Har kuni natija',
-    theme: MLPTheme.dark,
-    locale: const Locale('uz'),
-    supportedLocales: const [Locale('uz'), Locale('en')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    navigatorObservers: [MLPRouteFeedbackObserver()],
-    home: enableOnboarding
-        ? MLPEntryGate(
-            prefs: prefs,
-            homeBuilder: (ui) => MLPProductShell(
-              store: store,
+  Widget build(BuildContext context) => MLPAppearanceHost(
+    prefs: prefs,
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'MLP — Har kuni natija',
+      theme: MLPTheme.dark,
+      locale: const Locale('uz'),
+      supportedLocales: const [Locale('uz'), Locale('en')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      navigatorObservers: [MLPRouteFeedbackObserver()],
+      builder: (context, child) =>
+          MLPIPhoneFrame(child: child ?? const SizedBox()),
+      home: enableOnboarding
+          ? MLPEntryGate(
               prefs: prefs,
-              clock: clock ?? DateTime.now,
-              ui: ui,
-              legacyBuilder: () => _Workspace(
+              homeBuilder: (ui) => MLPProductShell(
                 store: store,
                 prefs: prefs,
                 clock: clock ?? DateTime.now,
                 ui: ui,
+                legacyBuilder: () => _Workspace(
+                  store: store,
+                  prefs: prefs,
+                  clock: clock ?? DateTime.now,
+                  ui: ui,
+                ),
               ),
+            )
+          : _Workspace(
+              store: store,
+              prefs: prefs,
+              clock: clock ?? DateTime.now,
             ),
-          )
-        : _Workspace(store: store, prefs: prefs, clock: clock ?? DateTime.now),
+    ),
   );
 }
 
@@ -135,6 +148,12 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
         widget.ui?.preferences.minutes ??
         widget.prefs.getInt('mpl_demo_daily_budget') ??
         90;
+    final savedLen = widget.prefs.getInt('mlp_preferred_focus_minutes');
+    if (savedLen != null && savedLen >= 1 && savedLen <= 180) {
+      length = savedLen * 60;
+    }
+    elapsed = widget.prefs.getInt('mpl_demo_focus_elapsed') ?? 0;
+    focusTask = widget.prefs.getString('mpl_demo_focus_task');
     renderedDay = s.todayKey;
     dayTicker = Timer.periodic(const Duration(seconds: 30), (_) {
       if (mounted && renderedDay != s.todayKey) {
@@ -174,6 +193,7 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
 
   void _start() {
     if (running || saving) return;
+    MLPHaptics.medium();
     setState(() {
       running = true;
       anchor = widget.clock();
@@ -187,11 +207,15 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
             (anchorElapsed + widget.clock().difference(anchor!).inSeconds)
                 .clamp(0, length),
       );
+      if (elapsed % 5 == 0) {
+        widget.prefs.setInt('mpl_demo_focus_elapsed', elapsed);
+      }
       if (remaining <= 0) unawaited(_saveFocus());
     });
   }
 
   void _pause() {
+    MLPHaptics.light();
     ticker?.cancel();
     setState(() {
       if (running && anchor != null) {
@@ -200,6 +224,12 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
       }
       running = false;
     });
+    widget.prefs.setInt('mpl_demo_focus_elapsed', elapsed);
+    if (focusTask != null) {
+      widget.prefs.setString('mpl_demo_focus_task', focusTask!);
+    } else {
+      widget.prefs.remove('mpl_demo_focus_task');
+    }
   }
 
   Future<void> _saveFocus() async {
@@ -210,11 +240,15 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
     try {
       await s.addFocusSession(taskId: focusTask, seconds: elapsed);
       if (!mounted) return;
+      MLPHaptics.success();
       _toast(
         '${elapsed ~/ 60} daq ${elapsed % 60} soniya saqlandi. Natijani topshirishni unutmang.',
       );
+      widget.prefs.remove('mpl_demo_focus_elapsed');
+      widget.prefs.remove('mpl_demo_focus_task');
       setState(() => elapsed = 0);
     } catch (e) {
+      MLPHaptics.error();
       if (mounted) _toast('$e');
     } finally {
       if (mounted) setState(() => saving = false);
@@ -227,6 +261,7 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
       _toast('Avval joriy fokusni saqlang yoki qayta boshlang.');
       return;
     }
+    MLPHaptics.selection();
     setState(() {
       focusTask = task.id;
       length = task.minutes * 60;
@@ -245,80 +280,94 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
     builder: (context, _) => LayoutBuilder(
       builder: (context, c) {
         final wide = c.maxWidth >= 1050;
-        return Scaffold(
-          bottomNavigationBar: wide
-              ? null
-              : NavigationBar(
-                  backgroundColor: _panel,
-                  indicatorColor: _mint.withValues(alpha: .16),
-                  selectedIndex: page,
-                  onDestinationSelected: (i) => setState(() => page = i),
-                  destinations: List.generate(
-                    5,
-                    (i) => NavigationDestination(
-                      icon: Icon(icons[i], color: page == i ? _mint : _muted),
-                      label: ['Bugun', 'Reja', 'Fokus', 'Natija', 'Markaz'][i],
+        return BackdropGroup(
+          child: Scaffold(
+            bottomNavigationBar: wide
+                ? null
+                : NavigationBar(
+                    backgroundColor: _panel,
+                    indicatorColor: _mint.withValues(alpha: .16),
+                    selectedIndex: page,
+                    onDestinationSelected: (i) => setState(() => page = i),
+                    destinations: List.generate(
+                      5,
+                      (i) => NavigationDestination(
+                        icon: Icon(icons[i], color: page == i ? _mint : _muted),
+                        label: [
+                          'Bugun',
+                          'Reja',
+                          'Fokus',
+                          'Natija',
+                          'Markaz',
+                        ][i],
+                      ),
                     ),
                   ),
-                ),
-          body: SafeArea(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            body: Stack(
+              fit: StackFit.expand,
               children: [
-                if (wide) _sidebar(),
-                Expanded(
-                  child: Column(
+                const Positioned.fill(child: MLPLiquidBackground()),
+                SafeArea(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _topbar(wide),
-                      if (s.storageError != null)
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: _notice(s.storageError!),
-                        ),
-                      if (running && page != 2)
-                        InkWell(
-                          onTap: () => setState(() => page = 2),
-                          child: Container(
-                            width: double.infinity,
-                            color: _mint.withValues(alpha: .10),
-                            padding: const EdgeInsets.all(12),
-                            child: Text(
-                              'Fokus davom etmoqda · ${_clock(remaining)} →',
-                              style: const TextStyle(color: _mint),
-                            ),
-                          ),
-                        ),
+                      if (wide) _sidebar(),
                       Expanded(
-                        child: page == 3
-                            ? DemoReview(store: s)
-                            : page == 4
-                            ? DemoHub(
-                                store: s,
-                                onDataReplaced: () {
-                                  _pause();
-                                  setState(() {
-                                    focusTask = null;
-                                    elapsed = 0;
-                                  });
-                                },
-                              )
-                            : SingleChildScrollView(
-                                key: ValueKey('page-$page'),
-                                padding: EdgeInsets.all(wide ? 32 : 18),
-                                child: Align(
-                                  alignment: Alignment.topCenter,
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 1260,
-                                    ),
-                                    child: switch (page) {
-                                      0 => _today(wide),
-                                      1 => _plan(),
-                                      _ => _focus(),
-                                    },
+                        child: Column(
+                          children: [
+                            _topbar(wide),
+                            if (s.storageError != null)
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: _notice(s.storageError!),
+                              ),
+                            if (running && page != 2)
+                              InkWell(
+                                onTap: () => setState(() => page = 2),
+                                child: Container(
+                                  width: double.infinity,
+                                  color: _mint.withValues(alpha: .10),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Text(
+                                    'Fokus davom etmoqda · ${_clock(remaining)} →',
+                                    style: const TextStyle(color: _mint),
                                   ),
                                 ),
                               ),
+                            Expanded(
+                              child: page == 3
+                                  ? DemoReview(store: s)
+                                  : page == 4
+                                  ? DemoHub(
+                                      store: s,
+                                      onDataReplaced: () {
+                                        _pause();
+                                        setState(() {
+                                          focusTask = null;
+                                          elapsed = 0;
+                                        });
+                                      },
+                                    )
+                                  : SingleChildScrollView(
+                                      key: ValueKey('page-$page'),
+                                      padding: EdgeInsets.all(wide ? 32 : 18),
+                                      child: Align(
+                                        alignment: Alignment.topCenter,
+                                        child: ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxWidth: 1260,
+                                          ),
+                                          child: switch (page) {
+                                            0 => _today(wide),
+                                            1 => _plan(),
+                                            _ => _focus(),
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -811,7 +860,10 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
           (i) => ChoiceChip(
             label: Text(['Vazifalar', 'Odatlar', 'Maqsadlar'][i]),
             selected: planTab == i,
-            onSelected: (_) => setState(() => planTab = i),
+            onSelected: (_) {
+              MLPHaptics.selection();
+              setState(() => planTab = i);
+            },
           ),
         ),
       ),
@@ -1066,7 +1118,10 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
                 tooltip: 'Odatga +1',
                 onPressed: done || !scheduled
                     ? null
-                    : () => _act(() => s.incrementHabit(h.id)),
+                    : () {
+                        MLPHaptics.medium();
+                        _act(() => s.incrementHabit(h.id));
+                      },
                 icon: Icon(
                   done
                       ? Icons.check_circle_rounded
@@ -1109,7 +1164,10 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
                 if (value > 0)
                   IconButton(
                     tooltip: 'Bugungi qiymatni qaytarish',
-                    onPressed: () => _act(() => s.undoHabit(h.id)),
+                    onPressed: () {
+                      MLPHaptics.selection();
+                      _act(() => s.undoHabit(h.id));
+                    },
                     icon: const Icon(
                       Icons.undo_rounded,
                       size: 18,
@@ -1325,17 +1383,118 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
                     spacing: 8,
                     runSpacing: 8,
                     alignment: WrapAlignment.center,
-                    children: [25, 50, 5, 1]
+                    children: [15, 25, 39, 50, 60, 90, 5, 1]
                         .map(
                           (m) => ChoiceChip(
-                            label: Text(m == 1 ? '1 daq · sinov' : '$m daq'),
+                            label: Text(
+                              m == 39
+                                  ? '39 daq 🎯'
+                                  : (m == 1 ? '1 daq · sinov' : '$m daq'),
+                            ),
                             selected: length == m * 60,
                             onSelected: running || elapsed > 0
                                 ? null
-                                : (_) => setState(() => length = m * 60),
+                                : (_) {
+                                    MLPHaptics.selection();
+                                    setState(() => length = m * 60);
+                                    widget.prefs.setInt(
+                                      'mlp_preferred_focus_minutes',
+                                      m,
+                                    );
+                                  },
                           ),
                         )
                         .toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: [
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        tooltip: '5 daqiqa kamaytirish',
+                        icon: const Icon(Icons.replay_5_rounded, size: 18),
+                        onPressed: running || elapsed > 0 || length <= 300
+                            ? null
+                            : () {
+                                MLPHaptics.selection();
+                                final m = ((length ~/ 60) - 5).clamp(1, 180);
+                                setState(() => length = m * 60);
+                                widget.prefs.setInt(
+                                  'mlp_preferred_focus_minutes',
+                                  m,
+                                );
+                              },
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        tooltip: '1 daqiqa kamaytirish',
+                        icon: const Icon(
+                          Icons.remove_circle_outline_rounded,
+                          size: 18,
+                        ),
+                        onPressed: running || elapsed > 0 || length <= 60
+                            ? null
+                            : () {
+                                MLPHaptics.selection();
+                                final m = ((length ~/ 60) - 1).clamp(1, 180);
+                                setState(() => length = m * 60);
+                                widget.prefs.setInt(
+                                  'mlp_preferred_focus_minutes',
+                                  m,
+                                );
+                              },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                          '${length ~/ 60} daq sozlandi',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        tooltip: '1 daqiqa qo‘shish',
+                        icon: const Icon(
+                          Icons.add_circle_outline_rounded,
+                          size: 18,
+                        ),
+                        onPressed: running || elapsed > 0 || length >= 180 * 60
+                            ? null
+                            : () {
+                                MLPHaptics.selection();
+                                final m = ((length ~/ 60) + 1).clamp(1, 180);
+                                setState(() => length = m * 60);
+                                widget.prefs.setInt(
+                                  'mlp_preferred_focus_minutes',
+                                  m,
+                                );
+                              },
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        tooltip: '5 daqiqa qo‘shish',
+                        icon: const Icon(Icons.forward_5_rounded, size: 18),
+                        onPressed: running || elapsed > 0 || length >= 175 * 60
+                            ? null
+                            : () {
+                                MLPHaptics.selection();
+                                final m = ((length ~/ 60) + 5).clamp(1, 180);
+                                setState(() => length = m * 60);
+                                widget.prefs.setInt(
+                                  'mlp_preferred_focus_minutes',
+                                  m,
+                                );
+                              },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 34),
                   _ring(
@@ -1383,6 +1542,8 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
                                 'Saqlanmagan $elapsed soniya hisobdan chiqadi.',
                                 () async {
                                   _pause();
+                                  widget.prefs.remove('mpl_demo_focus_elapsed');
+                                  widget.prefs.remove('mpl_demo_focus_task');
                                   setState(() => elapsed = 0);
                                 },
                               ),
@@ -1429,7 +1590,7 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
   Future<void> _settings() async {
     final input = TextEditingController(text: name);
     final capacity = TextEditingController(text: '$dailyBudget');
-    await showDialog<void>(
+    await mlpShowDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: _panel,
@@ -1593,11 +1754,11 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
     String message,
     Future<void> Function() fn,
   ) async {
-    final yes = await showDialog<bool>(
+    final yes = await mlpShowDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(title),
-        content: Text(message),
+        content: SingleChildScrollView(child: Text(message)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -1614,15 +1775,14 @@ class _WorkspaceState extends State<_Workspace> with WidgetsBindingObserver {
   }
 
   Widget _box(Widget child, {double padding = 23, Color color = _panel}) =>
-      Container(
+      SizedBox(
         width: double.infinity,
-        padding: EdgeInsets.all(padding),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(19),
-          border: Border.all(color: _line.withValues(alpha: .7)),
+        child: MLPLiquidSurface(
+          radius: 19,
+          tint: color,
+          padding: EdgeInsets.all(padding),
+          child: child,
         ),
-        child: child,
       );
   Widget _columns(bool wide, List<Widget> children) => wide
       ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: children)

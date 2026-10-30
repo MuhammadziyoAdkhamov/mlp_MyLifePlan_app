@@ -42,7 +42,7 @@ class XPLevelScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: AppColors.primaryGradient,
-                        boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.35), blurRadius: 42)],
+                        boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.35), blurRadius: 42)],
                       ),
                       child: const Icon(Icons.workspace_premium_rounded, size: 46, color: Colors.white),
                     ),

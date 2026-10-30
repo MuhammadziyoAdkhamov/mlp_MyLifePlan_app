@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:ui' as ui;
 import '../../app/theme/mlp_design_system.dart';
+import 'mlp_liquid_glass.dart';
 
 class MLPScaffold extends StatelessWidget {
   const MLPScaffold({
@@ -9,32 +12,69 @@ class MLPScaffold extends StatelessWidget {
     this.actions,
     this.bottomNavigationBar,
     this.floatingActionButton,
+    this.leading,
+    this.background,
   });
   final Widget body;
   final String? title;
   final List<Widget>? actions;
   final Widget? bottomNavigationBar, floatingActionButton;
+  final Widget? leading;
+  final Widget? background;
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: title == null ? null : MLPAppBar(title: title!, actions: actions),
-    body: SafeArea(child: body),
-    bottomNavigationBar: bottomNavigationBar,
-    floatingActionButton: floatingActionButton,
-    resizeToAvoidBottomInset: true,
+  Widget build(BuildContext context) => BackdropGroup(
+    child: Scaffold(
+      backgroundColor: MLPColors.background,
+      extendBody: bottomNavigationBar != null,
+      appBar: title == null
+          ? null
+          : MLPAppBar(title: title!, actions: actions, leading: leading),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(child: background ?? const MLPLiquidBackground()),
+          SafeArea(bottom: bottomNavigationBar == null, child: body),
+        ],
+      ),
+      bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton: floatingActionButton,
+      resizeToAvoidBottomInset: true,
+    ),
   );
 }
 
 class MLPAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MLPAppBar({super.key, required this.title, this.actions});
+  const MLPAppBar({super.key, required this.title, this.actions, this.leading});
   final String title;
   final List<Widget>? actions;
+  final Widget? leading;
   @override
-  Size get preferredSize => const Size.fromHeight(64);
+  Size get preferredSize => const Size.fromHeight(56);
   @override
-  Widget build(BuildContext context) => AppBar(
-    toolbarHeight: 64,
-    title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-    actions: actions,
+  Widget build(BuildContext context) => ClipRect(
+    child: BackdropFilter(
+      filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+      child: AppBar(
+        leading: leading,
+        centerTitle: true,
+        toolbarHeight: 56,
+        flexibleSpace: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                MLPColors.secondary.withValues(alpha: .7),
+                MLPColors.background.withValues(alpha: .45),
+              ],
+            ),
+            border: Border(
+              bottom: BorderSide(color: Colors.white.withValues(alpha: .045)),
+            ),
+          ),
+        ),
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        actions: actions,
+      ),
+    ),
   );
 }
 
@@ -43,83 +83,99 @@ class MLPFloatingTabBar extends StatelessWidget {
     super.key,
     required this.index,
     required this.onChanged,
+    this.onAdd,
   });
   final int index;
   final ValueChanged<int> onChanged;
-  static const labels = ['Bugun', 'Maqsadlar', 'Fokus', 'Ustoz', 'Profil'];
-  static const icons = [
-    Icons.wb_sunny_outlined,
-    Icons.flag_outlined,
-    Icons.timelapse_rounded,
-    Icons.auto_awesome_outlined,
-    Icons.person_outline_rounded,
+  final VoidCallback? onAdd;
+  // Public route indices remain compatible with existing feature callbacks.
+  static const entries = [
+    (0, 'Bugun', CupertinoIcons.house_fill),
+    (1, 'Maqsadlar', CupertinoIcons.list_bullet),
+    (2, 'Fokus', CupertinoIcons.timer),
+    (6, 'Ustoz', CupertinoIcons.chat_bubble_2),
+    (5, 'Profil', CupertinoIcons.person),
   ];
   @override
   Widget build(BuildContext context) => SafeArea(
     top: false,
-    child: Container(
-      margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-      decoration: BoxDecoration(
-        color: MLPColors.elevated,
-        border: Border.all(color: MLPColors.border),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: List.generate(
-          labels.length,
-          (i) => Expanded(
-            child: Semantics(
-              selected: index == i,
-              button: true,
-              label: labels[i],
-              excludeSemantics: true,
-              onTap: () => onChanged(i),
-              child: InkWell(
-                onTap: () => onChanged(i),
-                borderRadius: BorderRadius.circular(22),
-                child: AnimatedContainer(
-                  duration: MLPDimensions.motion(context),
-                  constraints: const BoxConstraints(minHeight: 72),
-                  margin: const EdgeInsets.all(4),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 2,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: i == index
-                        ? MLPColors.turquoise.withValues(alpha: .12)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(19),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        icons[i],
-                        color: i == index
-                            ? MLPColors.turquoise
-                            : MLPColors.secondaryText,
-                        size: 23,
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        labels[i],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: i == index
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: i == index
-                              ? MLPColors.turquoise
-                              : MLPColors.secondaryText,
+    child: Center(
+      heightFactor: 1,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
+          child: MLPLiquidSurface(
+            grouped: false,
+            radius: 36,
+            child: Row(
+              children: [
+                for (final item in entries)
+                  Expanded(
+                    child: Semantics(
+                      button: true,
+                      selected:
+                          index == item.$1 || (index == 3 && item.$1 == 1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(24),
+                          onTap: () => onChanged(item.$1),
+                          child: AnimatedContainer(
+                            duration: MLPDimensions.motion(context),
+                            constraints: const BoxConstraints(minHeight: 64),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              gradient:
+                                  index == item.$1 ||
+                                      (index == 3 && item.$1 == 1)
+                                  ? const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0x994758FF),
+                                        Color(0x6600D1FF),
+                                      ],
+                                    )
+                                  : null,
+                              border: Border.all(
+                                color:
+                                    index == item.$1 ||
+                                        (index == 3 && item.$1 == 1)
+                                    ? const Color(0x886CBFFF)
+                                    : Colors.transparent,
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  item.$3,
+                                  size: 25,
+                                  color:
+                                      index == item.$1 ||
+                                          (index == 3 && item.$1 == 1)
+                                      ? MLPColors.turquoise
+                                      : MLPColors.secondaryText,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  item.$2,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+              ],
             ),
           ),
         ),
@@ -141,24 +197,63 @@ class MLPPrimaryButton extends StatelessWidget {
   final IconData? icon;
   final bool busy;
   @override
-  Widget build(BuildContext context) => FilledButton(
-    onPressed: busy ? null : onPressed,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (busy) ...[
-          const SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2),
+  Widget build(BuildContext context) => MLPPressResponse(
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: onPressed == null || busy
+            ? null
+            : const LinearGradient(
+                colors: [
+                  Color(0xFF00D9F5),
+                  Color(0xFF3C49FF),
+                  Color(0xFFBA6AFF),
+                ],
+                stops: [0, .55, 1],
+              ),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: onPressed == null ? .1 : .45),
+        ),
+        boxShadow: onPressed == null
+            ? []
+            : [
+                BoxShadow(
+                  color: MLPColors.primary.withValues(alpha: .15),
+                  blurRadius: 18,
+                ),
+              ],
+      ),
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: MLPColors.elevated,
+          minimumSize: const Size(48, 54),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
           ),
-          const SizedBox(width: 10),
-        ] else if (icon != null) ...[
-          Icon(icon, size: 19),
-          const SizedBox(width: 8),
-        ],
-        Flexible(child: Text(label, textAlign: TextAlign.center)),
-      ],
+        ),
+        onPressed: busy ? null : onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (busy) ...[
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 10),
+            ] else if (icon != null) ...[
+              Icon(icon, size: 22),
+              const SizedBox(width: 8),
+            ],
+            Flexible(child: Text(label, textAlign: TextAlign.center)),
+          ],
+        ),
+      ),
     ),
   );
 }
@@ -174,14 +269,16 @@ class MLPSecondaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconData? icon;
   @override
-  Widget build(BuildContext context) => OutlinedButton(
-    onPressed: onPressed,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (icon != null) ...[Icon(icon, size: 18), const SizedBox(width: 8)],
-        Flexible(child: Text(label, textAlign: TextAlign.center)),
-      ],
+  Widget build(BuildContext context) => MLPPressResponse(
+    child: OutlinedButton(
+      onPressed: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[Icon(icon, size: 18), const SizedBox(width: 8)],
+          Flexible(child: Text(label, textAlign: TextAlign.center)),
+        ],
+      ),
     ),
   );
 }
@@ -214,16 +311,15 @@ class MLPGlassCard extends StatelessWidget {
   final double padding;
   final bool accent;
   @override
-  Widget build(BuildContext context) => Material(
-    color: accent ? MLPColors.elevated : MLPColors.secondary,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(MLPDimensions.cardRadius),
-      side: const BorderSide(color: MLPColors.border),
-    ),
-    clipBehavior: Clip.antiAlias,
-    child: InkWell(
-      onTap: onTap,
-      child: Padding(padding: EdgeInsets.all(padding), child: child),
+  Widget build(BuildContext context) => MLPLiquidSurface(
+    radius: MLPDimensions.cardRadius,
+    tint: accent ? MLPColors.elevated : null,
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(padding: EdgeInsets.all(padding), child: child),
+      ),
     ),
   );
 }
@@ -239,14 +335,28 @@ class MLPSectionHeader extends StatelessWidget {
   final String? action;
   final VoidCallback? onAction;
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Expanded(
-        child: Text(title, style: Theme.of(context).textTheme.titleLarge),
-      ),
-      if (action != null) TextButton(onPressed: onAction, child: Text(action!)),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final heading = Text(title, style: Theme.of(context).textTheme.titleLarge);
+    final actionButton = action == null
+        ? null
+        : TextButton(onPressed: onAction, child: Text(action!));
+    if (MediaQuery.textScalerOf(context).scale(1) > 1.3) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          heading,
+          if (actionButton != null)
+            Align(alignment: Alignment.centerRight, child: actionButton),
+        ],
+      );
+    }
+    return Row(
+      children: [
+        Expanded(child: heading),
+        if (actionButton != null) Flexible(child: actionButton),
+      ],
+    );
+  }
 }
 
 class MLPTextField extends StatelessWidget {
@@ -508,7 +618,7 @@ abstract final class MLPConfirmationSheet {
     required String message,
     String confirm = 'Tasdiqlash',
   }) async =>
-      await showModalBottomSheet<bool>(
+      await mlpShowSheet<bool>(
         context: context,
         isScrollControlled: true,
         useSafeArea: true,

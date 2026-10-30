@@ -30,9 +30,9 @@ class PremiumScaffold extends StatelessWidget {
               height: 240,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.14),
+                color: AppColors.primary.withValues(alpha: 0.14),
                 boxShadow: [
-                  BoxShadow(color: AppColors.primary.withOpacity(0.22), blurRadius: 90),
+                  BoxShadow(color: AppColors.primary.withValues(alpha: 0.22), blurRadius: 90),
                 ],
               ),
             ),
@@ -45,9 +45,9 @@ class PremiumScaffold extends StatelessWidget {
               height: 260,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.cyan.withOpacity(0.08),
+                color: AppColors.cyan.withValues(alpha: 0.08),
                 boxShadow: [
-                  BoxShadow(color: AppColors.cyan.withOpacity(0.16), blurRadius: 90),
+                  BoxShadow(color: AppColors.cyan.withValues(alpha: 0.16), blurRadius: 90),
                 ],
               ),
             ),

@@ -173,6 +173,10 @@ class Habit {
     while (!isScheduledOn(previousScheduled)) {
       previousScheduled = previousScheduled.subtract(const Duration(days: 1));
     }
+    
+    final createdDate = DateHelper.dateOnly(createdAt);
+    if (previousScheduled.isBefore(createdDate)) return false;
+
     return !isCompletedOn(previousScheduled);
   }
 
@@ -182,8 +186,9 @@ class Habit {
     final value = match == null ? null : int.tryParse(match.group(1)!);
     if (value == null) return 10;
     if (text.contains('hour') || text.contains('soat')) return value * 60;
-    if (text.contains('page') || text.contains('sahifa'))
+    if (text.contains('page') || text.contains('sahifa')) {
       return (value / 2).round().clamp(5, 120).toInt();
+    }
     if (text.contains('glass') || text.contains('cup')) return 2;
     return value.clamp(2, 180).toInt();
   }

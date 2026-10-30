@@ -663,7 +663,7 @@ class _AddHabitScreenState extends State<AddHabitScreen>
                               text: _saving ? 'Saving...' : 'Save Habit',
                               icon: Icons.check_rounded,
                               enabled: !_saving,
-                              onPressed: _saving ? null : _save,
+                              onPressed: _saving ? null : _save, colors: const [],
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -732,7 +732,7 @@ class _HabitPreviewHero extends StatelessWidget {
           offset: Offset(0, -floatY),
           child: GlassCard(
             glowColor: selectedColor,
-            borderColor: selectedColor.withOpacity(0.30),
+            borderColor: selectedColor.withValues(alpha: 0.30),
             child: Row(
               children: [
                 AnimatedContainer(
@@ -747,7 +747,7 @@ class _HabitPreviewHero extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: selectedColor.withOpacity(0.34),
+                        color: selectedColor.withValues(alpha: 0.34),
                         blurRadius: 36,
                         offset: const Offset(0, 14),
                       ),
@@ -850,18 +850,18 @@ class _TemplateCardState extends State<_TemplateCard> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: active
-                  ? AppColors.primary.withOpacity(0.14)
-                  : AppColors.surface2.withOpacity(0.62),
+                  ? AppColors.primary.withValues(alpha: 0.14)
+                  : AppColors.surface2.withValues(alpha: 0.62),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: active
-                    ? AppColors.primary.withOpacity(0.50)
-                    : AppColors.borderSoft.withOpacity(0.80),
+                    ? AppColors.primary.withValues(alpha: 0.50)
+                    : AppColors.borderSoft.withValues(alpha: 0.80),
               ),
               boxShadow: [
                 if (active)
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.18),
+                    color: AppColors.primary.withValues(alpha: 0.18),
                     blurRadius: 24,
                     offset: const Offset(0, 10),
                   ),
@@ -928,15 +928,15 @@ class _CategoryOption extends StatelessWidget {
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
         decoration: BoxDecoration(
-          color: selected ? color.withOpacity(0.16) : AppColors.surface2,
+          color: selected ? color.withValues(alpha: 0.16) : AppColors.surface2,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: selected ? color.withOpacity(0.56) : AppColors.borderSoft,
+            color: selected ? color.withValues(alpha: 0.56) : AppColors.borderSoft,
           ),
           boxShadow: [
             if (selected)
               BoxShadow(
-                color: color.withOpacity(0.18),
+                color: color.withValues(alpha: 0.18),
                 blurRadius: 22,
                 offset: const Offset(0, 10),
               ),
@@ -988,12 +988,12 @@ class _FrequencyPill extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: selected
-              ? AppColors.cyan.withOpacity(0.15)
-              : AppColors.surface2.withOpacity(0.70),
+              ? AppColors.cyan.withValues(alpha: 0.15)
+              : AppColors.surface2.withValues(alpha: 0.70),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: selected
-                ? AppColors.cyan.withOpacity(0.55)
+                ? AppColors.cyan.withValues(alpha: 0.55)
                 : AppColors.borderSoft,
           ),
         ),
@@ -1030,8 +1030,8 @@ class _QuickReminderChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return ActionChip(
       onPressed: onTap,
-      backgroundColor: AppColors.surface2.withOpacity(0.72),
-      side: BorderSide(color: AppColors.borderSoft.withOpacity(0.82)),
+      backgroundColor: AppColors.surface2.withValues(alpha: 0.72),
+      side: BorderSide(color: AppColors.borderSoft.withValues(alpha: 0.82)),
       label: Text(label),
       labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
         color: AppColors.textSecondary,
@@ -1055,7 +1055,7 @@ class _StackSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String?>(
-      value: selectedHabitId,
+      initialValue: selectedHabitId,
       dropdownColor: AppColors.surface,
       decoration: const InputDecoration(
         labelText: 'Habit stacking: after this habit',
@@ -1087,12 +1087,12 @@ class _TrackSwitchCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: value
-            ? AppColors.emerald.withOpacity(0.12)
-            : AppColors.surface2.withOpacity(0.70),
+            ? AppColors.emerald.withValues(alpha: 0.12)
+            : AppColors.surface2.withValues(alpha: 0.70),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: value
-              ? AppColors.emerald.withOpacity(0.48)
+              ? AppColors.emerald.withValues(alpha: 0.48)
               : AppColors.borderSoft,
         ),
       ),
@@ -1232,7 +1232,7 @@ class _Orb extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: RadialGradient(
-          colors: [color.withOpacity(opacity), color.withOpacity(0)],
+          colors: [color.withValues(alpha: opacity), color.withValues(alpha: 0)],
         ),
       ),
     );

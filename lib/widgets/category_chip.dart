@@ -24,7 +24,7 @@ class CategoryChip extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
         decoration: BoxDecoration(
-          color: selected ? color.withOpacity(0.22) : AppColors.surface2.withOpacity(0.7),
+          color: selected ? color.withValues(alpha: 0.22) : AppColors.surface2.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: selected ? color : AppColors.borderSoft),
         ),

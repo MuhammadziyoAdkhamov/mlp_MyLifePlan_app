@@ -223,7 +223,7 @@ class _GuestBackupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       glowColor: AppColors.cyan,
-      borderColor: AppColors.cyan.withOpacity(0.28),
+      borderColor: AppColors.cyan.withValues(alpha: 0.28),
       child: Row(
         children: [
           Container(
@@ -231,8 +231,8 @@ class _GuestBackupCard extends StatelessWidget {
             height: 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.cyan.withOpacity(0.14),
-              border: Border.all(color: AppColors.cyan.withOpacity(0.34)),
+              color: AppColors.cyan.withValues(alpha: 0.14),
+              border: Border.all(color: AppColors.cyan.withValues(alpha: 0.34)),
             ),
             child: const Icon(
               Icons.cloud_upload_rounded,

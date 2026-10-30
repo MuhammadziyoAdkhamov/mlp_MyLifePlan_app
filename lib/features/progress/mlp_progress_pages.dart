@@ -1,8 +1,12 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../app/mlp_environment.dart';
 import '../../app/router/mlp_routes.dart';
 import '../../app/theme/mlp_design_system.dart';
 import '../../core/design_system/mlp_widgets.dart';
+import '../../core/design_system/mlp_liquid_glass.dart';
+import '../../core/design_system/mlp_confetti.dart';
 import '../../demo/demo_forms.dart';
 import '../../data/models/mlp_schedule.dart';
 
@@ -268,7 +272,14 @@ class _VerificationState extends State<MLPVerificationPage> {
                   taskId: task?.id,
                   at: e.clock(),
                 );
-                if (mounted) setState(() => saved = true);
+                if (mounted && context.mounted) {
+                  MLPConfetti.show(
+                    context,
+                    title: 'Sinov natijasi saqlandi! 🏆',
+                    subtitle: 'Skill Passport yangilandi',
+                  );
+                  setState(() => saved = true);
+                }
               } catch (_) {
                 if (mounted) {
                   setState(
@@ -380,87 +391,437 @@ class MLPPassportPage extends StatelessWidget {
   );
 }
 
-class MLPGrowthPage extends StatelessWidget {
-  const MLPGrowthPage({super.key, required this.e});
+class MLPGrowthPage extends StatefulWidget {
+  const MLPGrowthPage({super.key, required this.e, this.embedded = false});
   final MLPEnvironment e;
+  final bool embedded;
   @override
-  Widget build(BuildContext context) => ListenableBuilder(
-    listenable: Listenable.merge([e.store, e.ui]),
-    builder: (context, _) {
-      final days = List.generate(
-        7,
-        (i) => DateTime(
-          e.store.today.year,
-          e.store.today.month,
-          e.store.today.day - 6 + i,
+  State<MLPGrowthPage> createState() => _GrowthState();
+}
+
+class _GrowthState extends State<MLPGrowthPage> {
+  int period = 0, offset = 0;
+  static const periods = ['Hafta', '8 hafta', 'Oy', 'Yil'];
+  static const weekdays = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
+  static const months = [
+    'Yan',
+    'Fev',
+    'Mar',
+    'Apr',
+    'May',
+    'Iyn',
+    'Iyl',
+    'Avg',
+    'Sen',
+    'Okt',
+    'Noy',
+    'Dek',
+  ];
+
+  ({DateTime start, DateTime end, List<DateTime> bins, List<String> labels})
+  range() {
+    final now = widget.e.store.today;
+    final monday = DateTime(now.year, now.month, now.day - now.weekday + 1);
+    if (period < 2) {
+      final count = period == 0 ? 7 : 8;
+      final size = period == 0 ? 1 : 7;
+      final start = DateTime(
+        monday.year,
+        monday.month,
+        monday.day - (period == 1 ? 49 : 0) + offset * count * size,
+      );
+      final bins = List.generate(
+        count + 1,
+        (i) => DateTime(start.year, start.month, start.day + i * size),
+      );
+      return (
+        start: start,
+        end: bins.last,
+        bins: bins,
+        labels: List.generate(
+          count,
+          (i) => period == 0 ? weekdays[i] : '${bins[i].day}/${bins[i].month}',
         ),
       );
-      final values = days.map(e.store.focusMinutesForDay).toList();
+    }
+    if (period == 2) {
+      final start = DateTime(now.year, now.month + offset);
+      final end = DateTime(start.year, start.month + 1);
+      final bins = <DateTime>[start];
+      for (
+        var day = 8;
+        day <= end.subtract(const Duration(days: 1)).day;
+        day += 7
+      ) {
+        bins.add(DateTime(start.year, start.month, day));
+      }
+      bins.add(end);
+      return (
+        start: start,
+        end: end,
+        bins: bins,
+        labels: List.generate(
+          bins.length - 1,
+          (i) =>
+              '${bins[i].day}–${bins[i + 1].subtract(const Duration(days: 1)).day}',
+        ),
+      );
+    }
+    final start = DateTime(now.year + offset);
+    final bins = List.generate(13, (i) => DateTime(start.year, i + 1));
+    return (start: start, end: bins.last, bins: bins, labels: months);
+  }
+
+  String duration(int seconds) {
+    if (seconds < 60) return '$seconds s';
+    final minutes = seconds ~/ 60;
+    return minutes >= 60 ? '${minutes ~/ 60}h ${minutes % 60}m' : '${minutes}m';
+  }
+
+  Future<void> share(BuildContext context, String report) =>
+      mlpShowDialog<void>(
+        context: context,
+        builder: (dialog) => AlertDialog(
+          title: const Text('Statistika nusxasi'),
+          content: SingleChildScrollView(child: SelectableText(report)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialog),
+              child: const Text('Yopish'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: report));
+                if (dialog.mounted) {
+                  MLPToast.show(dialog, 'Statistika nusxalandi.');
+                }
+              },
+              child: const Text('Nusxalash'),
+            ),
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: Listenable.merge([widget.e.store, widget.e.ui]),
+    builder: (context, _) {
+      final e = widget.e, r = range();
+      final sessions = e.store.focusSessions
+          .where((s) => !s.date.isBefore(r.start) && s.date.isBefore(r.end))
+          .toList();
+      final seconds = sessions.fold<int>(0, (a, b) => a + b.seconds);
+      final values = List.generate(
+        r.bins.length - 1,
+        (i) =>
+            sessions
+                .where(
+                  (s) =>
+                      !s.date.isBefore(r.bins[i]) &&
+                      s.date.isBefore(r.bins[i + 1]),
+                )
+                .fold<int>(0, (a, b) => a + b.seconds) ~/
+            60,
+      );
+      final completed = e.store.tasks
+          .where(
+            (t) =>
+                t.completed &&
+                t.completedAt != null &&
+                !t.completedAt!.isBefore(r.start) &&
+                t.completedAt!.isBefore(r.end),
+          )
+          .length;
+      final assessments = e.ui.assessments.where((a) {
+        final at = DateTime.parse(a['at'] as String);
+        return !at.isBefore(r.start) && at.isBefore(r.end);
+      }).length;
+      final projects = <String, int>{};
+      for (final session in sessions) {
+        final task = e.store.tasks
+            .where((t) => t.id == session.taskId)
+            .firstOrNull;
+        final project = task?.project.trim();
+        final name = project == null || project.isEmpty
+            ? 'Bog‘lanmagan fokus'
+            : project;
+        projects.update(
+          name,
+          (value) => value + session.seconds,
+          ifAbsent: () => session.seconds,
+        );
+      }
+      final shares = projects.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
+      final last = r.end.subtract(const Duration(days: 1));
+      final dates =
+          '${r.start.day} ${months[r.start.month - 1]} – ${last.day} ${months[last.month - 1]} ${last.year}';
+      final report =
+          'MLP · ${periods[period]}\n$dates\nFokus: ${duration(seconds)}\nTopshirilgan vazifalar: $completed\nNamuna baholashlar: $assessments\nMahalliy faollik ma’lumoti. Ko‘nikma tasdig‘i emas.';
       return MLPPage(
-        title: 'Rivojlanish',
+        title: widget.embedded ? null : 'Statistika',
+        actions: widget.embedded
+            ? null
+            : [
+                IconButton(
+                  tooltip: 'Ulashish',
+                  onPressed: () => share(context, report),
+                  icon: const Icon(Icons.ios_share),
+                ),
+              ],
         children: [
-          MLPNotice(
-            e.store.isSampleData
-                ? 'Namuna va mahalliy qaydlar. Quyidagi raqamlar joriy saqlovdan hisoblangan.'
-                : 'Mahalliy qaydlar. Faollik ko‘nikma darajasi bilan tenglashtirilmaydi.',
+          if (widget.embedded) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Statistika',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Ulashish',
+                  icon: const Icon(Icons.ios_share, size: 20),
+                  onPressed: () => share(
+                    context,
+                    'MLP · ${periods[period]}\n$dates\nFokus: ${duration(seconds)}\nTopshirilgan vazifalar: $completed\nNamuna baholashlar: $assessments\nMahalliy faollik ma’lumoti. Ko‘nikma tasdig‘i emas.',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
+          MLPSegmented(
+            labels: periods,
+            selected: period,
+            onChanged: (i) => setState(() {
+              period = i;
+              offset = 0;
+            }),
           ),
-          MLPMetrics(
-            items: [
-              (
-                value: '${values.fold(0, (a, b) => a + b)}',
-                label: '7 kunlik fokus · daqiqa',
-                icon: Icons.timelapse,
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              IconButton(
+                tooltip: 'Oldingi davr',
+                onPressed: () => setState(() => offset--),
+                icon: const Icon(Icons.chevron_left),
               ),
-              (
-                value: '${e.store.tasks.where((t) => t.completed).length}',
-                label: 'Topshirilgan vazifalar',
-                icon: Icons.task_alt,
+              Expanded(
+                child: Text(
+                  dates,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: MLPColors.secondaryText,
+                  ),
+                ),
               ),
-              (
-                value: '${e.ui.assessments.length}',
-                label: 'Namuna test natijalari',
-                icon: Icons.fact_check,
+              IconButton(
+                tooltip: 'Keyingi davr',
+                onPressed: offset < 0 ? () => setState(() => offset++) : null,
+                icon: const Icon(Icons.chevron_right),
               ),
             ],
           ),
-          const SizedBox(height: 24),
           MLPGlassCard(
+            padding: 18,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Haftalik fokus',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  duration(seconds),
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                const SizedBox(height: 24),
-                MLPWeeklyBars(
-                  values: values,
-                  labels: days
-                      .map(
-                        (d) => [
-                          'Du',
-                          'Se',
-                          'Ch',
-                          'Pa',
-                          'Ju',
-                          'Sh',
-                          'Ya',
-                        ][d.weekday - 1],
-                      )
-                      .toList(),
-                ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 4),
                 const Text(
-                  'Faqat saqlangan faol daqiqalar.',
+                  'Jami fokus vaqti',
                   style: TextStyle(
                     color: MLPColors.secondaryText,
                     fontSize: 12,
                   ),
                 ),
+                const SizedBox(height: 20),
+                MLPWeeklyBars(values: values, labels: r.labels),
+                const SizedBox(height: 12),
+                const Text(
+                  'Saqlangan sessiyalar · ustunlar daqiqada',
+                  style: TextStyle(color: MLPColors.muted, fontSize: 11),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          MLPGlassCard(
+            padding: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Loyihalar bo‘yicha',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 16),
+                if (shares.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      'Bu davrda saqlangan fokus yo‘q.',
+                      style: TextStyle(color: MLPColors.secondaryText),
+                    ),
+                  )
+                else
+                  LayoutBuilder(
+                    builder: (context, box) {
+                      final ring = Semantics(
+                        label: 'Loyihalar bo‘yicha jami ${duration(seconds)}',
+                        child: SizedBox(
+                          width: 118,
+                          height: 118,
+                          child: CustomPaint(
+                            painter: _ProjectDonut(
+                              shares.map((s) => s.value).toList(),
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    duration(seconds),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const Text(
+                                    'Jami',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: MLPColors.secondaryText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                      final legend = Column(
+                        children: List.generate(
+                          shares.length,
+                          (i) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        _ProjectDonut.colors[i %
+                                            _ProjectDonut.colors.length],
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    shares[i].key,
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${(shares[i].value / seconds * 100).round()}%',
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                      return box.maxWidth < 300 ||
+                              MediaQuery.textScalerOf(context).scale(1) > 1.3
+                          ? Column(
+                              children: [
+                                ring,
+                                const SizedBox(height: 16),
+                                legend,
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Expanded(child: legend),
+                                const SizedBox(width: 16),
+                                ring,
+                              ],
+                            );
+                    },
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          MLPMetrics(
+            items: [
+              (
+                value: '$completed',
+                label: 'Davrda topshirilgan',
+                icon: Icons.task_alt,
+              ),
+              (
+                value: '$assessments',
+                label: 'Namuna baholashlar',
+                icon: Icons.fact_check_outlined,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          MLPNotice(
+            e.store.isSampleData
+                ? 'Namuna va mahalliy qaydlar. Barcha raqamlar saqlangan ma’lumotlardan hisoblandi.'
+                : 'Mahalliy qaydlar. Faollik ko‘nikma darajasi bilan tenglashtirilmaydi.',
+          ),
+          TextButton.icon(
+            onPressed: () => mlpShowSheet<void>(
+              context: context,
+              useSafeArea: true,
+              isScrollControlled: true,
+              builder: (sheet) => SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Statistika manbasi',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '$dates\n${sessions.length} ta saqlangan fokus sessiyasi · $seconds soniya.\n$completed ta topshirilgan vazifa · $assessments ta namuna baholash.',
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Fokus davri sessiyaning saqlangan sanasi bilan aniqlanadi. Loyiha ulushi bog‘langan vazifadan olinadi; bog‘lanmagan yoki o‘chirilgan vazifa vaqti alohida qoladi. Ustunlar to‘liq daqiqalarni ko‘rsatadi. O‘sish foizi yoki mahorat darajasi taxmin qilinmaydi.',
+                      style: TextStyle(
+                        color: MLPColors.secondaryText,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () => Navigator.pop(sheet),
+                      child: const Text('Tushunarli'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.info_outline, size: 18),
+            label: const Text('Ma’lumotlar manbasi'),
+          ),
           const MLPSectionHeader(title: 'Maqsadlar natijasi · o‘z hisoboti'),
           const SizedBox(height: 12),
           if (e.store.goals.isEmpty)
@@ -499,6 +860,53 @@ class MLPGrowthPage extends StatelessWidget {
       );
     },
   );
+}
+
+class _ProjectDonut extends CustomPainter {
+  _ProjectDonut(this.values);
+  final List<int> values;
+  static const colors = [
+    MLPColors.turquoise,
+    MLPColors.primary,
+    MLPColors.success,
+    MLPColors.warning,
+    MLPColors.primaryLight,
+  ];
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromLTWH(6, 6, size.width - 12, size.height - 12);
+    canvas.drawArc(
+      rect,
+      0,
+      math.pi * 2,
+      false,
+      Paint()
+        ..color = MLPColors.border
+        ..strokeWidth = 10
+        ..style = PaintingStyle.stroke,
+    );
+    final total = values.fold<int>(0, (a, b) => a + b);
+    if (total == 0) return;
+    var start = -math.pi / 2;
+    for (var i = 0; i < values.length; i++) {
+      final angle = values[i] / total * math.pi * 2;
+      canvas.drawArc(
+        rect,
+        start,
+        angle,
+        false,
+        Paint()
+          ..color = colors[i % colors.length]
+          ..strokeWidth = 10
+          ..style = PaintingStyle.stroke,
+      );
+      start += angle;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ProjectDonut oldDelegate) =>
+      values.toString() != oldDelegate.values.toString();
 }
 
 class MLPWeeklyBars extends StatelessWidget {

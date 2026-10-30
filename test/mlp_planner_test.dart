@@ -366,6 +366,9 @@ void main() {
 
   for (final size in [
     const Size(320, 640),
+    const Size(360, 800),
+    const Size(393, 852),
+    const Size(430, 932),
     const Size(390, 844),
     const Size(844, 390),
     const Size(1440, 900),
@@ -390,6 +393,8 @@ void main() {
                 data: MediaQuery.of(context).copyWith(
                   textScaler: const TextScaler.linear(1.4),
                   viewInsets: const EdgeInsets.only(bottom: 160),
+                  padding: const EdgeInsets.only(top: 44, bottom: 34),
+                  viewPadding: const EdgeInsets.only(top: 44, bottom: 34),
                 ),
                 child: child!,
               ),

@@ -374,12 +374,12 @@ class _LogoMark extends StatelessWidget {
             gradient: AppColors.primaryGradient,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.46),
+                color: AppColors.primary.withValues(alpha: 0.46),
                 blurRadius: 58,
                 spreadRadius: 5,
               ),
               BoxShadow(
-                color: AppColors.cyan.withOpacity(0.18),
+                color: AppColors.cyan.withValues(alpha: 0.18),
                 blurRadius: 80,
                 offset: const Offset(0, 24),
               ),
@@ -400,11 +400,11 @@ class _LogoMark extends StatelessWidget {
                   width: 12,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95),
+                    color: Colors.white.withValues(alpha: 0.95),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.45),
+                        color: Colors.white.withValues(alpha: 0.45),
                         blurRadius: 18,
                       ),
                     ],
@@ -434,14 +434,14 @@ class _StatusPill extends StatelessWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface.withOpacity(0.78),
+        color: AppColors.surface.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: AppColors.borderSoft.withOpacity(0.95),
+          color: AppColors.borderSoft.withValues(alpha: 0.95),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
+            color: AppColors.primary.withValues(alpha: 0.12),
             blurRadius: 28,
             offset: const Offset(0, 12),
           ),
@@ -514,7 +514,7 @@ class _BreathingDotState extends State<_BreathingDot>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(glow),
+                color: widget.color.withValues(alpha: glow),
                 blurRadius: 10 + (_controller.value * 10),
                 spreadRadius: _controller.value * 2,
               ),
@@ -557,10 +557,10 @@ class _AnimatedMiniStat extends StatelessWidget {
             vertical: 13,
           ),
           decoration: BoxDecoration(
-            color: AppColors.surface2.withOpacity(0.82),
+            color: AppColors.surface2.withValues(alpha: 0.82),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.borderSoft.withOpacity(0.9),
+              color: AppColors.borderSoft.withValues(alpha: 0.9),
             ),
           ),
           child: Column(
@@ -654,16 +654,16 @@ class _GuestModeButtonState extends State<_GuestModeButton> {
             child: Container(
               height: 54,
               decoration: BoxDecoration(
-                color: AppColors.surface2.withOpacity(0.72),
+                color: AppColors.surface2.withValues(alpha: 0.72),
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
                   color: _hovered
-                      ? AppColors.cyan.withOpacity(0.42)
-                      : AppColors.borderSoft.withOpacity(0.92),
+                      ? AppColors.cyan.withValues(alpha: 0.42)
+                      : AppColors.borderSoft.withValues(alpha: 0.92),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.cyan.withOpacity(_hovered ? 0.16 : 0.08),
+                    color: AppColors.cyan.withValues(alpha: _hovered ? 0.16 : 0.08),
                     blurRadius: _hovered ? 28 : 18,
                     offset: const Offset(0, 10),
                   ),
@@ -749,7 +749,7 @@ class _PulseGlow extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.22 + (pulse * 0.12)),
+            color: AppColors.primary.withValues(alpha: 0.22 + (pulse * 0.12)),
             blurRadius: 24 + (pulse * 18),
             offset: const Offset(0, 12),
           ),
@@ -781,8 +781,8 @@ class _AnimatedOrb extends StatelessWidget {
           shape: BoxShape.circle,
           gradient: RadialGradient(
             colors: [
-              color.withOpacity(opacity),
-              color.withOpacity(0),
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: 0),
             ],
           ),
         ),

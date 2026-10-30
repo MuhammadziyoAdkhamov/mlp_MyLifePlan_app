@@ -1,3 +1,5 @@
+> **2026-10-30:** 27 ekranli yangi namuna bo‘yicha o‘zgarishlar davom etmoqda. Quyidagi eski test/render natijalari joriy kodga avtomatik tatbiq etilmaydi. Yangi holat: `MLP_UI_PROGRESS.md`; yangi loglar: `evidence/ios-reference-2026-10-29/`.
+
 # MLP UI yakuniy QA hisoboti
 
 2026-10-27. UI source checkpoint: `9520df6`, branch `feat/mlp-beta-sprint01`. Barcha 28 ekran mahalliy prototip oqimida yozilgan. Android yopiq beta uchun native build/runtime gate hali ochiq. To‘liq inventar: `MLP_UI_SCREEN_INVENTORY.md`.
