@@ -7,6 +7,7 @@ import '../../core/design_system/mlp_widgets.dart';
 import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import 'mlp_ai_orb.dart';
+import 'mlp_gemini_adapter.dart';
 
 abstract interface class MLPAssistantAdapter {
   Future<String> reply(String question, MLPEnvironment e);
@@ -678,8 +679,12 @@ class MLPAIPreferencesPage extends StatefulWidget {
 class _AISettingsState extends State<MLPAIPreferencesPage> {
   final form = GlobalKey<FormState>();
   late final TextEditingController name;
+  late final TextEditingController apiKeyController;
   late String tone, voice;
   late bool contextAllowed;
+  bool obscureApiKey = true;
+  bool testingConnection = false;
+  String? testResult;
   bool busy = false;
   String? error;
 
@@ -688,6 +693,9 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
     super.initState();
     final p = widget.e.ui.preferences;
     name = TextEditingController(text: p.nickname);
+    apiKeyController = TextEditingController(
+      text: widget.e.prefs.getString('mlp_gemini_api_key') ?? '',
+    );
     tone = p.tone;
     voice = p.voice;
     contextAllowed = p.allowContext;
@@ -696,6 +704,7 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
   @override
   void dispose() {
     name.dispose();
+    apiKeyController.dispose();
     super.dispose();
   }
 
@@ -706,6 +715,12 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
       error = null;
     });
     try {
+      final key = apiKeyController.text.trim();
+      if (key.isNotEmpty) {
+        await widget.e.prefs.setString('mlp_gemini_api_key', key);
+      } else {
+        await widget.e.prefs.remove('mlp_gemini_api_key');
+      }
       await widget.e.ui.savePreferences(
         MLPUserPreferences.fromJson({
           ...widget.e.ui.preferences.toJson(),
@@ -725,9 +740,32 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
     }
   }
 
+  Future<void> testConnection() async {
+    final key = apiKeyController.text.trim();
+    if (key.isEmpty) {
+      setState(() => testResult = 'Avval API kalitni kiriting.');
+      return;
+    }
+    setState(() {
+      testingConnection = true;
+      testResult = null;
+    });
+    final ok = await MLPGeminiAdapter.testConnection(key);
+    if (mounted) {
+      setState(() {
+        testingConnection = false;
+        testResult = ok
+            ? '✓ Muvaffaqiyatli: Gemini 1.5 Flash faol va ulandi!'
+            : '✕ Xatolik: API kalit yaroqsiz yoki internet uzilgan.';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final e = widget.e;
+    final hasActiveKey = apiKeyController.text.trim().isNotEmpty;
+
     return MLPPage(
       title: 'Ustozni moslash',
       children: [
@@ -748,7 +786,7 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Ustozning nomi va muloqot uslubini tanlang.',
+          'Ustozning nomi, Gemini AI va muloqot uslubini tanlang.',
           textAlign: TextAlign.center,
           style: TextStyle(color: MLPColors.secondaryText, fontSize: 13),
         ),
@@ -757,6 +795,119 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
           key: form,
           child: Column(
             children: [
+              // Gemini AI Configuration Card
+              MLPLiquidSurface(
+                tint: hasActiveKey ? MLPColors.turquoise.withValues(alpha: .1) : null,
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const _SettingsCaption(
+                          icon: Icons.psychology_outlined,
+                          title: 'Google Gemini 1.5 Flash',
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: (hasActiveKey
+                                    ? MLPColors.turquoise
+                                    : MLPColors.secondaryText)
+                                .withValues(alpha: .15),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: (hasActiveKey
+                                      ? MLPColors.turquoise
+                                      : MLPColors.secondaryText)
+                                  .withValues(alpha: .3),
+                            ),
+                          ),
+                          child: Text(
+                            hasActiveKey ? 'Gemini Faol' : 'Offline Rejim',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: hasActiveKey
+                                  ? MLPColors.turquoise
+                                  : MLPColors.secondaryText,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    TextFormField(
+                      controller: apiKeyController,
+                      obscureText: obscureApiKey,
+                      decoration: InputDecoration(
+                        labelText: 'Gemini API Kaliti (ixtiyoriy)',
+                        hintText: 'AIzaSy...',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureApiKey
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            size: 20,
+                            color: MLPColors.secondaryText,
+                          ),
+                          onPressed: () => setState(
+                            () => obscureApiKey = !obscureApiKey,
+                          ),
+                        ),
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Google AI Studio (aistudio.google.com) dan olingan bepul API kalit. Kiritilmasa, MLP aqlli offline murabbiy javob beradi.',
+                      style: TextStyle(
+                        color: MLPColors.secondaryText,
+                        fontSize: 12,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: testingConnection ? null : testConnection,
+                          icon: testingConnection
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Icon(Icons.bolt_rounded, size: 16),
+                          label: const Text('Ulanishni tekshirish'),
+                        ),
+                        if (testResult != null) ...[
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              testResult!,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: testResult!.startsWith('✓')
+                                    ? MLPColors.turquoise
+                                    : const Color(0xFFFF5252),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Personality & Style Card
               MLPLiquidSurface(
                 padding: const EdgeInsets.all(18),
                 child: Column(
@@ -830,6 +981,8 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
                 ),
               ),
               const SizedBox(height: 14),
+
+              // Privacy card
               MLPLiquidSurface(
                 padding: const EdgeInsets.all(18),
                 child: Column(
@@ -863,7 +1016,7 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Demo javobga vazifa nomi va mahalliy hisoblar qo‘shiladi. Serverga yuborilmaydi.',
+                      'AI javobiga vazifa nomi va mahalliy hisoblar kontekst sifatida kiritiladi.',
                       style: TextStyle(
                         color: MLPColors.secondaryText,
                         fontSize: 12,
@@ -878,7 +1031,7 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
         ),
         const SizedBox(height: 18),
         const MLPNotice(
-          'Mahalliy demo yordamchisi. Ushbu tanlovlar haqiqiy model, mikrofon yoki ovoz xizmatini yoqmaydi.',
+          'MLP Ziyo: Shaxsiy rivojlanish va hayot murabbiyi. Gemini kaliti bilan Google Gemini 1.5 Flash modeli jonli ishlaydi.',
         ),
         if (error != null) MLPNotice(error!, warning: true),
         MLPPrimaryButton(
@@ -889,7 +1042,7 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
         const SizedBox(height: 20),
         MLPMenuTile(
           title: 'AI ruxsatlari',
-          subtitle: 'Mikrofon va tashqi xizmat ulanmagan',
+          subtitle: 'Mikrofon va tashqi xizmatlar xavfsiz boshqariladi',
           icon: Icons.shield_outlined,
           onTap: () => mlpShowDialog<void>(
             context: context,
@@ -897,7 +1050,7 @@ class _AISettingsState extends State<MLPAIPreferencesPage> {
               title: const Text('Ruxsatlar'),
               content: const SingleChildScrollView(
                 child: Text(
-                  'Mikrofon ruxsati so‘ralmagan. Kontaktlar, boshqa ilovalar va tizim ustidagi oynaga ruxsat yo‘q. Kontekst faqat yuqoridagi tanlov bilan demo javob uchun ishlatiladi.',
+                  'Mikrofon ruxsati so‘ralmagan. Shaxsiy ma’lumotlar, kontaktlar yoki tashqi fayllar serverga yuborilmaydi. Kontekst faqat siz ruxsat berganingizda maslahat sifatini yaxshilash uchun ishlatiladi.',
                 ),
               ),
               actions: [

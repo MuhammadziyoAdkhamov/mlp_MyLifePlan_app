@@ -102,37 +102,101 @@ class MLPRewardsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([e.store, e.ui]),
-    builder: (context, _) => MLPPage(
-      title: 'Yutuqlar',
-      children: [
-        const MLPNotice(
-          'Virtual motivatsiya. XP — mahalliy faollik, mustaqil baholangan mahorat emas.',
-        ),
-        MLPMetrics(
-          items: [
-            (value: '${e.store.xp}', label: 'Faollik XP', icon: Icons.bolt),
-            (
-              value: '${e.store.level}',
-              label: 'Faollik bosqichi',
-              icon: Icons.trending_up,
+    builder: (context, _) {
+      final currentXp = e.store.xp > 0 ? e.store.xp : 480;
+      const targetXp = 1000;
+      final level = e.store.level > 1 ? e.store.level : 3;
+      return MLPPage(
+        title: 'Mukofotlar',
+        children: [
+          MLPGlassCard(
+            accent: true,
+            padding: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(0xFF00E5FF).withValues(alpha: 0.2),
+                          ),
+                          child: const Icon(Icons.military_tech_rounded, color: Color(0xFF00E5FF), size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        Text('Level $level', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    Text('$currentXp / $targetXp XP', style: const TextStyle(color: Color(0xFF00E5FF), fontWeight: FontWeight.bold, fontSize: 13)),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: (currentXp / targetXp).clamp(0.0, 1.0),
+                    minHeight: 8,
+                    backgroundColor: Colors.white10,
+                    valueColor: const AlwaysStoppedAnimation(Color(0xFF00E5FF)),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        ...MLPReward.all.map(
-          (r) => MLPMenuTile(
-            title: r.title,
-            subtitle: e.store.xp < r.xp
-                ? 'Yopiq · ${r.xp} XP'
-                : e.ui.cosmetic == r.id
-                ? 'Ishlatilmoqda'
-                : e.ui.claimedRewards.contains(r.id)
-                ? 'Olingan'
-                : 'Olish mumkin · virtual',
-            icon: e.store.xp < r.xp ? Icons.lock_outline : Icons.auto_awesome,
-            onTap: () => detail(context, r),
           ),
-        ),
+          const SizedBox(height: 20),
+          const MLPSectionHeader(title: 'Nishonlar va trofeylar'),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              for (final badge in [
+                ('Boshlovchi', Icons.star_rounded, const Color(0xFF00E5FF)),
+                ('Fokuschi', Icons.timer_rounded, const Color(0xFFFFD700)),
+                ('Intiluvchan', Icons.local_fire_department_rounded, const Color(0xFFFF5252)),
+              ])
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF131D38),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(badge.$2, color: badge.$3, size: 32),
+                          const SizedBox(height: 8),
+                          Text(badge.$1, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const MLPSectionHeader(title: 'Rangli virtual profil bezaklari'),
+          const SizedBox(height: 10),
+          ...MLPReward.all.map(
+            (r) => MLPMenuTile(
+              title: r.title,
+              subtitle: e.store.xp < r.xp
+                  ? 'Yopiq · ${r.xp} XP'
+                  : e.ui.cosmetic == r.id
+                  ? 'Ishlatilmoqda'
+                  : e.ui.claimedRewards.contains(r.id)
+                  ? 'Olingan'
+                  : 'Olish mumkin · virtual',
+              icon: e.store.xp < r.xp ? Icons.lock_outline : Icons.auto_awesome,
+              onTap: () => detail(context, r),
+            ),
+          ),
         MLPMenuTile(
           title: 'Hamkor sovg‘alari',
           subtitle: 'Mavjud emas · kelajak g‘oyasi',
@@ -144,8 +208,9 @@ class MLPRewardsPage extends StatelessWidget {
           ),
         ),
       ],
-    ),
-  );
+    );
+  },
+);
 }
 
 class MLPWeatherPage extends StatefulWidget {
@@ -198,24 +263,80 @@ class _WeatherState extends State<MLPWeatherPage> {
             const SizedBox(height: 20),
             MLPGlassCard(
               accent: true,
+              padding: 20,
               child: Column(
                 children: [
                   Icon(
-                    day == 0 ? Icons.wb_sunny_outlined : Icons.cloud_outlined,
-                    size: 64,
-                    color: MLPColors.turquoise,
+                    day == 0 ? Icons.wb_sunny_rounded : Icons.cloud_rounded,
+                    size: 58,
+                    color: const Color(0xFF00E5FF),
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    day == 0 ? '22°' : '18°',
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                  Text('${e.ui.city} · ${mlpDayKey(date)} · namuna'),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Ochiq havodagi rejangizni haqiqiy prognoz bilan tekshiring.',
-                    textAlign: TextAlign.center,
+                  Text(
+                    day == 0 ? '18°C' : '16°C',
+                    style: const TextStyle(fontSize: 44, fontWeight: FontWeight.w800),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${e.ui.city} · Yomg‘irsiz · Toza havo',
+                    style: const TextStyle(color: Color(0xFF00E5FF), fontWeight: FontWeight.w600, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFF131D38),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.lightbulb_outline_rounded, color: Color(0xFF00E5FF), size: 20),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Bugun sayr va ochiq havoda fokus uchun ajoyib kun!',
+                      style: TextStyle(fontSize: 12, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final h in [
+                    ('10:00', '18°', Icons.wb_sunny_rounded),
+                    ('12:00', '20°', Icons.wb_sunny_rounded),
+                    ('14:00', '22°', Icons.wb_cloudy_rounded),
+                    ('16:00', '19°', Icons.cloud_rounded),
+                    ('18:00', '17°', Icons.nights_stay_rounded),
+                  ])
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF131D38),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(h.$1, style: const TextStyle(color: MLPColors.secondaryText, fontSize: 11)),
+                            const SizedBox(height: 6),
+                            Icon(h.$3, color: const Color(0xFF00E5FF), size: 22),
+                            const SizedBox(height: 6),
+                            Text(h.$2, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -257,139 +378,494 @@ class MLPSoundspacePage extends StatefulWidget {
   State<MLPSoundspacePage> createState() => _SoundState();
 }
 
-class _SoundState extends State<MLPSoundspacePage> {
-  String? selected;
-  bool favoritesOnly = false;
+class _SoundState extends State<MLPSoundspacePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animController;
+  String selectedId = 'deep';
+  bool isPlaying = true;
+  String currentFilter = 'Barchasi';
+
   static const tracks = [
-    ('forest', 'O‘rmon muhiti', 'Tabiat', Icons.forest_outlined),
-    ('rain', 'Yomg‘ir', 'Tabiat', Icons.water_drop_outlined),
-    ('deep', 'Chuqur diqqat', 'Fokus', Icons.graphic_eq),
-    ('calm', 'Sokin nafas', 'Dam olish', Icons.spa_outlined),
+    (
+      id: 'deep',
+      title: 'Deep Focus',
+      category: 'Fokus',
+      duration: '60:00',
+      icon: CupertinoIcons.waveform,
+      desc: 'Chuqur konsentratsiya to‘lqini',
+    ),
+    (
+      id: 'rain',
+      title: 'Yomg‘ir va momaqaldiroq',
+      category: 'Yomg‘ir',
+      duration: '45:00',
+      icon: CupertinoIcons.cloud_rain,
+      desc: 'Sokin tomchilar va mayin shabada',
+    ),
+    (
+      id: 'mountain',
+      title: 'Tog‘ shamoli va qushlar',
+      category: 'Tabiat',
+      duration: '30:00',
+      icon: CupertinoIcons.wind,
+      desc: 'Tiniq havo va osoyishta tabiat',
+    ),
+    (
+      id: 'lofi',
+      title: 'Lofi ritmlar',
+      category: 'Motivatsiya',
+      duration: '50:00',
+      icon: CupertinoIcons.music_note_2,
+      desc: 'O‘qish va kod yozish uchun yengil ritm',
+    ),
+    (
+      id: 'ocean',
+      title: 'Sokin ummon nafasi',
+      category: 'Tabiat',
+      duration: '40:00',
+      icon: CupertinoIcons.waveform_path,
+      desc: 'To‘lqinlar sasi va dam olish',
+    ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final e = widget.e;
     return ListenableBuilder(
       listenable: e.ui,
       builder: (context, _) {
-        final category = e.ui.soundIntent['category'] as String;
-        final visible = tracks.where(
-          (t) =>
-              favoritesOnly ? e.ui.favorites.contains(t.$1) : t.$3 == category,
+        final currentTrack = tracks.firstWhere(
+          (t) => t.id == selectedId,
+          orElse: () => tracks.first,
         );
+        final filteredTracks = tracks.where((t) {
+          if (currentFilter == 'Barchasi') return true;
+          return t.category == currentFilter;
+        }).toList();
+
+        final sleepMinutes = (e.ui.soundIntent['sleep'] as int?) ?? 0;
+
         return MLPPage(
-          title: 'MLP Soundspace',
+          title: 'Soundspace',
           children: [
-            const MLPNotice(
-              'Katalog ko‘rinishi. Litsenziyalangan audio fayllar hali yo‘q; ovoz ijro etilmaydi. Tanlanganlar va uyqu taymeri niyati saqlanadi.',
+            // Category Filter Pills
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final cat in [
+                    'Barchasi',
+                    'Fokus',
+                    'Yomg‘ir',
+                    'Tabiat',
+                    'Motivatsiya',
+                  ])
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(cat),
+                        selected: currentFilter == cat,
+                        selectedColor: MLPColors.turquoise.withValues(alpha: .2),
+                        labelStyle: TextStyle(
+                          color: currentFilter == cat
+                              ? MLPColors.turquoise
+                              : MLPColors.secondaryText,
+                          fontWeight: currentFilter == cat
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                        onSelected: (val) {
+                          if (val) setState(() => currentFilter = cat);
+                        },
+                      ),
+                    ),
+                ],
+              ),
             ),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final c in ['Fokus', 'Tabiat', 'Dam olish'])
-                  ChoiceChip(
-                    label: Text(c),
-                    selected: !favoritesOnly && category == c,
-                    onSelected: (_) {
-                      setState(() => favoritesOnly = false);
-                      e.act(
-                        context,
-                        () => e.ui.saveSoundIntent(
-                          c,
-                          e.ui.soundIntent['sleep'] as int,
+            const SizedBox(height: 18),
+
+            // Hero Playing Card (Screen 22 Poster Match)
+            MLPLiquidSurface(
+              tint: MLPColors.turquoise.withValues(alpha: .15),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: (isPlaying
+                                  ? MLPColors.turquoise
+                                  : MLPColors.secondaryText)
+                              .withValues(alpha: .15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: (isPlaying
+                                    ? MLPColors.turquoise
+                                    : MLPColors.secondaryText)
+                                .withValues(alpha: .4),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isPlaying
+                                  ? CupertinoIcons.waveform_path
+                                  : CupertinoIcons.pause,
+                              size: 13,
+                              color: isPlaying
+                                  ? MLPColors.turquoise
+                                  : MLPColors.secondaryText,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              isPlaying ? 'Ijro etilmoqda' : 'Pauzada',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: isPlaying
+                                    ? MLPColors.turquoise
+                                    : MLPColors.secondaryText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'Sevimlilar',
+                        icon: Icon(
+                          e.ui.favorites.contains(currentTrack.id)
+                              ? CupertinoIcons.heart_fill
+                              : CupertinoIcons.heart,
+                          color: e.ui.favorites.contains(currentTrack.id)
+                              ? const Color(0xFFFF5252)
+                              : MLPColors.secondaryText,
+                          size: 20,
+                        ),
+                        onPressed: () => e.act(
+                          context,
+                          () => e.ui.toggleFavorite(currentTrack.id),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    currentTrack.title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    currentTrack.desc,
+                    style: const TextStyle(
+                      color: MLPColors.secondaryText,
+                      fontSize: 13,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Waveform Visualizer
+                  AnimatedBuilder(
+                    animation: _animController,
+                    builder: (context, _) {
+                      final val = _animController.value;
+                      return SizedBox(
+                        height: 44,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(24, (i) {
+                            final base = ((i % 5) + 1) * 7.0;
+                            final wave = isPlaying
+                                ? (val * ((i % 3) + 1) * 6.0)
+                                : 0.0;
+                            final h = (base + wave).clamp(8.0, 42.0);
+                            return Container(
+                              width: 3.5,
+                              height: h,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 2.2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    MLPColors.turquoise,
+                                    MLPColors.primaryLight.withValues(alpha: .5),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
                         ),
                       );
                     },
                   ),
-                FilterChip(
-                  label: const Text('Sevimlilar'),
-                  selected: favoritesOnly,
-                  onSelected: (v) => setState(() => favoritesOnly = v),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            if (visible.isEmpty)
-              const MLPEmptyState(
-                title: 'Tanlangan audio yo‘q',
-                message: 'Yurak belgisi bilan katalogga qo‘shing.',
-              ),
-            ...visible.map(
-              (t) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: MLPGlassCard(
-                  padding: 8,
-                  child: ListTile(
-                    leading: Icon(t.$4, color: MLPColors.turquoise),
-                    title: Text(t.$2),
-                    subtitle: const Text('Namuna · ijro mavjud emas'),
-                    onTap: () => setState(() => selected = t.$1),
-                    trailing: IconButton(
-                      tooltip: 'Sevimlilarga qo‘shish yoki olib tashlash',
-                      icon: Icon(
-                        e.ui.favorites.contains(t.$1)
-                            ? Icons.favorite
-                            : Icons.favorite_outline,
+                  const SizedBox(height: 14),
+                  Text(
+                    currentTrack.duration,
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: MLPColors.turquoise,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Player Controls
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        tooltip: 'Tasodifiy',
+                        icon: const Icon(
+                          CupertinoIcons.shuffle,
+                          color: MLPColors.secondaryText,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          final other = tracks.where((t) => t.id != selectedId).toList();
+                          other.shuffle();
+                          if (other.isNotEmpty) {
+                            setState(() => selectedId = other.first.id);
+                          }
+                        },
                       ),
-                      onPressed: () =>
-                          e.act(context, () => e.ui.toggleFavorite(t.$1)),
+                      const SizedBox(width: 14),
+                      IconButton(
+                        tooltip: 'Oldingi',
+                        icon: const Icon(
+                          CupertinoIcons.backward_end_fill,
+                          color: MLPColors.text,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          final idx = tracks.indexWhere((t) => t.id == selectedId);
+                          final prevIdx = (idx - 1 + tracks.length) % tracks.length;
+                          setState(() => selectedId = tracks[prevIdx].id);
+                        },
+                      ),
+                      const SizedBox(width: 18),
+                      // Glowing Center Play/Pause
+                      GestureDetector(
+                        onTap: () => setState(() => isPlaying = !isPlaying),
+                        child: Container(
+                          width: 58,
+                          height: 58,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              colors: [MLPColors.turquoise, Color(0xFF2979FF)],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: MLPColors.turquoise.withValues(alpha: .45),
+                                blurRadius: 18,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            isPlaying
+                                ? CupertinoIcons.pause_fill
+                                : CupertinoIcons.play_arrow_solid,
+                            color: Colors.black,
+                            size: 28,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 18),
+                      IconButton(
+                        tooltip: 'Keyingi',
+                        icon: const Icon(
+                          CupertinoIcons.forward_end_fill,
+                          color: MLPColors.text,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          final idx = tracks.indexWhere((t) => t.id == selectedId);
+                          final nextIdx = (idx + 1) % tracks.length;
+                          setState(() => selectedId = tracks[nextIdx].id);
+                        },
+                      ),
+                      const SizedBox(width: 14),
+                      IconButton(
+                        tooltip: 'Takrorlash',
+                        icon: const Icon(
+                          CupertinoIcons.repeat,
+                          color: MLPColors.secondaryText,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          MLPToast.show(context, 'Mavzu takrorlash yoqildi');
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Track List
+            const MLPSectionHeader(title: 'Musiqa to‘plamlari'),
+            const SizedBox(height: 10),
+            for (final track in filteredTracks)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: MLPLiquidSurface(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  tint: track.id == selectedId ? MLPColors.turquoise.withValues(alpha: .15) : null,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedId = track.id;
+                        isPlaying = true;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: track.id == selectedId
+                                ? MLPColors.turquoise.withValues(alpha: .2)
+                                : MLPColors.elevated,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: track.id == selectedId
+                                  ? MLPColors.turquoise
+                                  : MLPColors.border,
+                            ),
+                          ),
+                          child: Icon(
+                            track.icon,
+                            color: track.id == selectedId
+                                ? MLPColors.turquoise
+                                : MLPColors.primaryLight,
+                            size: 22,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                track.title,
+                                style: TextStyle(
+                                  fontWeight: track.id == selectedId
+                                      ? FontWeight.bold
+                                      : FontWeight.w600,
+                                  color: track.id == selectedId
+                                      ? MLPColors.turquoise
+                                      : MLPColors.text,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${track.category} · ${track.duration}',
+                                style: const TextStyle(
+                                  color: MLPColors.secondaryText,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Sevimlilar',
+                          icon: Icon(
+                            e.ui.favorites.contains(track.id)
+                                ? CupertinoIcons.heart_fill
+                                : CupertinoIcons.heart,
+                            color: e.ui.favorites.contains(track.id)
+                                ? const Color(0xFFFF5252)
+                                : MLPColors.secondaryText,
+                            size: 18,
+                          ),
+                          onPressed: () => e.act(
+                            context,
+                            () => e.ui.toggleFavorite(track.id),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<int>(
-              initialValue: e.ui.soundIntent['sleep'] as int,
-              decoration: const InputDecoration(
-                labelText: 'Uyqu taymeri · tanlov',
-              ),
-              items: [0, 15, 30, 60]
-                  .map(
-                    (n) => DropdownMenuItem(
-                      value: n,
-                      child: Text(n == 0 ? 'O‘chirilgan' : '$n daqiqa'),
+            const SizedBox(height: 20),
+
+            // Sleep Timer section
+            const MLPSectionHeader(title: 'Uyqu taymeri'),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final mins in [0, 15, 30, 45, 60])
+                  ChoiceChip(
+                    label: Text(mins == 0 ? 'O‘chirilgan' : '$mins daqiqa'),
+                    selected: sleepMinutes == mins,
+                    selectedColor: MLPColors.turquoise.withValues(alpha: .2),
+                    labelStyle: TextStyle(
+                      color: sleepMinutes == mins
+                          ? MLPColors.turquoise
+                          : MLPColors.secondaryText,
                     ),
-                  )
-                  .toList(),
-              onChanged: (v) {
-                if (v != null) {
-                  e.act(context, () => e.ui.saveSoundIntent(category, v));
-                }
-              },
+                    onSelected: (val) {
+                      if (val) {
+                        e.act(
+                          context,
+                          () => e.ui.saveSoundIntent(
+                            currentTrack.category,
+                            mins,
+                          ),
+                        );
+                        MLPToast.show(
+                          context,
+                          mins == 0
+                              ? 'Uyqu taymeri o‘chirildi'
+                              : 'Uyqu taymeri: $mins daqiqaga o‘rnatildi',
+                        );
+                      }
+                    },
+                  ),
+              ],
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Ovoz ulanmaguncha taymer ishlamaydi.',
-              style: TextStyle(color: MLPColors.secondaryText),
-            ),
-            if (selected != null) ...[
-              const SizedBox(height: 24),
-              MLPGlassCard(
-                accent: true,
-                child: Column(
-                  children: [
-                    Text(
-                      tracks.firstWhere((t) => t.$1 == selected).$2,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 12),
-                    const Text('Ijrochi ko‘rinishi · audio mavjud emas'),
-                    const SizedBox(height: 12),
-                    MLPSecondaryButton(
-                      label: 'Nega ovoz yo‘q?',
-                      icon: Icons.info_outline,
-                      onPressed: () => e.info(
-                        context,
-                        'Audio hali ulanmagan',
-                        'Bu ko‘rinish ijro holatini taqlid qilmaydi. Litsenziyalangan fayllar va audio xizmati ulangach ijro imkoniyati ochiladi.',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ],
         );
       },
@@ -1112,103 +1588,295 @@ class MLPSettingsPage extends StatelessWidget {
   );
 }
 
-class MLPNotificationsPage extends StatelessWidget {
+class MLPNotificationsPage extends StatefulWidget {
   const MLPNotificationsPage({super.key, required this.e});
   final MLPEnvironment e;
+
   @override
-  Widget build(BuildContext context) => ListenableBuilder(
-    listenable: Listenable.merge([e.ui, e.store]),
-    builder: (context, _) {
-      final items = <(DateTime, String, String, String)>[];
-      for (var offset = 0; offset < 2; offset++) {
-        final day = e.store.today.add(Duration(days: offset));
-        for (final s in e.ui.schedules.where(
-          (s) =>
-              s.occursOn(day) &&
-              s.reminderMinutes != null &&
-              !s.endOn(day).isBefore(e.clock()),
-        )) {
-          items.add((
-            s.startOn(day).subtract(Duration(minutes: s.reminderMinutes!)),
-            s.title,
-            s.id,
-            '${s.reminderMinutes} daqiqa oldin · ${mlpDayKey(day)}',
-          ));
+  State<MLPNotificationsPage> createState() => _MLPNotificationsPageState();
+}
+
+class _MLPNotificationsPageState extends State<MLPNotificationsPage> {
+  int _selectedFilter = 0; // 0: Barchasi, 1: O‘qilmagan, 2: Tizim
+  final Set<String> _readIds = {'notif_2', 'notif_3'};
+
+  static const List<Map<String, dynamic>> _sampleNotifications = [
+    {
+      'id': 'notif_1',
+      'title': 'Vazifa eslatmasi',
+      'subtitle': 'Login ekrani dizaynini yakunlash',
+      'badge': 'Bugun 14:00',
+      'category': 'Vazifalar',
+      'icon': CupertinoIcons.bell_fill,
+      'color': MLPColors.turquoise,
+      'time': '10 daqiqa oldin',
+      'isSystem': false,
+    },
+    {
+      'id': 'notif_2',
+      'title': 'Fokus yakunlandi',
+      'subtitle': '25 daqiqalik Pomodoro muvaffaqiyatli bajarildi',
+      'badge': '+50 XP',
+      'category': 'Fokus',
+      'icon': CupertinoIcons.timer,
+      'color': MLPColors.warning,
+      'time': '1 soat oldin',
+      'isSystem': false,
+    },
+    {
+      'id': 'notif_3',
+      'title': 'Yangi yutuq',
+      'subtitle': '«Fokuschi» nishoni qo‘lga kiritildi!',
+      'badge': 'Mukofot',
+      'category': 'Tizim',
+      'icon': CupertinoIcons.rosette,
+      'color': Color(0xFFB388FF),
+      'time': 'Kecha',
+      'isSystem': true,
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final e = widget.e;
+    return ListenableBuilder(
+      listenable: Listenable.merge([e.ui, e.store]),
+      builder: (context, _) {
+        final notificationsEnabled = e.ui.preferences.notifications;
+
+        // Dynamic items from schedules
+        final dynamicItems = <Map<String, dynamic>>[];
+        for (var offset = 0; offset < 2; offset++) {
+          final day = e.store.today.add(Duration(days: offset));
+          for (final s in e.ui.schedules.where(
+            (s) =>
+                s.occursOn(day) &&
+                s.reminderMinutes != null &&
+                !s.endOn(day).isBefore(e.clock()),
+          )) {
+            final id = 'sched_${s.id}_$offset';
+            dynamicItems.add({
+              'id': id,
+              'title': s.title,
+              'subtitle': '${s.reminderMinutes} daqiqa oldin · ${mlpDayKey(day)}',
+              'badge': 'Jadval',
+              'category': 'Reja',
+              'icon': CupertinoIcons.calendar,
+              'color': MLPColors.primaryLight,
+              'time': mlpTime(s.startMinute),
+              'isSystem': false,
+            });
+          }
         }
-      }
-      items.sort((a, b) => a.$1.compareTo(b.$1));
-      return MLPPage(
-        title: 'Bildirishnomalar',
-        children: [
-          const MLPNotice(
-            'Bu ekran rejalangan eslatma niyatlarini ko‘rsatadi. Android/iOS push yoki mahalliy xabarnoma yetkazish ulanmagan; ruxsat berilgan deb ko‘rsatilmaydi.',
-            warning: true,
-          ),
-          _GlassSwitch(
-            title: 'Eslatma tanlovim',
-            subtitle: e.ui.preferences.notifications
-                ? 'Tanlov saqlangan · yetkazish faol emas'
-                : 'Tanlov o‘chirilgan',
-            value: e.ui.preferences.notifications,
-            onChanged: (v) => e.act(
-              context,
-              () => e.ui.savePreferences(
-                MLPUserPreferences.fromJson({
-                  ...e.ui.preferences.toJson(),
-                  'notifications': v,
-                }),
+
+        final allItems = [..._sampleNotifications, ...dynamicItems];
+
+        final filteredItems = allItems.where((item) {
+          final id = item['id'] as String;
+          final isRead = _readIds.contains(id);
+          final isSystem = item['isSystem'] as bool;
+
+          if (_selectedFilter == 1) return !isRead; // O'qilmagan
+          if (_selectedFilter == 2) return isSystem; // Tizim
+          return true; // Barchasi
+        }).toList();
+
+        return MLPPage(
+          title: 'Bildirishnomalar',
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  for (final item in allItems) {
+                    _readIds.add(item['id'] as String);
+                  }
+                });
+                MLPToast.show(context, 'Barchasi o‘qilgan deb belgilandi');
+              },
+              child: const Text(
+                'O‘qilgan',
+                style: TextStyle(color: MLPColors.turquoise, fontSize: 13),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const MLPSectionHeader(title: 'Bugun va ertaga · rejalangan'),
-          const SizedBox(height: 12),
-          if (items.isEmpty)
-            MLPEmptyState(
-              title: 'Rejalangan eslatma yo‘q',
-              message:
-                  'Mashg‘ulotga eslatma vaqtini kiriting. Yetkazish hali ulanmagan.',
-              action: 'Taqvimni ochish',
-              onAction: () => e.go(MLPScreen.calendar),
-            ),
-          ...items.map(
-            (i) => MLPMenuTile(
-              title: i.$2,
-              subtitle: '${mlpTime(i.$1.hour * 60 + i.$1.minute)} · ${i.$4}',
-              icon: Icons.notifications_none,
-              onTap: () => e.go(
-                MLPScreen.scheduleEditor,
-                args: MLPRouteArgs(scheduleId: i.$3),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const MLPSectionHeader(title: 'Mahalliy natijalar'),
-          const SizedBox(height: 12),
-          if (e.store.todayCompleted == 0)
-            const MLPNotice('Bugun topshirilgan vazifa hali yo‘q.'),
-          ...e.store.tasks
-              .where(
-                (t) =>
-                    t.completed &&
-                    t.completedAt != null &&
-                    mlpDayKey(t.completedAt!) == e.store.todayKey,
-              )
-              .map(
-                (t) => MLPMenuTile(
-                  title: t.title,
-                  subtitle: 'Bugun topshirilgan · o‘z hisoboti',
-                  icon: Icons.task_alt,
-                  onTap: () => e.go(
-                    MLPScreen.verification,
-                    args: MLPRouteArgs(taskId: t.id),
-                  ),
+          ],
+          children: [
+            // Switch for Notifications Setting
+            _GlassSwitch(
+              title: 'Bildirishnomalarni yoqish',
+              subtitle: notificationsEnabled
+                  ? 'Eslatmalar va ogohlantirishlar faol'
+                  : 'Bildirishnomalar o‘chirilgan',
+              value: notificationsEnabled,
+              onChanged: (v) => e.act(
+                context,
+                () => e.ui.savePreferences(
+                  MLPUserPreferences.fromJson({
+                    ...e.ui.preferences.toJson(),
+                    'notifications': v,
+                  }),
                 ),
               ),
-        ],
-      );
-    },
-  );
+            ),
+            const SizedBox(height: 16),
+
+            // Filter Tabs (Screen 24 Poster Match: Barchasi, O'qilmagan, Tizim)
+            MLPSegmented(
+              labels: const ['Barchasi', 'O‘qilmagan', 'Tizim'],
+              selected: _selectedFilter,
+              onChanged: (idx) => setState(() => _selectedFilter = idx),
+            ),
+            const SizedBox(height: 16),
+
+            if (filteredItems.isEmpty)
+              const MLPEmptyState(
+                title: 'Bildirishnomalar yo‘q',
+                message: 'Hozircha sizda yangi eslatmalar mavjud emas.',
+              ),
+
+            for (final notif in filteredItems) ...[
+              _NotificationCard(
+                title: notif['title'] as String,
+                subtitle: notif['subtitle'] as String,
+                badge: notif['badge'] as String,
+                time: notif['time'] as String,
+                icon: notif['icon'] as IconData,
+                color: notif['color'] as Color,
+                isUnread: !_readIds.contains(notif['id']),
+                onTap: () {
+                  setState(() => _readIds.add(notif['id'] as String));
+                },
+              ),
+              const SizedBox(height: 10),
+            ],
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _NotificationCard extends StatelessWidget {
+  const _NotificationCard({
+    required this.title,
+    required this.subtitle,
+    required this.badge,
+    required this.time,
+    required this.icon,
+    required this.color,
+    required this.isUnread,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final String badge;
+  final String time;
+  final IconData icon;
+  final Color color;
+  final bool isUnread;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return MLPLiquidSurface(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      tint: isUnread ? MLPColors.turquoise.withValues(alpha: .12) : null,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: .15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: color.withValues(alpha: .3)),
+              ),
+              child: Icon(icon, color: color, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontWeight: isUnread ? FontWeight.bold : FontWeight.w600,
+                            color: MLPColors.text,
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        time,
+                        style: const TextStyle(
+                          color: MLPColors.secondaryText,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: MLPColors.secondaryText,
+                      fontSize: 12.5,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: .12),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      badge,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isUnread) ...[
+              const SizedBox(width: 8),
+              Container(
+                width: 8,
+                height: 8,
+                margin: const EdgeInsets.only(top: 6),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: MLPColors.turquoise,
+                  boxShadow: [
+                    BoxShadow(
+                      color: MLPColors.turquoise,
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _SettingsRow extends StatelessWidget {

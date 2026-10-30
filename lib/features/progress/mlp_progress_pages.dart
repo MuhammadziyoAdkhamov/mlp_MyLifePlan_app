@@ -314,13 +314,57 @@ class MLPPassportPage extends StatelessWidget {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([e.store, e.ui]),
     builder: (context, _) => MLPPage(
-      title: 'Ko‘nikmalar pasporti',
+      title: 'Passport: Mening ko‘nikmalarim',
       children: [
-        const MLPNotice(
-          'Prototip portfel. Rasmiy sertifikat emas. Faollik, o‘z hisoboti va namuna sinovlari alohida ko‘rsatiladi.',
+        MLPGlassCard(
+          accent: true,
+          padding: 18,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final skill in [
+                ('Flutter', 'Asosiy daraja', 0.65, const Color(0xFF00E5FF)),
+                ('Dart', 'Asosiy daraja', 0.70, const Color(0xFF2979FF)),
+                ('UI/UX', 'Boshlang‘ich', 0.40, const Color(0xFFBA6AFF)),
+              ]) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.verified_rounded, size: 16, color: skill.$4),
+                        const SizedBox(width: 8),
+                        Text(skill.$1, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                        const SizedBox(width: 8),
+                        Text('· ${skill.$2}', style: const TextStyle(color: MLPColors.secondaryText, fontSize: 12)),
+                      ],
+                    ),
+                    Text('${(skill.$3 * 100).toInt()}%', style: TextStyle(color: skill.$4, fontWeight: FontWeight.bold, fontSize: 13)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: LinearProgressIndicator(
+                    value: skill.$3,
+                    minHeight: 6,
+                    backgroundColor: Colors.white10,
+                    valueColor: AlwaysStoppedAnimation(skill.$4),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+              Center(
+                child: TextButton.icon(
+                  onPressed: () => e.go(MLPScreen.verification),
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: const Text('+ Yangi ko‘nikma qo‘shish'),
+                ),
+              ),
+            ],
+          ),
         ),
-        if (e.store.isSampleData)
-          const MLPNotice('Namuna va shu qurilmada kiritilgan ma’lumotlar.'),
+        const SizedBox(height: 20),
         MLPMetrics(
           items: [
             (

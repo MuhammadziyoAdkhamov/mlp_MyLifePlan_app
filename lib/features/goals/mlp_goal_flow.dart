@@ -333,10 +333,10 @@ class _DiagnosticState extends State<MLPDiagnosticScreen> {
   get questions => widget.draft.category == 'Dasturlash'
       ? [
           (
-            question: 'Dartda o‘zgarmaydigan qiymat qaysi bilan belgilanadi?',
-            answers: ['final', 'while', 'print'],
+            question: "Flutter'da qaysi vidjet list ko‘rinishlarini yaratadi?",
+            answers: ['ListView', 'Column', 'Row'],
             correct: 0,
-            why: 'final o‘zgaruvchiga qiymatni qayta tayinlashni cheklaydi.',
+            why: 'ListView ro‘yxat ko‘rinishlarini yaratadi.',
           ),
           (
             question: 'Flutterda ekrandagi elementning asosiy birligi nima?',
@@ -407,7 +407,7 @@ class _DiagnosticState extends State<MLPDiagnosticScreen> {
         const SizedBox(height: 20),
         MLPPrimaryButton(label: 'Yo‘l xaritasini ko‘rish', onPressed: _roadmap),
       ] else if (!result) ...[
-        MLPProgressBar(value: (step + 1) / 2, label: 'Savol ${step + 1} / 2'),
+        MLPProgressBar(value: (step + 1) / 2, label: '${step + 1}/10 · Boshlang‘ich test'),
         const SizedBox(height: 20),
         Text(
           questions[step].question,
@@ -505,17 +505,20 @@ class _RoadmapState extends State<MLPRoadmapScreen> {
   void initState() {
     super.initState();
     final prefix = d.title.length > 100 ? d.title.substring(0, 100) : d.title;
+    final isFlutter = d.category == 'Dasturlash' || d.title.toLowerCase().contains('flutter');
+    final stepNames = isFlutter
+        ? ['Dart asoslari (1-2 hafta)', 'Flutter UI (3-5 hafta)', 'State Management (6-8 hafta)']
+        : ['Reja va manba', 'Birinchi amaliy qadam', 'Natijani tahlil qilish'];
     final generated =
         d.steps ??
         List.generate(
-          3,
+          stepNames.length,
           (i) => (
-            title:
-                '${['Reja va manba', 'Birinchi amaliy qadam', 'Natijani tahlil qilish'][i]} · $prefix',
+            title: '${stepNames[i]} · $prefix',
             minutes: d.minutes.clamp(5, 60),
             date: widget.store.today.add(
               Duration(
-                days: (d.deadline.difference(widget.store.today).inDays * i / 2)
+                days: (d.deadline.difference(widget.store.today).inDays * i / (stepNames.length - 1))
                     .round(),
               ),
             ),
@@ -586,7 +589,7 @@ class _RoadmapState extends State<MLPRoadmapScreen> {
 
   @override
   Widget build(BuildContext context) => _Page(
-    title: 'Yo‘l xaritasi',
+    title: 'Sizning rejangiz',
     children: [
       const _Note(
         'Prototip reja: belgilangan uch bosqichli namuna, haqiqiy AI yaratmagan. Har bir vazifa va sanani tahrirlang.',
