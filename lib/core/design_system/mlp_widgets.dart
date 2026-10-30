@@ -130,43 +130,86 @@ class MLPFloatingTabBar extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24),
-                              gradient:
-                                  index == item.$1 ||
-                                      (index == 3 && item.$1 == 1)
-                                  ? const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Color(0x994758FF),
-                                        Color(0x6600D1FF),
-                                      ],
-                                    )
-                                  : null,
+                              gradient: item.$1 == 2
+                                  ? (index == 2
+                                      ? const LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0xFF00E5FF),
+                                            Color(0xFF2979FF),
+                                          ],
+                                        )
+                                      : const LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0x3300E5FF),
+                                            Color(0x332979FF),
+                                          ],
+                                        ))
+                                  : (index == item.$1 ||
+                                          (index == 3 && item.$1 == 1)
+                                      ? const LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0x994758FF),
+                                            Color(0x6600D1FF),
+                                          ],
+                                        )
+                                      : null),
                               border: Border.all(
-                                color:
-                                    index == item.$1 ||
-                                        (index == 3 && item.$1 == 1)
-                                    ? const Color(0x886CBFFF)
-                                    : Colors.transparent,
+                                color: item.$1 == 2
+                                    ? (index == 2
+                                        ? const Color(0xFF00F0FF)
+                                        : const Color(0x6600E5FF))
+                                    : (index == item.$1 ||
+                                            (index == 3 && item.$1 == 1)
+                                        ? const Color(0x886CBFFF)
+                                        : Colors.transparent),
+                                width: item.$1 == 2 ? 1.5 : 1.0,
                               ),
+                              boxShadow: item.$1 == 2
+                                  ? [
+                                      BoxShadow(
+                                        color: const Color(0xFF00E5FF)
+                                            .withValues(alpha: index == 2 ? 0.45 : 0.2),
+                                        blurRadius: index == 2 ? 16 : 8,
+                                      ),
+                                    ]
+                                  : null,
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  item.$3,
-                                  size: 25,
-                                  color:
-                                      index == item.$1 ||
-                                          (index == 3 && item.$1 == 1)
-                                      ? MLPColors.turquoise
-                                      : MLPColors.secondaryText,
+                                  item.$1 == 2
+                                      ? CupertinoIcons.stopwatch_fill
+                                      : item.$3,
+                                  size: item.$1 == 2 ? 26 : 24,
+                                  color: item.$1 == 2
+                                      ? (index == 2
+                                          ? Colors.white
+                                          : const Color(0xFF00E5FF))
+                                      : (index == item.$1 ||
+                                              (index == 3 && item.$1 == 1)
+                                          ? MLPColors.turquoise
+                                          : MLPColors.secondaryText),
                                 ),
-                                const SizedBox(height: 5),
+                                const SizedBox(height: 4),
                                 Text(
                                   item.$2,
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(fontSize: 11),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: item.$1 == 2 || index == item.$1
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
+                                    color: item.$1 == 2 && index == 2
+                                        ? Colors.white
+                                        : null,
+                                  ),
                                 ),
                               ],
                             ),

@@ -8,6 +8,7 @@ import '../demo/demo_forms.dart';
 import '../data/repositories/mlp_ui_repository.dart';
 import '../demo/demo_store.dart';
 import '../features/ai_companion/mlp_companion_pages.dart';
+import '../features/ai_companion/mlp_gemini_adapter.dart';
 import '../features/focus/mlp_focus_controller.dart';
 import '../features/focus/mlp_focus_pages.dart';
 import '../features/goals/mlp_goal_detail.dart';
@@ -47,11 +48,13 @@ class _ProductShellState extends State<MLPProductShell>
   final frame = GlobalKey<_TabFrameState>();
   late final MLPFocusController focus;
   late final MLPEnvironment e;
+  late final MLPGeminiAdapter _gemini;
   Timer? dateTicker;
   late String day;
   @override
   void initState() {
     super.initState();
+    _gemini = MLPGeminiAdapter();
     focus = MLPFocusController(widget.store, widget.ui, clock: widget.clock);
     e = MLPEnvironment(
       store: widget.store,
@@ -178,7 +181,7 @@ class _ProductShellState extends State<MLPProductShell>
         ),
         MLPScreen.passport => MLPPassportPage(e: e),
         MLPScreen.analytics => MLPGrowthPage(e: e),
-        MLPScreen.chat => MLPScaffold(body: MLPChatPage(e: e, showBack: true)),
+        MLPScreen.chat => MLPScaffold(body: MLPChatPage(e: e, adapter: _gemini, showBack: true)),
         MLPScreen.profile => MLPScaffold(
           body: MLPProfilePage(e: e, showBack: true),
         ),
@@ -233,7 +236,7 @@ class _ProductShellState extends State<MLPProductShell>
         reducedMotion: MediaQuery.disableAnimationsOf(context),
         settings: settings,
         builder: (context) => settings.name == '/'
-            ? _TabFrame(key: frame, e: e)
+            ? _TabFrame(key: frame, e: e, adapter: _gemini)
             : page(
                 MLPScreen.parse(settings.name),
                 settings.arguments is MLPRouteArgs
@@ -262,8 +265,9 @@ class _MLPPageRoute extends CupertinoPageRoute<void> {
 }
 
 class _TabFrame extends StatefulWidget {
-  const _TabFrame({super.key, required this.e});
+  const _TabFrame({super.key, required this.e, required this.adapter});
   final MLPEnvironment e;
+  final MLPAssistantAdapter adapter;
   @override
   State<_TabFrame> createState() => _TabFrameState();
 }
@@ -374,7 +378,7 @@ class _TabFrameState extends State<_TabFrame> {
                 2 => MLPFocusHub(e: e),
                 3 => MLPIosPlanPage(e: e),
                 4 => MLPGrowthPage(e: e, embedded: true),
-                6 => MLPChatPage(e: e),
+                6 => MLPChatPage(e: e, adapter: widget.adapter),
                 _ => MLPProfilePage(e: e),
               },
             ),

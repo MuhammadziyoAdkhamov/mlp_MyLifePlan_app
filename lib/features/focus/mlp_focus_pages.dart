@@ -673,29 +673,96 @@ class _SummaryState extends State<MLPFocusSummaryPage> {
     return PopScope(
       canPop: !busy,
       child: MLPPage(
-        title: 'Sessiya yakuni',
+        title: 'Sessiya yakunlandi!',
         children: [
-          const Center(
-            child: Icon(
-              CupertinoIcons.star_fill,
-              color: MLPColors.warning,
-              size: 72,
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Color(0x66FFD700),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+              child: const Icon(
+                CupertinoIcons.star_fill,
+                color: Color(0xFFFFD700),
+                size: 76,
+              ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF00E5FF), Color(0xFF2979FF)],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF00E5FF).withValues(alpha: 0.4),
+                    blurRadius: 14,
+                  ),
+                ],
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.bolt_rounded, color: Colors.white, size: 18),
+                  SizedBox(width: 6),
+                  Text(
+                    '+ 50 XP',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
           Center(
             child: MLPTimerDisplay(
               seconds: e.focus.elapsed,
-              label: 'Haqiqiy faol vaqt',
+              label: 'Fokus vaqti',
             ),
           ),
-          const SizedBox(height: 16),
-          Text(
-            e.focus.task?.title ??
-                (e.focus.isBreak ? 'Tanaffus' : 'Erkin fokus'),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          const SizedBox(height: 14),
+          if (e.focus.task != null) ...[
+            MLPGlassCard(
+              padding: 14,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Loyiha: ${e.focus.task!.project}',
+                    style: const TextStyle(
+                      color: Color(0xFF00E5FF),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Vazifa: ${e.focus.task!.title}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
           const SizedBox(height: 24),
           MLPNotice(
             e.focus.isBreak
@@ -732,7 +799,7 @@ class _SummaryState extends State<MLPFocusSummaryPage> {
           const SizedBox(height: 24),
           if (error != null) MLPNotice(error!, warning: true),
           MLPPrimaryButton(
-            label: 'Sessiyani saqlash',
+            label: 'Saqlash',
             busy: busy,
             onPressed: e.focus.elapsed < 1
                 ? null

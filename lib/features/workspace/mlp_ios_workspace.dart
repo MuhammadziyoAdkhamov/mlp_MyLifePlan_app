@@ -104,9 +104,37 @@ class _ReferenceTodayState extends State<MLPTodayPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    'Hozirgi vazifa',
-                    style: TextStyle(color: MLPColors.secondaryText),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFF00E5FF).withValues(alpha: 0.5)),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.star_rounded, size: 14, color: Color(0xFF00E5FF)),
+                            SizedBox(width: 4),
+                            Text(
+                              'Bugungi eng muhim vazifa',
+                              style: TextStyle(
+                                color: Color(0xFF00E5FF),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Hozirgi vazifa',
+                        style: TextStyle(color: MLPColors.secondaryText, fontSize: 12),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -167,6 +195,36 @@ class _ReferenceTodayState extends State<MLPTodayPage> {
                     label: 'Fokusni boshlash',
                     icon: CupertinoIcons.play_fill,
                     onPressed: () => mlpStartTask(context, e, current),
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: () => mlpStartTask(context, e, current, minutes: 5),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF131D38),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.bolt_rounded, size: 15, color: Color(0xFF00E5FF)),
+                            SizedBox(width: 6),
+                            Text(
+                              '5 daqiqalik variant',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF00E5FF),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

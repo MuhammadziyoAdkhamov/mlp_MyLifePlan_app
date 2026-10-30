@@ -1,3 +1,4 @@
+import '../../app/mlp_environment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -308,7 +309,7 @@ class MLPRegistrationScreen extends StatefulWidget {
 class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
   final form = GlobalKey<FormState>();
   late final TextEditingController name, phone;
-  String gender = 'Ko‘rsatmaslik';
+  String gender = 'O‘g‘il';
   bool busy = false;
   String? error;
   @override
@@ -357,7 +358,7 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
       if (mounted) {
         setState(
           () => error =
-              'Demo profil saqlanmadi. Ma’lumotlaringizni tekshirib qayta urinib ko‘ring.',
+              'Profil saqlanmadi. Ma’lumotlaringizni tekshirib qayta urinib ko‘ring.',
         );
       }
     } finally {
@@ -367,20 +368,18 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
 
   @override
   Widget build(BuildContext context) => _AccountPage(
-    title: 'Demo profil yaratish',
+    title: 'Ro‘yxatdan o‘tish',
     children: [
-      const _DemoNotice(
-        'Bu mahalliy demo profil. Telefon SMS orqali tasdiqlanmaydi va serverga yuborilmaydi.',
-      ),
-      const SizedBox(height: 24),
       Form(
         key: form,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 8),
             MLPTextField(
               controller: name,
-              label: 'Ism',
+              label: 'Ismingiz',
+              hint: 'Azizbek',
               maxLength: 60,
               validator: (v) => (v ?? '').trim().length < 2
                   ? 'Kamida 2 belgilik ism kiriting.'
@@ -390,26 +389,120 @@ class _MLPRegistrationScreenState extends State<MLPRegistrationScreen> {
             MLPPhoneField(controller: phone),
             const SizedBox(height: 24),
             Text(
-              'Jins (ixtiyoriy)',
+              'Jins',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 8),
-            ...[
-              ('O‘g‘il', 'O‘g‘il'),
-              ('Qiz', 'Qiz'),
-              ('Ko‘rsatmaslik', 'Ko‘rsatmaslikni afzal ko‘raman'),
-            ].map(
-              (v) => _AccountChoice(
-                selected: gender == v.$1,
-                title: v.$2,
-                onTap: busy ? null : () => setState(() => gender = v.$1),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: busy ? null : () => setState(() => gender = 'O‘g‘il'),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        color: gender == 'O‘g‘il'
+                            ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
+                            : const Color(0xFF131D38),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: gender == 'O‘g‘il'
+                              ? const Color(0xFF00E5FF)
+                              : Colors.white.withValues(alpha: 0.1),
+                          width: gender == 'O‘g‘il' ? 1.5 : 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            size: 18,
+                            color: gender == 'O‘g‘il'
+                                ? const Color(0xFF00E5FF)
+                                : Colors.transparent,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'O‘g‘il',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: busy ? null : () => setState(() => gender = 'Qiz'),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        color: gender == 'Qiz'
+                            ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
+                            : const Color(0xFF131D38),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: gender == 'Qiz'
+                              ? const Color(0xFF00E5FF)
+                              : Colors.white.withValues(alpha: 0.1),
+                          width: gender == 'Qiz' ? 1.5 : 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            size: 18,
+                            color: gender == 'Qiz'
+                                ? const Color(0xFF00E5FF)
+                                : Colors.transparent,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Qiz',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: busy ? null : () => setState(() => gender = 'Ko‘rsatmaslik'),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      gender == 'Ko‘rsatmaslik'
+                          ? Icons.check_box_rounded
+                          : Icons.check_box_outline_blank_rounded,
+                      size: 20,
+                      color: gender == 'Ko‘rsatmaslik'
+                          ? const Color(0xFF00E5FF)
+                          : MLPColors.secondaryText,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'Ko‘rsatmaslik',
+                      style: TextStyle(color: MLPColors.secondaryText, fontSize: 13),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const Text(
-              'Bu tanlov maqsadlar, kasblar yoki funksiyalaringizni cheklamaydi.',
-              style: TextStyle(color: MLPColors.secondaryText, fontSize: 12),
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
             if (error != null) ...[
               _DemoNotice(error!, error: true),
               const SizedBox(height: 16),
@@ -669,27 +762,45 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
     }
   }
 
+    final selectedInterests = <String>{'Ta’lim', 'Ingliz tili', 'Dasturlash'};
+
   @override
   Widget build(BuildContext context) => _AccountPage(
-    title: 'Mening tanlovlarim',
+    title: 'Sozlamalar',
     children: [
-      const Text(
-        'Bu tanlovlarni keyin Profil bo‘limida o‘zgartira olasiz.',
-        style: TextStyle(color: MLPColors.secondaryText),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Expanded(
+            child: Text(
+              'Qaysi vaqtlarda odatda bo‘sh bo‘lasiz?',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFF00E5FF)),
+            ),
+            child: const Text(
+              '3 soat / kun',
+              style: TextStyle(
+                color: Color(0xFF00E5FF),
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
       ),
-      const SizedBox(height: 24),
+      const SizedBox(height: 20),
       Form(
         key: form,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.language_rounded),
-              title: Text('Ilova tili'),
-              subtitle: Text('O‘zbekcha · lotin yozuvi'),
-            ),
-            const SizedBox(height: 12),
             MLPTextField(
               controller: minutes,
               label: 'Kunlik bo‘sh vaqt (daqiqa)',
@@ -701,71 +812,160 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
                     : null;
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
             Text(
-              'Qulay mashg‘ulot vaqti',
-              style: Theme.of(context).textTheme.titleMedium,
+              'Asosiy vaqtlar',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 10),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                MLPSecondaryButton(
-                  label: 'Boshlash · ${_time(start)}',
-                  icon: Icons.schedule,
-                  onPressed: () => _pick(true),
-                ),
-                MLPSecondaryButton(
-                  label: 'Tugatish · ${_time(finish)}',
-                  icon: Icons.schedule,
-                  onPressed: () => _pick(false),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
             Row(
               children: [
-                const Expanded(
-                  child: Text(
-                    'Eslatma xohishi',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => _pick(true),
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF131D38),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.12),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Boshlanish',
+                            style: TextStyle(
+                              color: MLPColors.secondaryText,
+                              fontSize: 11,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _time(start),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF00E5FF),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                Semantics(
-                  label: 'Eslatma xohishi',
-                  child: CupertinoSwitch(
-                    value: notifications,
-                    activeTrackColor: MLPColors.turquoise,
-                    onChanged: busy
-                        ? null
-                        : (v) => setState(() => notifications = v),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => _pick(false),
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF131D38),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.12),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Tugash',
+                            style: TextStyle(
+                              color: MLPColors.secondaryText,
+                              fontSize: 11,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _time(finish),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF00E5FF),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'Tanlov saqlanadi. Haqiqiy bildirishnoma ruxsati va yetkazish hali ulanmagan.',
-              style: TextStyle(
-                color: MLPColors.secondaryText,
-                fontSize: 12,
-                height: 1.6,
-              ),
+            const SizedBox(height: 24),
+            Text(
+              'Qiziqishlaringiz nimalar?',
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 10,
+              children: [
+                'Ta’lim',
+                'Ingliz tili',
+                'Dasturlash',
+                'Sog‘lom turmush',
+                'Kasb',
+                'Moliya',
+                'Shaxsiy rivojlanish',
+                '+ Boshqa',
+              ].map((interest) {
+                final isSelected = selectedInterests.contains(interest);
+                return InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        selectedInterests.remove(interest);
+                      } else {
+                        selectedInterests.add(interest);
+                      }
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 9,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
+                          : const Color(0xFF131D38),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isSelected
+                            ? const Color(0xFF00E5FF)
+                            : Colors.white.withValues(alpha: 0.12),
+                        width: isSelected ? 1.5 : 1.0,
+                      ),
+                    ),
+                    child: Text(
+                      interest,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        color: isSelected ? Colors.white : MLPColors.secondaryText,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 24),
             MLPTextField(
               controller: nickname,
-              label: 'USTOZ AI uchun nom',
-              hint: 'Masalan: Ziyo',
+              label: 'Taqdosh AI nomi',
+              hint: 'Ziyo',
               maxLength: 30,
               validator: (v) =>
                   (v ?? '').trim().isEmpty ? 'Ustoz uchun nom kiriting.' : null,
-            ),
-            const SizedBox(height: 12),
-            const _DemoNotice(
-              'Ustoz nomi — shaxsiy tanlov. Yordamchi javoblari demo bo‘ladi; haqiqiy AI ulanmagan.',
             ),
             const SizedBox(height: 24),
             if (error != null) ...[
@@ -776,6 +976,7 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
               label: widget.finishingOnboarding ? 'MLPni boshlash' : 'Saqlash',
               busy: busy,
               onPressed: _save,
+              icon: Icons.arrow_forward_rounded,
             ),
           ],
         ),
@@ -785,31 +986,11 @@ class _MLPPreferencesScreenState extends State<MLPPreferencesScreen> {
 }
 
 class _DemoNotice extends StatelessWidget {
-  const _DemoNotice(this.message, {this.error = false});
-  final String message;
+  const _DemoNotice(this.text, {this.error = false});
+  final String text;
   final bool error;
   @override
-  Widget build(BuildContext context) => MLPLiquidSurface(
-    padding: const EdgeInsets.all(16),
-    blur: false,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          error ? Icons.error_outline_rounded : Icons.info_outline_rounded,
-          size: 20,
-          color: error ? MLPColors.warning : MLPColors.turquoise,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            message,
-            style: const TextStyle(fontSize: 13, height: 1.6),
-          ),
-        ),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) => MLPNotice(text, warning: error);
 }
 
 class _AccountPage extends StatelessWidget {
@@ -927,58 +1108,3 @@ class _AccountHeading extends StatelessWidget {
   );
 }
 
-class _AccountChoice extends StatelessWidget {
-  const _AccountChoice({
-    required this.selected,
-    required this.title,
-    required this.onTap,
-  });
-  final bool selected;
-  final String title;
-  final VoidCallback? onTap;
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
-    child: Semantics(
-      checked: selected,
-      inMutuallyExclusiveGroup: true,
-      child: MLPPressResponse(
-        child: MLPLiquidSurface(
-          blur: false,
-          radius: 14,
-          tint: selected ? MLPColors.turquoise.withValues(alpha: .1) : null,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 14,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(fontSize: 14, height: 1.5),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Icon(
-                      selected
-                          ? CupertinoIcons.checkmark_circle_fill
-                          : CupertinoIcons.circle,
-                      color: selected ? MLPColors.turquoise : MLPColors.muted,
-                      size: 23,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}

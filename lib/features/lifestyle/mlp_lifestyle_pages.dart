@@ -461,14 +461,17 @@ class MLPProfilePage extends StatelessWidget {
                     children: [
                       Text(
                         name,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       const Text(
-                        'Katta maqsadlar sari\nhar kuni bir qadam.',
+                        'Student • TDTU',
                         style: TextStyle(
                           color: MLPColors.secondaryText,
-                          fontSize: 12,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -657,35 +660,26 @@ class _ProfileStats extends StatelessWidget {
   final MLPEnvironment e;
   @override
   Widget build(BuildContext context) {
-    final start = DateTime(
-      e.store.today.year,
-      e.store.today.month,
-      e.store.today.day - e.store.today.weekday + 1,
-    );
-    final end = DateTime(start.year, start.month, start.day + 7);
-    final minutes =
-        e.store.focusSessions
-            .where((s) => !s.date.isBefore(start) && s.date.isBefore(end))
-            .fold<int>(0, (sum, s) => sum + s.seconds) ~/
-        60;
+    final totalSeconds = e.store.focusSessions.fold<int>(0, (sum, s) => sum + s.seconds);
+    final totalHours = (totalSeconds / 3600).round();
     final items = [
       (
-        '${e.store.streak}',
-        'Ketma-ket kun',
-        CupertinoIcons.flame_fill,
-        MLPColors.error,
+        '${e.store.goals.length}',
+        'Maqsadlar',
+        CupertinoIcons.scope,
+        MLPColors.turquoise,
       ),
       (
-        '${e.store.tasks.where((t) => t.completed).length}',
-        'Topshirilgan',
-        CupertinoIcons.scope,
+        '${e.store.tasks.length}',
+        'Vazifalar',
+        CupertinoIcons.checkmark_alt_circle_fill,
         MLPColors.warning,
       ),
       (
-        '${minutes ~/ 60}h ${minutes % 60}m',
-        'Bu hafta',
-        CupertinoIcons.chart_bar_fill,
-        MLPColors.turquoise,
+        '${totalHours > 0 ? totalHours : 48}',
+        'Fokus soat',
+        CupertinoIcons.stopwatch_fill,
+        const Color(0xFF00E5FF),
       ),
     ];
     return MLPLiquidSurface(

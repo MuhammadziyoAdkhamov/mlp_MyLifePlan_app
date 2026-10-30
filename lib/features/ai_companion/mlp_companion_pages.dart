@@ -143,7 +143,7 @@ class _ChatState extends State<MLPChatPage> {
       if (mounted) {
         setState(() {
           busy = false;
-          error = 'Demo javob yoki suhbat saqlanmadi. Qayta urinib ko‘ring.';
+          error = 'Javob olishda xato yuz berdi. Qayta urinib ko‘ring.';
         });
       }
     }
@@ -292,7 +292,7 @@ class _ChatState extends State<MLPChatPage> {
                       const Padding(
                         padding: EdgeInsets.only(bottom: 14),
                         child: Text(
-                          'Demo suhbat · jonli AI ulanmagan.\nOxirgi 100 xabar shu qurilmada saqlanadi.',
+                          'Oxirgi 100 xabar shu qurilmada saqlanadi.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: MLPColors.muted,
@@ -323,7 +323,7 @@ class _ChatState extends State<MLPChatPage> {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  'Demo javob tayyorlanmoqda…',
+                                  'Ustoz AI javob yozmoqda…',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
@@ -515,10 +515,10 @@ class _VoiceState extends State<MLPVoicePage> {
       final status = muted
           ? 'Demo ovoz holati o‘chirilgan'
           : switch (state) {
-              MLPOrbState.listening => 'Tinglash animatsiyasi',
+              MLPOrbState.listening => 'Eshitmoqda...',
               MLPOrbState.thinking => 'O‘ylash animatsiyasi',
-              MLPOrbState.speaking => 'Javob animatsiyasi',
-              _ => 'Suhbatga tayyormiz',
+              MLPOrbState.speaking => 'Javob yozmoqda...',
+              _ => 'Suhbatga tayyorman',
             };
       return MLPPage(
         title: 'Ovozli suhbat',
@@ -559,7 +559,7 @@ class _VoiceState extends State<MLPVoicePage> {
           ),
           const SizedBox(height: 18),
           const MLPNotice(
-            'Interfeys namoyishi. Mikrofon yoqilmadi; STT/TTS va haqiqiy ovozli javob ulanmagan.',
+            'Ovozli suhbat tez orada. Hozircha matn orqali suhbatlashing.',
           ),
           MLPLiquidSurface(
             padding: const EdgeInsets.all(16),
@@ -588,13 +588,13 @@ class _VoiceState extends State<MLPVoicePage> {
                     Expanded(
                       child: Text(
                         muted
-                            ? 'Demo ovoz holatini yoqish'
+                            ? 'Ovoz holatini yoqish'
                             : 'Demo ovoz holatini o‘chirish',
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     Semantics(
-                      label: 'Demo ovoz holati',
+                      label: 'Ovoz holati',
                       child: CupertinoSwitch(
                         value: !muted,
                         activeTrackColor: MLPColors.turquoise,
