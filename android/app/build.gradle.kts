@@ -3,9 +3,16 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.gms.google-services")
+    // Google Services is applied only when the local Firebase config exists.
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Active MLP demo (lib/main.dart) works offline without Firebase credentials.
+// A real Firebase build can provide android/app/google-services.json;
+// this enables the Google Services plugin without committing that private file.
+if (file("google-services.json").isFile) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 val releaseKeyPropertiesFile = rootProject.file("key.properties")
