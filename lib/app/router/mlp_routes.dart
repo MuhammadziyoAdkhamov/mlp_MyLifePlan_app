@@ -31,7 +31,8 @@ enum MLPScreen {
   soundspace('/soundspace', 'MLP Soundspace', 'E'),
   profile('/profile', 'Profil', 'E'),
   settings('/settings', 'Sozlamalar', 'E'),
-  notifications('/notifications', 'Bildirishnomalar', 'E');
+  notifications('/notifications', 'Bildirishnomalar', 'E'),
+  university('/university', 'University Edition · FDTU', 'B');
 
   const MLPScreen(this.path, this.title, this.phase);
   final String path, title, phase;

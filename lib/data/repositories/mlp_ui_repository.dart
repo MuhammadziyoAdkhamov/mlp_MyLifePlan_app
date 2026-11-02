@@ -302,7 +302,7 @@ class MLPLocalUiRepository extends ChangeNotifier
     }
     for (final value in state['assessments'] as List) {
       final a = value as Map;
-      if (!['Flutter asoslari', 'Ingliz tili asoslari'].contains(a['quiz']) ||
+      if (!['Chiziqli algebra (Matritsalar)', 'Flutter asoslari', 'Ingliz tili asoslari'].contains(a['quiz']) ||
           a['kind'] != 'predefined-test' ||
           a['total'] != 3 ||
           a['correct'] is! int ||

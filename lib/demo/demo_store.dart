@@ -1080,6 +1080,15 @@ class DemoStore extends ChangeNotifier {
     _isSampleData = true;
     _tasks = [
       DemoTask(
+        id: 'task-linear-algebra-mission',
+        title: 'Matritsalar bo‘yicha 5 ta amaliy masalani yechib, PDF yoki rasm ko‘rinishida yuklash',
+        project: 'Chiziqli algebra',
+        minutes: 25,
+        priority: 1,
+        dueDate: day,
+        goalId: 'subj-algebra',
+      ),
+      DemoTask(
         id: 'sample-task-1',
         title: 'Portfolio uchun case study qoralamasi',
         project: 'Karyera',
@@ -1163,6 +1172,60 @@ class DemoStore extends ChangeNotifier {
       ),
     ];
     _goals = [
+      DemoGoal(
+        id: 'subj-algebra',
+        title: 'Chiziqli algebra',
+        metric: 'mavzu',
+        target: 12,
+        current: 0,
+        deadline: _shift(day, 120),
+        category: 'Fanlar (3-semestr)',
+      ),
+      DemoGoal(
+        id: 'subj-discrete',
+        title: 'Diskret tuzilmalar',
+        metric: 'mavzu',
+        target: 10,
+        current: 0,
+        deadline: _shift(day, 120),
+        category: 'Fanlar (3-semestr)',
+      ),
+      DemoGoal(
+        id: 'subj-electronics',
+        title: 'Elektronika va sxemalar',
+        metric: 'mavzu',
+        target: 14,
+        current: 0,
+        deadline: _shift(day, 120),
+        category: 'Fanlar (3-semestr)',
+      ),
+      DemoGoal(
+        id: 'subj-networks',
+        title: 'Kompyuter tarmoqlari',
+        metric: 'mavzu',
+        target: 10,
+        current: 0,
+        deadline: _shift(day, 120),
+        category: 'Fanlar (3-semestr)',
+      ),
+      DemoGoal(
+        id: 'subj-database',
+        title: 'Ma’lumotlar bazasi',
+        metric: 'mavzu',
+        target: 12,
+        current: 0,
+        deadline: _shift(day, 120),
+        category: 'Fanlar (3-semestr)',
+      ),
+      DemoGoal(
+        id: 'subj-marifat',
+        title: 'Ma’rifat darsi',
+        metric: 'mavzu',
+        target: 6,
+        current: 0,
+        deadline: _shift(day, 120),
+        category: 'Fanlar (3-semestr)',
+      ),
       DemoGoal(
         id: 'sample-goal-1',
         title: '12 ta kitob o‘qish',
@@ -1532,5 +1595,78 @@ class DemoStore extends ChangeNotifier {
         note: c['note'],
       );
     }).toList();
+    if (_isSampleData && !_goals.any((g) => g.id == 'subj-algebra')) {
+      final day = today;
+      _goals.insertAll(0, [
+        DemoGoal(
+          id: 'subj-algebra',
+          title: 'Chiziqli algebra',
+          metric: 'mavzu',
+          target: 12,
+          current: 0,
+          deadline: _shift(day, 120),
+          category: 'Fanlar (3-semestr)',
+        ),
+        DemoGoal(
+          id: 'subj-discrete',
+          title: 'Diskret tuzilmalar',
+          metric: 'mavzu',
+          target: 10,
+          current: 0,
+          deadline: _shift(day, 120),
+          category: 'Fanlar (3-semestr)',
+        ),
+        DemoGoal(
+          id: 'subj-electronics',
+          title: 'Elektronika va sxemalar',
+          metric: 'mavzu',
+          target: 14,
+          current: 0,
+          deadline: _shift(day, 120),
+          category: 'Fanlar (3-semestr)',
+        ),
+        DemoGoal(
+          id: 'subj-networks',
+          title: 'Kompyuter tarmoqlari',
+          metric: 'mavzu',
+          target: 10,
+          current: 0,
+          deadline: _shift(day, 120),
+          category: 'Fanlar (3-semestr)',
+        ),
+        DemoGoal(
+          id: 'subj-database',
+          title: 'Ma’lumotlar bazasi',
+          metric: 'mavzu',
+          target: 12,
+          current: 0,
+          deadline: _shift(day, 120),
+          category: 'Fanlar (3-semestr)',
+        ),
+        DemoGoal(
+          id: 'subj-marifat',
+          title: 'Ma’rifat darsi',
+          metric: 'mavzu',
+          target: 6,
+          current: 0,
+          deadline: _shift(day, 120),
+          category: 'Fanlar (3-semestr)',
+        ),
+      ]);
+      if (!_tasks.any((t) => t.id == 'task-linear-algebra-mission')) {
+        _tasks.insert(
+          0,
+          DemoTask(
+            id: 'task-linear-algebra-mission',
+            title: 'Matritsalar bo‘yicha 5 ta amaliy masalani yechib, PDF yoki rasm ko‘rinishida yuklash',
+            project: 'Chiziqli algebra',
+            minutes: 25,
+            priority: 1,
+            dueDate: day,
+            goalId: 'subj-algebra',
+          ),
+        );
+      }
+    }
   }
 }

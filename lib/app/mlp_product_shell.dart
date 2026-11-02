@@ -18,6 +18,7 @@ import '../features/onboarding/mlp_account_flow.dart';
 import '../features/planner/mlp_calendar.dart';
 import '../features/planner/mlp_schedule_editor.dart';
 import '../features/progress/mlp_progress_pages.dart';
+import '../features/university/mlp_university_edition.dart';
 import '../features/workspace/mlp_workspace_pages.dart';
 import 'mlp_environment.dart';
 import 'router/mlp_routes.dart';
@@ -180,6 +181,7 @@ class _ProductShellState extends State<MLPProductShell>
           initialTaskId: args.taskId,
         ),
         MLPScreen.passport => MLPPassportPage(e: e),
+        MLPScreen.university => MLPUniversityHub(e: e),
         MLPScreen.analytics => MLPGrowthPage(e: e),
         MLPScreen.chat => MLPScaffold(body: MLPChatPage(e: e, adapter: _gemini, showBack: true)),
         MLPScreen.profile => MLPScaffold(

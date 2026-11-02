@@ -52,6 +52,8 @@ build/
 
 # Android build cache
 android/.gradle/
+android/.kotlin/
+*.hprof
 android/app/build/
 
 # iOS / macOS generated files

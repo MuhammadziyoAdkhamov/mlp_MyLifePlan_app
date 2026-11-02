@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/mlp_design_system.dart';
+import '../../app/mlp_environment.dart';
 import '../../core/design_system/mlp_widgets.dart';
 import '../../core/design_system/mlp_liquid_glass.dart';
 import '../../data/repositories/mlp_ui_repository.dart';
 import '../../demo/demo_forms.dart';
 import '../../demo/demo_store.dart';
+import '../university/mlp_university_edition.dart';
 
 class MLPGoalDetailScreen extends StatelessWidget {
   const MLPGoalDetailScreen({
@@ -108,6 +110,48 @@ class MLPGoalDetailScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (goal.title == 'Chiziqli algebra' || goal.category.contains('Fanlar')) ...[
+                      const SizedBox(height: 16),
+                      MLPGlassCard(
+                        accent: true,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(Icons.workspace_premium_rounded, color: Color(0xFFFFB800), size: 22),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Real amaliy missiya (ProofQuest)',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Matritsalar bo‘yicha 5 ta amaliy masalani yechib, hisobot yoki PDF yuklang. Blind Challenge orqali L3 Amaliy darajani tasdiqlang.',
+                              style: TextStyle(color: MLPColors.secondaryText, height: 1.5),
+                            ),
+                            const SizedBox(height: 14),
+                            MLPPrimaryButton(
+                              label: 'University Edition modulida ochish',
+                              icon: Icons.school_rounded,
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => MLPUniversityHub(
+                                      store: store,
+                                      ui: ui,
+                                      initialScreenIndex: 5,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 20),
                     if (plan != null) ...[
                       MLPGlassCard(

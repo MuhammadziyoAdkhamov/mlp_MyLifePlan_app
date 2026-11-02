@@ -24,6 +24,31 @@ class MLPQuizQuestion {
 
 abstract final class MLPQuizCatalog {
   static const quizzes = {
+    'Chiziqli algebra (Matritsalar)': [
+      MLPQuizQuestion(
+        'Determinantning asosiy xossasi qaysi?',
+        [
+          'Har doim ijobiy',
+          'Satr/ustun almashtirilsa belgisi o‘zgaradi',
+          'Doimo 1 ga teng',
+          'Matritsa o‘lchamiga bog‘liq emas',
+        ],
+        1,
+        'Matritsaning ikki satri yoki ustuni o‘rni almashtirilsa, determinant teskari ishoraga o‘zgaradi.',
+      ),
+      MLPQuizQuestion(
+        'A = [[3, 2], [1, 4]] matritsa determinanti det(A) nechiga teng?',
+        ['10', '14', '8', '12'],
+        0,
+        'det(A) = (3 * 4) - (2 * 1) = 12 - 2 = 10.',
+      ),
+      MLPQuizQuestion(
+        'Birlik matritsaning (Identity Matrix) determinanti nechiga teng?',
+        ['0', 'Matritsa o‘lchamiga teng', '1', 'Aniqlab bo‘lmaydi'],
+        2,
+        'Har qanday o‘lchamdagi birlik matritsaning determinanti 1 ga teng.',
+      ),
+    ],
     'Flutter asoslari': [
       MLPQuizQuestion(
         'Flutter interfeysining asosiy birligi nima?',
@@ -84,7 +109,7 @@ class MLPVerificationPage extends StatefulWidget {
 
 class _VerificationState extends State<MLPVerificationPage> {
   String? taskId, error;
-  String quiz = 'Flutter asoslari';
+  String quiz = 'Chiziqli algebra (Matritsalar)';
   List<int?> answers = [null, null, null];
   int step = 0;
   bool result = false, busy = false, saved = false;
@@ -239,6 +264,61 @@ class _VerificationState extends State<MLPVerificationPage> {
                   }),
           ),
         ] else ...[
+          if (MLPQuizCatalog.score(quiz, answers) >= 2) ...[
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const RadialGradient(
+                  colors: [Color(0xFF382306), Color(0xFF131D38)],
+                  radius: 1.2,
+                ),
+                border: Border.all(color: const Color(0xFFFFB800), width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFFB800).withValues(alpha: 0.25),
+                    blurRadius: 20,
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.military_tech_rounded, color: Color(0xFFFFB800), size: 54),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'L3 Amaliy daraja',
+                    style: TextStyle(
+                      color: Color(0xFFFFB800),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      '+300 XP · +50 kredit',
+                      style: TextStyle(
+                        color: Color(0xFF00E5FF),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Blind Challenge muvaffaqiyatli topshirildi!',
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           Text(
             '${MLPQuizCatalog.score(quiz, answers)} / ${questions.length} · ${MLPQuizCatalog.score(quiz, answers) >= 2 ? 'Namuna sinovidan o‘tdi' : 'Qayta mashq kerak'}',
             style: Theme.of(context).textTheme.headlineSmall,
@@ -313,7 +393,12 @@ class MLPPassportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: Listenable.merge([e.store, e.ui]),
-    builder: (context, _) => MLPPage(
+    builder: (context, _) {
+      final hasAlgebra = e.ui.assessments.any((a) =>
+          a['quiz'] == 'Chiziqli algebra (Matritsalar)' &&
+          (a['correct'] as int) * 3 >= (a['total'] as int) * 2);
+
+      return MLPPage(
       title: 'Passport: Mening ko‘nikmalarim',
       children: [
         MLPGlassCard(
@@ -323,6 +408,7 @@ class MLPPassportPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (final skill in [
+                ('Chiziqli algebra', hasAlgebra ? 'L3 Amaliy daraja' : '3-semestr', hasAlgebra ? 1.0 : 0.30, const Color(0xFFFFB800)),
                 ('Flutter', 'Asosiy daraja', 0.65, const Color(0xFF00E5FF)),
                 ('Dart', 'Asosiy daraja', 0.70, const Color(0xFF2979FF)),
                 ('UI/UX', 'Boshlang‘ich', 0.40, const Color(0xFFBA6AFF)),
@@ -431,8 +517,9 @@ class MLPPassportPage extends StatelessWidget {
               ),
             ),
       ],
-    ),
-  );
+    );
+  },
+);
 }
 
 class MLPGrowthPage extends StatefulWidget {

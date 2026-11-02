@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../core/app_colors.dart';
+import '../app/theme/mlp_design_system.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
 
 class QuestsTab extends StatelessWidget {
   const QuestsTab({super.key});
@@ -16,18 +17,29 @@ class QuestsTab extends StatelessWidget {
               padding: EdgeInsets.all(24.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Kvestlar', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Kvestlar',
+                  style: TextStyle(
+                    color: MLPColors.text,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-            const TabBar(
-              indicatorColor: AppColors.primary,
-              labelColor: AppColors.primary,
-              unselectedLabelColor: AppColors.textMuted,
-              dividerColor: AppColors.surface,
-              tabs: [
-                Tab(text: 'HR Kvestlar (B2B)'),
-                Tab(text: 'EdTech Vaucherlar'),
-              ],
+            const MLPLiquidSurface(
+              radius: 0,
+              blur: false,
+              child: const TabBar(
+                indicatorColor: MLPColors.turquoise,
+                labelColor: MLPColors.turquoise,
+                unselectedLabelColor: MLPColors.secondaryText,
+                dividerColor: MLPColors.border,
+                tabs: [
+                  Tab(text: 'HR Kvestlar (B2B)'),
+                  Tab(text: 'EdTech Vaucherlar'),
+                ],
+              ),
             ),
             Expanded(
               child: TabBarView(
@@ -89,46 +101,105 @@ class QuestsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestCard({required String company, required String role, required String task, required String reward, required IconData icon}) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.surface2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-                child: Icon(icon, color: AppColors.primary),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildQuestCard({
+    required String company,
+    required String role,
+    required String task,
+    required String reward,
+    required IconData icon,
+  }) {
+    return MLPLiquidSurface(
+      radius: 24,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(company, style: const TextStyle(color: AppColors.textMuted, fontSize: 13, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 2),
-                    Text(role, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            MLPColors.turquoise,
+                            MLPColors.primary,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: MLPColors.primary.withValues(alpha: 0.3),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: Icon(icon, color: MLPColors.text, size: 24),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            company,
+                            style: const TextStyle(
+                              color: MLPColors.secondaryText,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            role,
+                            style: const TextStyle(
+                              color: MLPColors.text,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  task,
+                  style: const TextStyle(
+                    color: MLPColors.secondaryText,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const MLPLiquidSurface(
+                  radius: 10,
+                  blur: false,
+                  tint: MLPColors.success.withValues(alpha: 0.1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      'Mukofot: $reward',
+                      style: const TextStyle(
+                        color: MLPColors.success,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          Text(task, style: const TextStyle(color: AppColors.textSecondary, height: 1.4)),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(color: AppColors.emerald.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-            child: Text('Mukofot: $reward', style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 13)),
-          ),
-        ],
+        ),
       ),
     );
   }

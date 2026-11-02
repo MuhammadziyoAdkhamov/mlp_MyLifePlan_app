@@ -96,6 +96,70 @@ class _ReferenceTodayState extends State<MLPTodayPage> {
             onChanged: (date) => setState(() => selected = date),
           ),
           const SizedBox(height: 18),
+          MLPGlassCard(
+            accent: true,
+            padding: 16,
+            onTap: () => e.go(MLPScreen.university),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF00E5FF), Color(0xFF8B5CF6)],
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(
+                    Icons.account_balance_rounded,
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'FDTU Pilot konsept',
+                            style: TextStyle(
+                              color: Color(0xFF00E5FF),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            '· 3-semestr',
+                            style: TextStyle(color: Colors.white60, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Fanlar & ProofQuest tizimi',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        'Chiziqli algebra: Matritsalar missiyasi',
+                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(CupertinoIcons.chevron_right, color: Colors.white54, size: 18),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
           if (current != null)
             MLPLiquidSurface(
               radius: 24,

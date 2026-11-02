@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../core/app_colors.dart';
+import '../app/theme/mlp_design_system.dart';
+import '../core/design_system/mlp_liquid_glass.dart';
 
 class PremiumScaffold extends StatelessWidget {
   const PremiumScaffold({
@@ -18,47 +19,23 @@ class PremiumScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Container(
-      decoration: const BoxDecoration(gradient: AppColors.premiumBackground),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -120,
-            right: -80,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withValues(alpha: 0.14),
-                boxShadow: [
-                  BoxShadow(color: AppColors.primary.withValues(alpha: 0.22), blurRadius: 90),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -100,
-            left: -100,
-            child: Container(
-              width: 260,
-              height: 260,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.cyan.withValues(alpha: 0.08),
-                boxShadow: [
-                  BoxShadow(color: AppColors.cyan.withValues(alpha: 0.16), blurRadius: 90),
-                ],
-              ),
-            ),
-          ),
-          Padding(padding: padding, child: safeArea ? SafeArea(child: body) : body),
-        ],
-      ),
+    final content = Stack(
+      children: [
+        // Use MLP liquid glass background
+        const Positioned.fill(
+          child: MLPLiquidBackground(),
+        ),
+        // Content
+        Padding(
+          padding: padding,
+          child: safeArea ? SafeArea(child: body) : body,
+        ),
+      ],
     );
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: MLPColors.background,
+      extendBody: bottomNavigationBar != null,
       body: content,
       bottomNavigationBar: bottomNavigationBar,
     );
